@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import Header from "../Header/page";
-import Footer from "../footer/page";
+import Footer from "@/components/container/footer/footer";
+import Header from "@/components/container/header/Header";
+
 
 export default function FAQPage() {
   const tabs = [

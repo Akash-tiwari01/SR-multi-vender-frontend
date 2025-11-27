@@ -1,6 +1,6 @@
 import React from "react";
-import Footer from "../footer/page";
-import Header from "../Header/page";
+import Footer from "@/components/container/footer/footer";
+import Header from "@/components/container/header/Header";
 
 const ContactUsPage = () => {
   return (
