@@ -5,6 +5,8 @@ import Header from "@/components/container/header/Header";
 import ProductView from "@/components/ProductView";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductByIdRequest } from "@/redux/products/productSlice";
+import Image from "next/image";
+import InfinityLoader from "@/components/InfinityLoader";
 
 export default function ProductPage() {
   const dispatch = useDispatch();
@@ -20,11 +22,9 @@ export default function ProductPage() {
 
   return (
     <>
-      <Header />
-
       <div>
         {loading ? (
-          <p>Loading product…</p>
+          <div className="w-full"> <InfinityLoader/> </div>
         ) : error ? (
           <p style={{ color: "red" }}>Error: {error}</p>
         ) : (

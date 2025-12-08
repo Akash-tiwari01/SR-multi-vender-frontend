@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 
-const collectionSlice = createSlice({
+const collectionsSlice = createSlice({
     name:"collections",
     initialState:{
         collections:[],
@@ -14,21 +14,21 @@ const collectionSlice = createSlice({
             state.loading = true;
             state.error = null;
         },
-        fetchCollectionSuccess: (state, action)=>{
+        fetchCollectionsSuccess: (state, action)=>{
             state.loading = false;
             state.collections = action.payload;
         },
-        fetchCollectionFailure: (state)=>{
-            state.loading = true;
-            state.error = null;
+        fetchCollectionsFailure: (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
         }
     }
 })
 
 
 export const {
-    fetchCollectionFailure,
-    fetchCollectionSuccess,
+    fetchCollectionsFailure,
+    fetchCollectionsSuccess,
     fetchCollectionsRequest,
-} = collectionSlice.actions;
-export default collectionSlice.reducer;
+} = collectionsSlice.actions;
+export default collectionsSlice.reducer;

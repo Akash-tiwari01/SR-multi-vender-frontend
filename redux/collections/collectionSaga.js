@@ -1,7 +1,5 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { fetchCollectionSuccess,fetchCollectionFailure, fetchCollectionsRequest } from "./collectionSlice";
-
-
+import { fetchCollectionsSuccess,fetchCollectionsFailure, fetchCollectionsRequest } from "./collectionSlice";
 
 function getAllCategories(){
     return fetch(`${process.env.NEXT_PUBLIC_API_URI}/api/collections`)
@@ -14,9 +12,9 @@ function getAllCategories(){
 function* fetchCollectionWorkerSaga(){
     try{
         const collections = yield call(getAllCategories);
-        yield put(fetchCollectionSuccess(collections));
+        yield put(fetchCollectionsSuccess(collections));
     }catch(error){
-        yield put(fetchCollectionFailure(error.message));
+        yield put(fetchCollectionsFailure(error.message));
     }
 }
 

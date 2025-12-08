@@ -5,6 +5,7 @@
   import Image from 'next/image';
   import Link from 'next/link';
   import { getImageUrl } from '@/utils/helperFunction'; 
+import InfinityLoader from '@/components/InfinityLoader';
 
 
   const collections = [
@@ -53,9 +54,11 @@
           // For local images, Next.js Image component handles optimization by default.
           unoptimized={true} 
         />
+  
         <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent opacity-70 group-hover:opacity-80 transition-opacity duration-300"></div>
         <h3 className="absolute bottom-4 left-4 text-white text-lg sm:text-xl font-semibold z-10">
           {collection.name}
+          hello
         </h3>
       </div>
     </Link>
@@ -64,12 +67,17 @@
 
   export default function CollectionContainer() {
     const dispatch = useDispatch();
-    const data = useSelector((state)=>(state.collections))
-    console.log(data, 'hi');
+    const { collections: collectionData, loading, error } = useSelector((state)=>(state.collections))
+    console.log(collectionData, 'hi');
     useEffect(()=>{
       dispatch(fetchCollectionsRequest());
     },[dispatch]);
 
+    useEffect(() => {
+      if (collectionData) { // Check if data is populated
+          console.log('Collections Data:', collectionData);
+      }
+  }, [collectionData]);
 
     return (
       <section className="container mx-auto px-4 py-12">
@@ -77,9 +85,9 @@
         <h2 className="text-center text-4xl font-serif text-rose-800 mb-10 tracking-wide">
           Celebrate The New Beginning
         </h2>
-
+      {/* <InfinityLoader/> */}
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div classNam="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {/* Large Collection Item (Cushion Covers) - Takes full height on md, 2 columns on lg */}
           <div className="
@@ -106,11 +114,11 @@
             md:col-span-1 
             lg:col-span-1
           ">
-            {/* {collections.filter(c => !c.isLarge).map((collection) => (
+            {collections.filter(c => !c.isLarge).map((collection) => (
               <div key={collection.id} className="min-h-[200px] sm:min-h-[250px] relative">
                 <CollectionCard collection={collection} />
               </div>
-            ))} */}
+            ))}
           </div>
         </div>
       </section>

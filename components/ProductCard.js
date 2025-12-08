@@ -23,9 +23,9 @@ function ProductCard({ product }) {
     <div className="
       group 
       relative 
-      bg-white 
+      bg-white
       rounded-xl 
-      hover:shadow-sm
+      hover:shadow-xl
       transition-all 
       duration-300 
       ease-in-out 
@@ -42,7 +42,6 @@ function ProductCard({ product }) {
         relative 
         aspect-square 
         overflow-hidden 
-        bg-white
         border-b 
         border-gray-200
       ">
@@ -53,18 +52,17 @@ function ProductCard({ product }) {
             src={getImageUrl(product?.media?.[0])}
             alt={product?.name || "Product Image"} // Use product name for better alt text
             className="
-              object-cover 
+              object-contain
               w-full 
               h-full 
               transition-opacity 
               duration-500 
-              ease-in-out 
+              ease-in-out
               opacity-100 
               group-hover:opacity-0
             "
             // Next.js Image optimization best practice (fill container)
-            layout="fill" 
-            objectFit="contain" 
+            fill
             unoptimized={true} // Only if absolutely necessary (e.g., external, unoptimized sources)
           />
 
@@ -143,7 +141,7 @@ function ProductCard({ product }) {
         <div className="flex items-center space-x-2 mt-auto">
           {/* Current Price (Primary/Emphasis) */}
           <span className="
-            text-2xl 
+            text-xl 
             font-bold 
             text-gray-900
           ">
@@ -153,7 +151,7 @@ function ProductCard({ product }) {
           {/* Old Price (Strikethrough/Subtle) */}
           {discount > 0 && (
             <span className="
-              text-md 
+              text-xs 
               text-gray-500 
               line-through
             ">

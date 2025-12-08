@@ -1,23 +1,27 @@
 /** @type {import('next').NextConfig} */
+
+const isDev = process.env.NODE_ENV === "development";
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
   images: {
-    remotePatterns: [
-      {
-        // Must match the protocol (http or https)
-        protocol: 'http', 
-        
-        // Must match the domain exactly
-        hostname: 'localhost', 
-        
-        // You MUST include the port if your URI includes one
-        port: '5058',          
-        
-        // Allows any path after the domain/port (e.g., /api/images/...)
-        pathname: '/**',        
-      },
-    ]}
+    remotePatterns: isDev
+      ? [
+          {
+            protocol: "http",
+            hostname: "localhost",
+            port: "5058",
+            pathname: "/**",
+          },
+        ]
+      : [
+          {
+            protocol: "https",
+            hostname: "https://sr-multi-vender-admin-api.onrender.com", // hosting domain
+            pathname: "/**",
+          },
+        ],
+  },
 };
 
 export default nextConfig;

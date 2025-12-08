@@ -21,8 +21,7 @@ export default function ProductsContainer() {
   const productList = products?.products || [];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-   
+    <div className="container mx-auto px-4 py-8 bg-white">
       <div className="
         grid 
         grid-cols-2 

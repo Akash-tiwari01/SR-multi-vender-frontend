@@ -17,7 +17,6 @@ export default function Footer() {
   return (
     <div>
       {/* Renders FeaturesSection component */}
-      <FeaturesSection />
 
       {/* Main Footer Section - Slate Background, White/Rose Text */}
       <footer className="bg-slate-950 text-white pt-12 pb-8">
