@@ -8,7 +8,6 @@ import { z } from 'zod';
 // Action and Wrapper imports
 import { registerVendorAction } from '@/lib/action'; 
 import { RHFInputWrapper, RHFCheckboxWrapper, RHFOptionSelect } from '@/components/form/FormWrapper';
-// import { useRouter } from 'next/navigation'; // Not needed
 
 // --- VENDOR TYPE OPTIONS ---
 const VENDOR_TYPE_OPTIONS = [

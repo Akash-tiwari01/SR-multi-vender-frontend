@@ -1,4 +1,4 @@
-import VendorRegistrationForm from "@/components/VendorRegistrationForm";
+import VendorRegistrationForm from "@/components/auth/VendorRegistrationForm";
 
 /**
  * The top-level Page component for vendor registration.
