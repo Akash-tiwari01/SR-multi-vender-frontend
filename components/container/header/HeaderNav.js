@@ -9,8 +9,8 @@ const navLinks = [
 
 const HeaderNav = () => {
   return (
-    <div className="bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto flex justify-around py-2.5 text-sm font-medium text-gray-800">
+    <div className="bg-white  border-gray-200">
+      <div className="max-w-7xl mx-auto flex justify-around py-2.5 text-sm font-medium text-gray-800 overflow-x-scroll scrollbar-hide">
         {navLinks.map((link) => (
           <Link key={link} href={`/${link.toLowerCase().replace(/ /g, '-')}`}>
             <div className="flex items-center group cursor-pointer hover:text-blue-600">

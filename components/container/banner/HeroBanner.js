@@ -30,7 +30,7 @@ export default function HeroBanner() {
         >
           {banners.map((src, i) => (
             <SwiperSlide key={i}>
-              <div className="relative w-full h-[400px] sm:h-[500px] md:h-[600px]">
+              <div className="relative w-full h-[300px] sm:h-[300px] md:h-[300px]">
                 <Image
                   src={src}
                   alt={`Banner ${i + 1}`}

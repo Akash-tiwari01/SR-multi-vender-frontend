@@ -43,6 +43,7 @@ export default async function Home() {
   </Section>
   return (
     <div className='px-2 '> 
+    <HeroBanner/>
       {
         components?.map((component)=>(
           <Section key={component._id}
