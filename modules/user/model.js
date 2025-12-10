@@ -28,3 +28,27 @@ export const CustomerRegistrationSchema = z.object({
     message: "You must accept the terms and conditions to register."
   }),
 });
+
+/**
+ * @description Zod schema for Traditional Login.
+ */
+
+export const LoginSchema = z.object({
+  email : z.string().min(1,"Email or Username is required."),
+  password : z.string().min(1, "password is required"),
+});
+
+/**
+ * @description Zod schema for OTP Login.
+*/
+
+export const OTPRequestSchema = z.object({
+  phone: z.string().min(10, "Phone number must be valid."),
+});
+
+// 3. OTP Verification Schema (Step 2)
+export const OTPVerifySchema = z.object({
+  otp_id: z.string().min(1, "Wrong otp"),
+  otp: z.string().length(6, "OTP must be 6 digits."),
+});
+
