@@ -214,7 +214,7 @@ export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
           <button
             type="button"
             onClick={handleRemove}
-            className={`${buttonClass} bg-red-600 text-white hover:bg-red-700`}
+            className={`${buttonClass} bg-rose-600 text-white hover:bg-rose-700`}
           >
             Remove
           </button>
@@ -241,3 +241,10 @@ export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
     </div>
   );
 };
+
+
+// --- 5. RHF Button ---
+
+export const RHFButton = ({text,type,disabled,className, })=>{
+
+}

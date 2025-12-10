@@ -1,6 +1,7 @@
 // src/modules/user/services/UserService.js
 import { UserAPIRepository } from "../repositories/UserAPIRepository";
-import { CustomerRegistrationSchema } from "../model";
+import { CustomerRegistrationSchema, LoginSchema, OTPRequestSchema, OTPVerifySchema } from "../model";
+
 
 /**
  * @description Provides the business logic for all Customer operations.
@@ -40,4 +41,57 @@ export class UserService {
       throw error; // Re-throw any critical/unexpected error
     }
   }
+
+  /**
+   * Executes the traditional email/username and password login flow.
+   * @param {object} credentials - Data received from the Saga/Controller.
+   * @returns {Promise<{ user: object, token: string }>}
+   */
+  login = async (credentials) =>{
+    
+    // 1. Server-Side Validation: Ensure data integrity using the Login schema
+    const validatedData = LoginSchema.parse(credentials); 
+
+    // 2. Call the repository to communicate with the backend
+    try {
+      console.log(this, "ji haa");
+      const result = await this.userRepository?.login(validatedData);
+      
+      console.log(`User login successful for identifier: ${validatedData.email}`);
+      return result;
+      
+    } catch (error) {
+      // Logic transformation: Convert technical error into user-facing message
+      if (error.message.includes('Invalid credentials')) {
+         throw new Error('Incorrect email/username or password.');
+      }
+      error.message += " ji haa ye galti thi"
+      throw error; // Re-throw any critical/unexpected error
+    }
+  }
+
+  requestOtp = async (phone)=> {
+    // Server-Side Validation
+    const validatedData = OTPRequestSchema.parse({ phone });
+    
+    try {
+        return await this.userRepository.requestOtp(validatedData.phone);
+    } catch (error) {
+        throw new Error("Failed to send OTP. Check phone number or try again.");
+    }
+  }
+
+  verifyOtp = async (phone, otp)=> {
+    // Server-Side Validation
+    const validatedData = OTPVerifySchema.parse({ otp_id, otp });
+    
+    try {
+        const result = await this.userRepository.verifyOtp(validatedData.otp_id, validatedData.otp);
+        console.log(`OTP login successful `);
+        return result;
+    } catch (error) {
+        throw new Error("OTP verification failed. Invalid OTP or expired code.");
+    }
+  }
+
 }
