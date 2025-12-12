@@ -1,7 +1,7 @@
 // src/components/auth/LoginComponent.jsx
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,12 +17,13 @@ import {
     loginFailure, // Used to manually trigger verification logic
     resetOtpState
 } from '@/modules/user/state/userSlice';
-import { RHFInputWrapper, RHFButtonWrapper } from '@/components/form/FormWrapper'; // Assuming this component exists
+import { RHFInputWrapper,  RHFButton } from '@/components/form/FormWrapper'; // Assuming this component exists
 import Link from 'next/link';
 // Define a custom action type for OTP Verify to be caught by the Saga
 const OTP_VERIFY_ACTION = 'user/otpVerify'; 
 
 export default function LoginComponnent() {
+
     const dispatch = useDispatch();
     const router = useRouter();
     const { 
@@ -58,7 +59,7 @@ export default function LoginComponnent() {
 
     React.useEffect(() => {
         if (isLoggedIn) {
-            router.push('/dashboard'); // Redirect on successful login
+            router.push('/'); // Redirect on successful login 
         }
     }, [isLoggedIn, router]);
 
@@ -89,6 +90,9 @@ export default function LoginComponnent() {
     
     // Determine the current state for button display
     const isSubmitting = isLoading || isFormSubmitting;
+
+
+      
 
     return (
         <div className="bg-white shadow-xl rounded-2xl p-6 sm:p-10 border border-slate-200 max-w-lg mx-auto my-12">
@@ -178,12 +182,12 @@ export default function LoginComponnent() {
                 )}
 
                 {/* Submit Button */}
-                <button
+                <RHFButton 
                     type="submit"
-                    disabled={isSubmitting} 
-                    className="w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out disabled:bg-indigo-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    disabled={isSubmitting}
+                    className={""}
                 >
-                    {isSubmitting ? (
+                     {isSubmitting ? (
                         <>
                             <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -194,12 +198,13 @@ export default function LoginComponnent() {
                     ) : (
                         <span>{loginMode === 'password' ? 'Log In' : (isOtpSent ? 'Verify & Log In' : 'Send OTP')}</span>
                     )}
-                </button>
+                </RHFButton>
+                
             </form>
 
             <p className="text-sm text-center text-slate-500 mt-6">
                 Don't have an account? 
-                <Link href="/register" className="text-indigo-600 hover:underline font-medium ml-1">Sign Up</Link>.
+                <Link href="/user/register" className="text-indigo-600 hover:underline font-medium ml-1">Sign Up</Link>.
             </p>
         </div>
     );

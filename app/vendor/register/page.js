@@ -7,11 +7,13 @@ import VendorRegistrationForm from "@/components/auth/VendorRegistrationForm";
  */
 export default function VendorRegisterPage() {
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+    <Section>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* The interactive form is encapsulated within the Client Component */}
         <VendorRegistrationForm />
       </div>
     </div>
+    </Section>
   );
 }

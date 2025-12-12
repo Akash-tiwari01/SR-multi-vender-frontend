@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronDown, HeartPlus, Search, ShoppingCartIcon, UserCircle } from 'lucide-react';
+import { Search } from 'lucide-react';
+import HeaderLoginComponent from './LoginComponent';
 
 const HeaderTop = () => {
   return (
@@ -38,25 +39,7 @@ const HeaderTop = () => {
         </div>
 
         {/* Right: User / Cart / Wishlist */}
-        <div className="order-2 md:order-3 flex items-center space-x-6">
-          <Link href="/user/:id" className="flex items-center hover:text-rose-100 group">
-            <UserCircle className="text-white group-hover:text-rose-100" size={24} />
-            <span className="ml-2 hidden sm:flex items-center group">
-              Akash
-              <ChevronDown size={16} className="ml-1 group-hover:text-rose-100" />
-            </span>
-          </Link>
-
-          <Link href="/cart" className="relative">
-            <ShoppingCartIcon className="hover:text-rose-100 text-white cursor-pointer" />
-            <span className="absolute -top-1 -right-2 bg-rose-500 text-white text-xs rounded-full px-1">0</span>
-          </Link>
-
-          <Link href="/ViewCart" className="relative">
-            <HeartPlus className="hover:text-rose-100 text-white cursor-pointer" />
-            <span className="absolute -top-1 -right-2 bg-rose-500 text-white text-xs rounded-full px-1">0</span>
-          </Link>
-        </div>
+        <HeaderLoginComponent/>
 
       </div>
     </div>

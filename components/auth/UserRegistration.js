@@ -8,7 +8,7 @@ import { CustomerRegistrationSchema } from '@/modules/user/model';
 // Import Server Action for submission
 import { registerCustomerAction } from '@/lib/action'; 
 // Assuming placeholder wrappers exist
-import { RHFInputWrapper, RHFCheckboxWrapper } from '@/components/form/FormWrapper'; 
+import { RHFInputWrapper, RHFCheckboxWrapper, RHFButton } from '@/components/form/FormWrapper'; 
 import Link from 'next/link';
 
 // NOTE: The CustomerRegistrationSchema already includes 'role: z.literal("CUSTOMER")'
@@ -135,12 +135,12 @@ export default function CustomerRegistrationForm() {
         </div>
 
         {/* Submit Button */}
-        <button
+        <RHFButton
+          text="Register"
           type="submit"
-          disabled={isSubmitting} 
-          className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-        >
-          {isSubmitting ? (
+          disabled={isSubmitting}
+          className="">
+             {isSubmitting ? (
             <>
               <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -151,12 +151,12 @@ export default function CustomerRegistrationForm() {
           ) : (
             <span>Register Now</span>
           )}
-        </button>
+          </RHFButton>
       </form>
 
       <p className="text-sm text-center text-slate-500 mt-6">
         Already have an account? 
-        <Link href="/login" className="text-blue-600 hover:underline font-medium ml-1">Log In here</Link>.
+        <Link href="/user/login" className="text-blue-600 hover:underline font-medium ml-1">Log In here</Link>.
       </p>
     </div>
   );

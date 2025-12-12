@@ -5,8 +5,6 @@ import Link from "next/link";
 import { getImageUrl } from '@/utils/helperFunction'; 
 
 function ProductCard({ product }) {
-  console.log(product); // Remove or comment out for production
-  // console.log(process.env); // Remove or comment out for production
 
   // --- Helper function for price calculations ---
   const calculateDiscountPercentage = (regularPrice, salePrice) => {
@@ -52,7 +50,6 @@ function ProductCard({ product }) {
             src={getImageUrl(product?.media?.[0])}
             alt={product?.name || "Product Image"} // Use product name for better alt text
             className="
-              object-contain
               w-full 
               h-full 
               transition-opacity 
@@ -72,7 +69,7 @@ function ProductCard({ product }) {
               src={getImageUrl(product?.media?.[1])}
               alt={product?.name || "Product Image Hover"}
               className="
-                object-cover 
+                
                 w-full 
                 h-full 
                 transition-opacity 

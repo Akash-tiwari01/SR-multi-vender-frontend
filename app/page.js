@@ -14,9 +14,10 @@ import SliderComponent from "@/components/container/HomePage/SliderComponent";
 import GalleryComponent from "@/components/container/HomePage/GalleryComponent";
 import ImageComponent from "@/components/container/HomePage/ImageComponent";
 export default async function Home() {
+  console.log("`````````````````````````````Homepage```````````````````````````");
+
   const data = await getInitialHomePageData();
   const components = await data.homepageData.homepageNew || data.homepageData.homepages
-  console.log(components);
   const renderComponent = (component) => {
     switch (component.display_type) {
       case 'COLLECTION PRODUCTS':

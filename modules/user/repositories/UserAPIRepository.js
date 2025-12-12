@@ -1,6 +1,5 @@
 // src/modules/user/repositories/UserAPIRepository.js
 import { apiClient } from "@/utils/api";
-import { apiFetcher } from "@/lib/fetcher";
 import { nextApiFetch } from "@/utils/nextApiFetch";
 
 /**
@@ -34,8 +33,10 @@ export class UserAPIRepository {
   }
 
   async login(credentials){
+    console.log("HiiiiSR");
 
     const result = await apiClient.post('/api/users/login',credentials);
+    console.log(result);
     return result;
   }
 
@@ -53,19 +54,4 @@ export class UserAPIRepository {
     return result;
   }
 
-  setSessionCookie = async (token) =>{
-    // This is a standard fetch call that the Saga runtime handles perfectly.
-      const response = await nextApiFetch('/api/auth/session', {
-          method: 'POST',
-          body: JSON.stringify({ token }),
-      });
-      return response;
-  }
-
-  clearSessionCookie = async () =>{
-      const response = await nextApiFetch('/api/auth/session', {
-          method: 'DELETE',
-      });
-      return response;
-  }
 }

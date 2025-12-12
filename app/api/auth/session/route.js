@@ -12,7 +12,6 @@ export async function POST(request) {
 
     try {
         const { token } = await request.json();
-        console.log(token,"ssssssssssssssssssssssssssssssssssssssssssss");
         if (!token) {
             return NextResponse.json({ message: "Token missing" }, { status: 400 });
         }
