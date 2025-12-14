@@ -6,11 +6,12 @@ const initialState = {
   token: null, 
   isLoggedIn: false,
   isLoading: false,
+  isAuthChecking:true,
   error: null,
   
   // State for OTP flow
   isOtpSent: false,
-  phoneForOtp: null, 
+  otp_id: null, 
 };
 
 const userSlice = createSlice({
@@ -23,6 +24,7 @@ const userSlice = createSlice({
       state.error = null;
     },
     loginSuccess: (state, action) => { // Used for both login types on success
+      console.log(action,"hii 1111111111111111111111111111111111");
       state.isLoading = false;
       state.isLoggedIn = true;
       state.user = action.payload.user;
@@ -58,13 +60,24 @@ const userSlice = createSlice({
         state.isOtpSent = false;
         state.phoneForOtp = null;
         state.error = null;
+    },
+    authCheckedFinished:(state)=>{
+      state.isAuthChecking = false; //Set to false when Saga completes
+    },
+    logoutRequest: (state) => {
+      state.isLoading = true;
+    },
+    logoutSuccess: (state) => {
+      Object.assign(state, initialState);
     }
+
   },
 });
 
 export const { 
     loginRequest, loginSuccess, loginFailure, logout,
-    otpRequest, otpRequestSuccess, otpRequestFailure, otpVerify, resetOtpState
+    otpRequest, otpRequestSuccess, otpRequestFailure, otpVerify,logoutRequest,logoutSuccess,
+    resetOtpState, authCheckedFinished
 } = userSlice.actions;
 
 export default userSlice.reducer;

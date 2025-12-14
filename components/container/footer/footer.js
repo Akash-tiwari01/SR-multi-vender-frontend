@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-y-10">
           {/* Get in Touch */}
           <div className="space-y-4 col-span-2 md:col-span-1">
-            <h4 className="text-xl font-bold text-rose-400 border-b border-rose-400 pb-2 mb-4">
+            <h4 className="text-xl font-bold text-rose-700 border-b border-rose-400 pb-2 mb-4">
               Get in touch
             </h4>
             <p className="text-slate-300 text-sm">
@@ -62,7 +62,7 @@ export default function Footer() {
 
           {/* Top Categories */}
           <div className="space-y-4">
-            <h4 className="text-xl font-bold text-rose-400 border-b border-rose-400 pb-2 mb-4">
+            <h4 className="text-xl font-bold text-rose-700 border-b border-rose-400 pb-2 mb-4">
               Top Categories
             </h4>
             <ul className="space-y-2 text-sm">
@@ -91,7 +91,7 @@ export default function Footer() {
 
           {/* About Store */}
           <div className="space-y-4">
-            <h4 className="text-xl font-bold text-rose-400 border-b border-rose-400 pb-2 mb-4">
+            <h4 className="text-xl font-bold text-rose-700 border-b border-rose-400 pb-2 mb-4">
               About Store
             </h4>
             <ul className="space-y-2 text-sm">
@@ -120,7 +120,7 @@ export default function Footer() {
 
           {/* Useful Links */}
           <div className="space-y-4">
-            <h4 className="text-xl font-bold text-rose-400 border-b border-rose-400 pb-2 mb-4">
+            <h4 className="text-xl font-bold text-rose-700 border-b border-rose-400 pb-2 mb-4">
               Useful Links
             </h4>
             <ul className="space-y-2 text-sm">
@@ -144,7 +144,7 @@ export default function Footer() {
 
           {/* Help & Policies */}
           <div className="space-y-4">
-            <h4 className="text-xl font-bold text-rose-400 border-b border-rose-400 pb-2 mb-4">
+            <h4 className="text-xl font-bold text-rose-700 border-b border-rose-400 pb-2 mb-4">
               Help & Policies
             </h4>
             <ul className="space-y-2 text-sm">
@@ -183,8 +183,8 @@ export default function Footer() {
       <PopularSearches />
       
       {/* Bottom Bar - Rose Background, White Text */}
-      <footer className="bg-rose-950 text-white py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center  ">
+      <footer className="bg-rose-950 text-white py-4 flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           {/* Copyright Text */}
           <p className="text-center md:text-left text-sm mb-3 md:mb-0 ">
             Copyright © 2025{" "}
@@ -194,8 +194,6 @@ export default function Footer() {
             “SR Craft Creations” is a registered brand name of{" "}
             <span className="font-semibold">Intellozene</span>
           </p>
-
-         
         </div>
       </footer>
     </div>

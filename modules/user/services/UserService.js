@@ -54,10 +54,10 @@ export class UserService {
 
     // 2. Call the repository to communicate with the backend
     try {
-      console.log(this, "ji haa");
       const result = await this.userRepository?.login(validatedData);
       
       console.log(`User login successful for identifier: ${validatedData.email}`);
+      console.log(`11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111`);
       return result;
       
     } catch (error) {
@@ -65,7 +65,6 @@ export class UserService {
       if (error.message.includes('Invalid credentials')) {
          throw new Error('Incorrect email/username or password.');
       }
-      error.message += " ji haa ye galti thi"
       throw error; // Re-throw any critical/unexpected error
     }
   }
@@ -93,5 +92,7 @@ export class UserService {
         throw new Error("OTP verification failed. Invalid OTP or expired code.");
     }
   }
+
+  
 
 }

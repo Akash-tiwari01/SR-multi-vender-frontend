@@ -5,6 +5,8 @@ import { getImageUrl } from '@/utils/helperFunction';
 import { cn } from '@/utils/cn'; // Utility import karein
 
 function ProductCard({ product }) {
+
+  // --- Helper function for price calculations ---
   const calculateDiscountPercentage = (regularPrice, salePrice) => {
     if (regularPrice > 0 && salePrice < regularPrice) {
       const discount = regularPrice - salePrice;
@@ -24,7 +26,17 @@ function ProductCard({ product }) {
           {/* Main Image */}
           <Image
             src={getImageUrl(product?.media?.[0])}
-            alt={product?.name || "Product Image"}
+            alt={product?.name || "Product Image"} // Use product name for better alt text
+            className="
+              w-full 
+              h-full 
+              transition-opacity 
+              duration-500 
+              ease-in-out
+              opacity-100 
+              group-hover:opacity-0
+            "
+            // Next.js Image optimization best practice (fill container)
             fill
             unoptimized
             className="object-contain w-full h-full transition-opacity duration-500 ease-in-out opacity-100 group-hover:opacity-0"
@@ -35,9 +47,22 @@ function ProductCard({ product }) {
             <Image
               src={getImageUrl(product?.media?.[1])}
               alt={product?.name || "Product Image Hover"}
-              fill
-              unoptimized
-              className="object-cover w-full h-full transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100 absolute top-0 left-0"
+              className="
+                
+                w-full 
+                h-full 
+                transition-opacity 
+                duration-500 
+                ease-in-out 
+                opacity-0 
+                group-hover:opacity-100 
+                absolute 
+                top-0 
+                left-0
+              "
+              layout="fill"
+              objectFit="cover"
+              unoptimized={true}
             />
           )}
         </Link>

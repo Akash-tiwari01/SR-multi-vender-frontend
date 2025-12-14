@@ -245,6 +245,13 @@ export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
 
 // --- 5. RHF Button ---
 
-export const RHFButton = ({text,type,disabled,className, })=>{
-
-}
+export const RHFButton = ({children,type,disabled,className,onClick })=>(
+  <button
+    type={type?type:"button"}
+    disabled={disabled} 
+    className={`w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2 ${className}`}
+    onClick={onClick || null}
+  >
+    {children}
+  </button>
+)
