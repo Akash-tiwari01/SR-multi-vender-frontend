@@ -63,6 +63,12 @@ const userSlice = createSlice({
     },
     authCheckedFinished:(state)=>{
       state.isAuthChecking = false; //Set to false when Saga completes
+    },
+    logoutRequest: (state) => {
+      state.isLoading = true;
+    },
+    logoutSuccess: (state) => {
+      Object.assign(state, initialState);
     }
 
   },
@@ -70,7 +76,7 @@ const userSlice = createSlice({
 
 export const { 
     loginRequest, loginSuccess, loginFailure, logout,
-    otpRequest, otpRequestSuccess, otpRequestFailure, otpVerify,
+    otpRequest, otpRequestSuccess, otpRequestFailure, otpVerify,logoutRequest,logoutSuccess,
     resetOtpState, authCheckedFinished
 } = userSlice.actions;
 

@@ -8,7 +8,9 @@ import {
     logout, 
     otpRequest, 
     otpRequestSuccess, 
-    otpRequestFailure 
+    otpRequestFailure,
+    logoutSuccess,
+    logoutRequest
 } from '@/modules/user/state/userSlice';
 
 // Secure Server Actions
@@ -41,7 +43,7 @@ function* initialAuthCheckWorker() {
         console.error("Session check failed:", error.message);
     }finally{
         console.log("token failed");
-        yield put(authCheckFinished());
+        yield put(authCheckedFinished());
     }
 }
 
@@ -86,11 +88,12 @@ function* otpVerifyWorker(action) {
 function* logoutWorker() {
     try {
         yield call(removeAuthCookieAction);
-        yield put(logout()); 
+        yield put(logoutSuccess());
     } catch (error) {
-        console.error("Logout process error:", error);
+        console.error("Logout error:", error);
     }
 }
+
 
 
 
@@ -100,7 +103,7 @@ export function* userWatcher() {
     yield takeLatest(loginRequest.type, loginWorker);
     yield takeLatest(otpRequest.type, otpRequestWorker);
     yield takeLatest('user/otpVerify', otpVerifyWorker); 
-    yield takeLatest(logout.type, logoutWorker);
+    yield takeLatest(logoutRequest.type, logoutWorker);
 }
 
 // --- ROOT USER SAGA (Exported to global rootSaga) ---

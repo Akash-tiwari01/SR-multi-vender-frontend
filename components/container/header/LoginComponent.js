@@ -3,14 +3,14 @@ import React, {useEffect, useState} from 'react'
 import Link from 'next/link'
 import { Boxes, ChevronDown, HeartPlus,  LogOut,  ShoppingCartIcon, UserCircle, UserCircleIcon } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '@/modules/user/state/userSlice';
+import { logout, logoutRequest } from '@/modules/user/state/userSlice';
 
 function HeaderLoginComponent() {
   const [hover,setHover] = useState(false);
   const user = useSelector((state)=>(state.user))
   const dispatch = useDispatch();
   const handleClickLogout = ()=>{
-      dispatch(logout())
+      dispatch(logoutRequest())
   }
   console.log(user);
  

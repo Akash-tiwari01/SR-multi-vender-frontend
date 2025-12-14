@@ -57,11 +57,13 @@ export default function LoginComponnent() {
         defaultValues: { email: '', password: '', phone: '', otp: '' },
     });
 
+       
+
     React.useEffect(() => {
         if (isLoggedIn) {
             router.push('/'); // Redirect on successful login 
         }
-    }, [isLoggedIn, router]);
+    }, [ isLoggedIn, router]);
 
     const handleSwitchMode = (mode) => {
         setLoginMode(mode);

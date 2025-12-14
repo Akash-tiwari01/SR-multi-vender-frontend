@@ -1,4 +1,5 @@
 import VendorRegistrationForm from "@/components/auth/VendorRegistrationForm";
+import Section from "@/components/container/genericContainer/Section";
 
 /**
  * The top-level Page component for vendor registration.
