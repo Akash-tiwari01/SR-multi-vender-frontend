@@ -17,7 +17,7 @@ export default async function CollectionContent({ promiseParams, promiseFilters 
   const collectionName = initialData?.product_collection?.name || 'Collection';
 
   return (
-    <div className='  px-2 sm:px-2 lg:px-2 '>
+    <div className='  px-2  '>
       
       {/* --- 1. Breadcrumb and Header Section --- */}
       
@@ -29,12 +29,11 @@ export default async function CollectionContent({ promiseParams, promiseFilters 
         - Medium (md): Sidebar (approx 1/4 or 25%) and Main Content (3/4 or 75%)
         - Large (lg): Sidebar (fixed width or 1/5, approx 20%) and Main Content (4/5, approx 80%)
       */}
-      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 md:gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 md:gap-2 ">
         
         {/* === Sidebar: Filters (1/4 or 1/5 width) === */}
-        <div className="md:col-span-1 lg:col-span-1 mb-8 md:mb-0">
-          <div className="md:sticky md:top-12 mt-2"> 
-             {/* sticky makes the filter stay put when scrolling the product list */}
+        <div className="md:col-span-1 my-2 ">
+          <div className="sticky top-12 h-[calc(100vh-6rem)] overflow-y-auto">
             <FilterSidebar slug={slug} currentFilters={filters} />
           </div>
         </div>

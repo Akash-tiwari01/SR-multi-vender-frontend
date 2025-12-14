@@ -58,7 +58,7 @@ export default function InfiniteProductList({ initialData, slug, currentFilters 
   }
 
   return (
-    <Section className="w-full py-4">
+    <Section className="w-full py-0">
       {products.length === 0 ? (
         <div className="text-center py-10">
           <h2 className="text-xl font-bold">No results found.</h2>

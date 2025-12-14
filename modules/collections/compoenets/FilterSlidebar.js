@@ -58,7 +58,7 @@ export default function FilterSidebar({ currentFilters }) {
   };
 
   return (
-    <aside className="w-full max-w-xs space-y-8 p-6 bg-white rounded-md ">
+    <aside className="w-full max-w-xs space-y-8 p-6 bg-white rounded-md h-full">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-xl text-slate-800">Filters</h2>
         <button 
