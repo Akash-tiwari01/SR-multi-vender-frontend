@@ -184,9 +184,9 @@ export default function Footer() {
       
       {/* Bottom Bar - Rose Background, White Text */}
       <footer className="bg-rose-950 text-white py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center  ">
           {/* Copyright Text */}
-          <p className="text-center md:text-left text-sm mb-3 md:mb-0">
+          <p className="text-center md:text-left text-sm mb-3 md:mb-0 ">
             Copyright © 2025{" "}
             <span className="font-semibold">SR CRAFT CREATIONS</span> all rights
             reserved.
@@ -195,14 +195,7 @@ export default function Footer() {
             <span className="font-semibold">Intellozene</span>
           </p>
 
-          {/* Payment Icons */}
-          <div className="flex items-center gap-3">
-            <Image src="/1.png" alt="Visa" width={40} height={25} />
-            <Image src="/2.png" alt="MasterCard" width={40} height={25} />
-            <Image src="/3.png" alt="Paytm" width={40} height={25} />
-            <Image src="/masterCard.webp" alt="Amex" width={40} height={25} />
-            <Image src="/paypal.png" alt="PayPal" width={40} height={25} />
-          </div>
+         
         </div>
       </footer>
     </div>

@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-300`}
       >
         <ReduxProvider>
-        <div className="wrapper">
+        <div className="wrapper flex flex-col justify-center">
           <Header/>
         {children}
         <Footer/>

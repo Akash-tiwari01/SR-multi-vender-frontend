@@ -4,6 +4,14 @@ const isDev = process.env.NODE_ENV === "development";
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
+  experimental: {
+    cacheComponents: true,
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
   images: {
     remotePatterns: isDev
       ? [

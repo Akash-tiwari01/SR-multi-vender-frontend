@@ -1,18 +1,17 @@
 // import AddtoCart from "./ProductPage/AddtoCartPage/AddToCart/page";
 import CategoriesSlider from "@/components/CategoriesSlider"
 import ProductsContainer from "@/components/container/product/ProductsContainer";
-import HeroBanner from "@/components/container/banner/HeroBanner";
 import CollectionContainer from "@/components/container/collection/CollectionContainer";
 import { getInitialHomePageData } from "@/lib/data";
 import CategorySliderWrapper from "@/components/container/categories/CategorySliderWrapper";
 import Section from "@/components/container/genericContainer/Section";
 import InfinityLoader from "@/components/InfinityLoader";
-import ProductCollectionComponent from "@/components/container/HomePage/ProductCollectionComponent";
+import ProductCollectionComponent from "@/components/container/HomePage/productCollection/ProductCollectionComponent";
 import CollectionGridComponent from "@/components/container/HomePage/CollectionGridSlider/CollectionGridComponent";
 import TextComponent from "@/components/container/HomePage/TextComponent";
-import SliderComponent from "@/components/container/HomePage/SliderComponent";
 import GalleryComponent from "@/components/container/HomePage/GalleryComponent";
 import ImageComponent from "@/components/container/HomePage/ImageComponent";
+import Banner from "@/components/container/HomePage/Banner";
 export default async function Home() {
   const data = await getInitialHomePageData();
   const components = await data.homepageData.homepageNew || data.homepageData.homepages
@@ -26,7 +25,7 @@ export default async function Home() {
       case 'COLLECTION':
         return <CollectionGridComponent key={component?._id} {...component} />;
       case 'SLIDER':
-        return <SliderComponent key={component._id} {...component} />;
+        return <Banner key={component._id} data={component.slider_component} />;
       case 'GALLERY':
         return <GalleryComponent key={component._id} {...component} />;
       case 'IMAGE':
@@ -43,13 +42,12 @@ export default async function Home() {
   </Section>
   return (
     <div className='px-2 '> 
-    <HeroBanner/>
       {
         components?.map((component)=>(
-          <Section key={component._id}
+          <section key={component._id}
             className={`homepage-component`}>
               {renderComponent(component)}
-          </Section>
+          </section>
         ))
       }
     </div>
