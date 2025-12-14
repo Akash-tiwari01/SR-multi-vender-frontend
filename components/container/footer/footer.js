@@ -186,7 +186,7 @@ export default function Footer() {
       <footer className="bg-rose-950 text-white py-4 flex items-center justify-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
           {/* Copyright Text */}
-          <p className="text-center md:text-left text-sm mb-3 md:mb-0">
+          <p className="text-center md:text-left text-sm mb-3 md:mb-0 ">
             Copyright © 2025{" "}
             <span className="font-semibold">SR CRAFT CREATIONS</span> all rights
             reserved.

@@ -6,8 +6,9 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { getImageUrl } from '@/utils/helperFunction';
-import CollectionSlider from '@/components/CollectionSlider';
-import DynamicGrid from '@/components/DynamicGrid';
+import CollectionSlider from '@/components/container/HomePage/CollectionGridSlider/CollectionSlider';
+import DynamicGrid from '@/components/container/HomePage/CollectionGridSlider/DynamicGrid';
+import Section from '../../genericContainer/Section';
 
 const swiperConfig = {
   modules: [Navigation, Pagination],
@@ -26,29 +27,29 @@ export default function CollectionGridComponent({ collections_component, title }
   const {product_collections} = collections_component
   if (product_collections?.length===0 || product_collections.length == undefined)
     return (
-    <div>
+    <Section>
         NO collection present...
-    </div>
+    </Section>
   );
   else if (product_collections?.length<6){
     return(
-        <section className="container mx-auto py-12 px-4">
-        <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">{title}</h2>
+        <Section className="container mx-auto ">
+        {title && <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">{title}</h2>}
         <div className="py-4 rounded-xl ">
         <DynamicGrid product_collections={product_collections}/>
         </div>
-        </section>
+        </Section>
     )
     
   }
   else{
     return(
-        <section className="container mx-auto py-12 px-4">
+        <Section className="container ">
         <h2 className="text-3xl font-bold mb-6 text-gray-800">{title}</h2>
         <div className="py-4 mx-4 rounded-xl ">
             <CollectionSlider product_collections    = {product_collections}/>
         </div>
-        </section>
+        </Section>
     )
   }
 }

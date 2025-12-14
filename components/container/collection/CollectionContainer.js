@@ -14,7 +14,7 @@ import InfinityLoader from '@/components/InfinityLoader';
       name: 'Cushion Covers',
       imageUrl: '/images/cushion-covers.jpg', // Replace with your actual image path
       link: '/collections/cushion-covers',
-      isLarge: true, // This item will take up more space
+      isLarge: true, //
     },
     {
       id: 'home-decor',

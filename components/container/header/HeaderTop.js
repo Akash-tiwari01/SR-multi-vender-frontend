@@ -7,7 +7,7 @@ import HeaderLoginComponent from './LoginComponent';
 
 const HeaderTop = () => {
   return (
-    <div className="bg-slate-950 text-white p-3 shadow-md">
+    <div className="bg-slate-950 text-white p-3 shadow-md rounded-b-md">
       <div className="max-w-7xl mx-auto flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4">
 
         {/* Left: Logo */}

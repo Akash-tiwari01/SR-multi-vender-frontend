@@ -9,7 +9,7 @@ const navLinks = [
 
 const HeaderNav = () => {
   return (
-    <div className="bg-white  border-gray-200">
+    <div className="bg-white rounded-md">
       <div className="max-w-7xl mx-auto flex justify-around py-2.5 text-sm font-medium text-gray-800 overflow-x-scroll scrollbar-hide">
         {navLinks.map((link) => (
           <Link key={link} href={`/${link.toLowerCase().replace(/ /g, '-')}`}>
