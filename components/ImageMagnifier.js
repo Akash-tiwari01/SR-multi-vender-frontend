@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 
@@ -7,27 +8,28 @@ export default function ImageMagnifier({
   zoomLevel = 2.5,
   lensSize = 120,
 }) {
-  const imgRef = useRef(null);
+  const containerRef = useRef(null);
 
-  const [lensPos, setLensPos] = useState({ x: -9999, y: -9999 });
+  const [lensPos, setLensPos] = useState(null);
   const [imgSize, setImgSize] = useState({ width: 0, height: 0 });
 
-  // Next/Image `onLoad` gives event.target.naturalWidth/Height
-  const onImageLoad = useCallback((e) => {
-    const rect = imgRef.current.getBoundingClientRect();
+  // Runs once image is fully loaded
+  const handleImageReady = useCallback(() => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
     setImgSize({ width: rect.width, height: rect.height });
   }, []);
 
-  const moveLens = (e) => {
-    if (!imgSize.width) return;
+  const handleMouseMove = (e) => {
+    if (!containerRef.current || !imgSize.width) return;
 
-    const rect = imgRef.current.getBoundingClientRect();
+    const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
-    // Hide lens outside
-    if (x < 0 || y < 0 || x > imgSize.width || y > imgSize.height) {
-      setLensPos({ x: -9999, y: -9999 });
+    // Outside image → hide lens
+    if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
+      setLensPos(null);
       return;
     }
 
@@ -36,37 +38,44 @@ export default function ImageMagnifier({
 
   return (
     <div
-      className="relative w-full h-[80vh]" // container height required for next/image fill
-      onMouseMove={moveLens}
-      onMouseLeave={() => setLensPos({ x: -9999, y: -9999 })}
+      ref={containerRef}
+      className="relative w-full h-[80vh] hidden md:block overflow-hidden"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setLensPos(null)}
     >
+      {/* Base image */}
       <Image
-        ref={imgRef}
         src={src}
-        alt="product"
+        alt="Product image"
         fill
-        className="object-cover rounded-md"
-        onLoad={onImageLoad}
+        priority
+        sizes="(min-width: 768px) 50vw, 100vw"
+        className="object-contain rounded-md"
+        onLoadingComplete={handleImageReady}
         unoptimized
       />
 
-      <div
-        className="absolute pointer-events-none rounded-full border border-gray-300"
-        style={{
-          width: lensSize,
-          height: lensSize,
-          left: lensPos.x - lensSize / 2,
-          top: lensPos.y - lensSize / 2,
-            zIndex:200,
-          /* 👇 USE imgSize */
-          backgroundImage: `url(${src})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: `${imgSize.width * zoomLevel}px ${imgSize.height * zoomLevel}px`,
-          backgroundPosition: `-${lensPos.x * zoomLevel - lensSize / 2}px -${
-            lensPos.y * zoomLevel - lensSize / 2
-          }px`,
-        }}
-      />
+      {/* Magnifier lens */}
+      {lensPos && (
+        <div
+          className="absolute pointer-events-none rounded-full border border-gray-300 shadow-md"
+          style={{
+            width: lensSize,
+            height: lensSize,
+            left: lensPos.x - lensSize / 2,
+            top: lensPos.y - lensSize / 2,
+            zIndex: 30,
+            backgroundImage: `url(${src})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: `${imgSize.width * zoomLevel}px ${
+              imgSize.height * zoomLevel
+            }px`,
+            backgroundPosition: `-${
+              lensPos.x * zoomLevel - lensSize / 2
+            }px -${lensPos.y * zoomLevel - lensSize / 2}px`,
+          }}
+        />
+      )}
     </div>
   );
 }

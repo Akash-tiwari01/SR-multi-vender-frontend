@@ -13,7 +13,7 @@ function HeaderLoginComponent() {
       dispatch(logoutRequest())
   }
   console.log(user);
- 
+ const {name} = user?.user || ""
   return (
     <div className="order-2 md:order-3 flex items-center space-x-6">
           <div
@@ -23,12 +23,14 @@ function HeaderLoginComponent() {
             >
               <UserCircle className="text-white group-hover:text-rose-100
               " size={24} />
-              <Link
+              {name?<div className='ml-2 hidden sm:flex items-center group'>
+                {name}
+              </div>:(<Link
                 href="/user/login" 
                 className="ml-2 hidden sm:flex items-center group">
                 Login
                 <ChevronDown size={16} className={`ml-1 group-hover:text-rose-100 ${hover?'rotate-0':'rotate-180'} transition duration-300`} />
-              </Link>
+              </Link>)}
               {hover&&
               <div className=' relative transition duration-300 '>
                 <div className='text-slate-950 bg-white border border-slate-950  w-[300px] py-2 z-50 absolute top-4 right-0 rounded-sm flex flex-col'>

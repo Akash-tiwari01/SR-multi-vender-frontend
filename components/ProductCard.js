@@ -22,20 +22,12 @@ function ProductCard({ product }) {
       
       {/* 1. Image Section */}
       <div className="relative aspect-square overflow-hidden border-b border-gray-200">
-        <Link href={`/products/${product._id}`}>
+        <Link href={`/products/${product?.slug}`}>
           {/* Main Image */}
           <Image
             src={getImageUrl(product?.media?.[0])}
             alt={product?.name || "Product Image"} // Use product name for better alt text
-            className="
-              w-full 
-              h-full 
-              transition-opacity 
-              duration-500 
-              ease-in-out
-              opacity-100 
-              group-hover:opacity-0
-            "
+            
             // Next.js Image optimization best practice (fill container)
             fill
             unoptimized
