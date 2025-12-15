@@ -50,15 +50,15 @@ function ProductImage({images}) {
             <div className="relative  w-full rounded-md">
               <ImageMagnifier src={getImageUrl(images[selectedIndex])}/>
               <div className='absolute bottom-2 right-2'>
-              <div class="group ">
+              <div className="group ">
                 <button className='  bg-zinc-900/50 p-3 rounded-xl overflow-hidden ' title='View enlarge' onClick={(prev)=>(setIsModalOpen(true))}><ZoomInIcon className='hover:text-rose-200  transition-all ease-in-out' /> </button>
-                <div class="transition-all ease-in-out absolute bottom-15 right-16 w-[70px]  invisible group-hover:visible opacity-0 group-hover:opacity-100  duration-300 bg-zinc-900/50 text-white text-sm px-2 py-1 rounded">
+                <div className="transition-all ease-in-out absolute bottom-15 right-16 w-[70px]  invisible group-hover:visible opacity-0 group-hover:opacity-100  duration-300 bg-zinc-900/50 text-white text-sm px-2 py-1 rounded">
                     Zoom In
                 </div>
               </div>
-              <div class="group mt-2">
+              <div className="group mt-2">
                 <button className='  bg-zinc-900/50 p-3 rounded-xl overflow-hidden ' title='View enlarge' onClick={(prev)=>(setIsModalOpen(true))}><Crosshair className='transition-all ease-in-out' /> </button>
-                <div class="transition-all ease-in-out absolute bottom-0 right-18 w-[110px]  invisible group-hover:visible opacity-0 group-hover:opacity-100  duration-300 bg-zinc-900/50 text-white text-sm px-2 py-1 rounded">
+                <div className="transition-all ease-in-out absolute bottom-0 right-18 w-[110px]  invisible group-hover:visible opacity-0 group-hover:opacity-100  duration-300 bg-zinc-900/50 text-white text-sm px-2 py-1 rounded">
                     Enlarge Image
                 </div>
               </div>
