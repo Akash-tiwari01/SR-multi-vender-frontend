@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+"use client"
+import { useVerification } from '@/app/hooks/useVerification';
+import { CheckCircle2, Loader2, Upload, X, FileText, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef,useMemo } from 'react';
+import { uploadFileAction } from '@/lib/action';
+
 // The useFormContext import is kept here for reference if you expand to use Context later, 
 // but is not strictly necessary for these components as props are passed directly.
 
@@ -165,79 +170,132 @@ export const RHFOptionSelect = ({ name, label, register, errors, options, ...res
  * @param {object} props.errors - The errors object from formState.
  * @returns {JSX.Element}
  */
+
+
+
+
 export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
   const [loading, setLoading] = useState(false);
-  // Watch the field to show the current URL/value stored in the form state
+  
+  // 1. Force the component to re-render when the form value changes
   const fileValue = watch(name); 
-  const hasError = errors[name];
-  const errorMessage = hasError?.message;
+  const errorMessage = errors[name]?.message;
 
-  const uploadImage = async (imageFile) => {
-    if (!imageFile) return;
+  // 2. Normalize the path and add a timestamp to bypass browser cache for the same filename
+  const previewUrl = useMemo(() => {
+    if (!fileValue) return null;
+    // Replace backslashes with forward slashes for Windows compatibility
+    const cleanPath = fileValue.replace(/\\/g, '/');
+    const base = process.env.NEXT_PUBLIC_API_URI || '';
+    return `${base}${cleanPath}?t=${Date.now()}`;
+  }, [fileValue]);
 
-    // --- Simulation of API Call to upload file ---
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
     setLoading(true);
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1500)); 
-    // Mock the URL returned from the server
-    const mockImageUrl = `/uploads/${Date.now()}-${imageFile.name.replace(/\s/g, '_')}`;
-    // --- End Simulation ---
+    const formData = new FormData();
+    formData.append('image', file);
 
-    // Update the RHF form state with the resulting URL
-    // { shouldValidate: true } triggers Zod validation immediately after setting the value
-    setValue(name, mockImageUrl, { shouldValidate: true }); 
-    setLoading(false);
+    try {
+      const result = await uploadFileAction(formData);
+      if (result.success) {
+        // result.url must be a string like "/uploads/filename.jpg"
+        setValue(name, result.url, { 
+            shouldValidate: true, 
+            shouldDirty: true, 
+            shouldTouch: true 
+        });
+      } else {
+        alert(result.message);
+      }
+    } catch (err) {
+      console.error("Upload UI Error:", err);
+    } finally {
+      setLoading(false);
+    }
   };
-  
-  const handleRemove = () => {
-    // Clear the form value and re-validate
-    setValue(name, null, { shouldValidate: true }); 
+
+  const handleRemove = (e) => {
+    e.preventDefault();
+    setValue(name, '', { shouldValidate: true });
   };
-  
-  const buttonClass = "px-3 py-1 text-sm rounded-lg shadow-sm transition duration-150";
-  
+
   return (
-    <div className="space-y-3 p-4 border border-slate-200 rounded-lg">
-      <label className="block text-sm font-semibold text-slate-700 mb-1">{label}</label>
-      
-      {loading ? (
-        // Loading State UI
-        <div className="h-10 w-full bg-slate-200 rounded-lg animate-pulse" />
-      ) : fileValue ? (
-        // Display existing image and removal button
-        <div className="flex items-center space-x-4">
-          <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-300">
-            <div className="w-full h-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 text-center">
-              Image Loaded: <br/> {fileValue.substring(fileValue.lastIndexOf('/') + 1)}
-            </div>
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex justify-between items-center px-1">
+        <label className="text-sm font-bold text-slate-700">{label}</label>
+        {fileValue && !loading && (
+          <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 uppercase tracking-wider">
+            <CheckCircle2 size={12} /> Verified
+          </span>
+        )}
+      </div>
+
+      <div className={`relative transition-all duration-300 rounded-xl border-2 border-dashed min-h-[110px] flex items-center justify-center
+        ${loading ? 'bg-slate-50 border-slate-300' : 
+          fileValue ? 'bg-emerald-50/20 border-emerald-500/30' : 
+          errorMessage ? 'bg-red-50 border-red-300' : 'bg-white border-slate-200 hover:border-rose-400'}`}
+      >
+        {loading ? (
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 className="h-8 w-8 text-rose-500 animate-spin" />
+            <p className="text-xs font-medium text-slate-500">Uploading...</p>
           </div>
-          <button
-            type="button"
-            onClick={handleRemove}
-            className={`${buttonClass} bg-rose-600 text-white hover:bg-rose-700`}
-          >
-            Remove
-          </button>
-        </div>
-      ) : (
-        // File upload input
-        <div>
-          <input
-            type="file"
-            id={name}
-            onChange={(e) => uploadImage(e.target.files[0])}
-            className="block w-full text-sm text-slate-500
-                       file:mr-4 file:py-2 file:px-4
-                       file:rounded-full file:border-0
-                       file:text-sm file:font-semibold
-                       file:bg-rose-50 file:text-rose-700
-                       hover:file:bg-rose-100"
-          />
-        </div>
+        ) : fileValue ? (
+          <div className="flex items-center w-full p-3 gap-4 animate-in fade-in zoom-in-95 duration-300">
+            <div className="relative h-20 w-20 shrink-0 bg-white rounded-lg border shadow-sm overflow-hidden">
+              {fileValue.toLowerCase().endsWith('.pdf') ? (
+                <div className="flex flex-col items-center justify-center h-full w-full bg-slate-50 text-slate-400">
+                  <FileText size={24} />
+                  <span className="text-[8px] uppercase font-bold mt-1">PDF</span>
+                </div>
+              ) : (
+                <img 
+                  src={previewUrl} 
+                  alt="Preview" 
+                  className="h-full w-full object-cover"
+                  onLoad={() => console.log("Preview loaded successfully")}
+                  onError={(e) => {
+                    console.error("Preview failed to load at:", previewUrl);
+                    e.target.src = "https://placehold.co/100x100?text=No+Preview";
+                  }}
+                />
+              )}
+            </div>
+            
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-bold text-slate-700 truncate block">
+                {fileValue.split(/[\\/]/).pop()}
+              </p>
+              <p className="text-[10px] text-slate-400">Ready for submission</p>
+            </div>
+
+            <button 
+              type="button" 
+              onClick={handleRemove}
+              className="p-2 bg-white text-slate-400 hover:text-rose-600 rounded-full border border-slate-100 shadow-sm transition-transform hover:scale-110"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        ) : (
+          <label className="flex flex-col items-center justify-center w-full py-6 cursor-pointer group">
+            <div className="p-3 bg-rose-50 text-rose-500 rounded-full mb-2 group-hover:bg-rose-100 transition-colors">
+              <Upload size={20} />
+            </div>
+            <span className="text-xs font-bold text-slate-600">Upload {label}</span>
+            <input type="file" className="hidden" onChange={handleFileChange} accept="image/*,.pdf" />
+          </label>
+        )}
+      </div>
+
+      {errorMessage && (
+        <p className="flex items-center gap-1 text-[11px] text-red-500 font-bold px-1">
+          <AlertCircle size={12} /> {errorMessage}
+        </p>
       )}
-      
-      {errorMessage && <p className="mt-1 text-xs text-red-500 font-medium">{errorMessage}</p>}
-      
     </div>
   );
 };
@@ -255,3 +313,244 @@ export const RHFButton = ({children,type,disabled,className,onClick })=>(
     {children}
   </button>
 )
+
+
+// RHFOtpInput.jsx
+
+export function RHFOtpInput({
+    length = 6,
+    value,
+    onChange,
+    onComplete,
+}) {
+    const inputsRef = useRef([]);
+
+    // Auto-verify when full OTP is entered
+    useEffect(() => {
+        if (value.length === length) {
+            onComplete?.(value);
+        }
+    }, [value, length, onComplete]);
+
+    const handleChange = (e, index) => {
+        // Allow only a single digit and strip non-digits
+        const digit = e.target.value.replace(/\D/g, "").slice(0, 1); 
+
+        if (!digit) return;
+
+        // Construct the new OTP string
+        const newValue =
+            value.slice(0, index) +
+            digit +
+            value.slice(index + 1);
+
+        onChange(newValue);
+
+        // Move focus to the next input
+        if (index < length - 1) {
+            inputsRef.current[index + 1].focus();
+        }
+    };
+
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Backspace") {
+            e.preventDefault();
+
+            if (value[index]) {
+                // If there is a value in the current box, clear it
+                const newValue =
+                    value.slice(0, index) +
+                    " " +
+                    value.slice(index + 1);
+                
+                // Use trimEnd to ensure trailing spaces are removed if the last digit is deleted
+                onChange(newValue.trimEnd()); 
+            } else if (index > 0) {
+                // If the current box is empty, move to the previous and optionally clear it (optional, but often preferred)
+                inputsRef.current[index - 1].focus();
+                
+                // Optionally clear the previous box when backspacing from an empty one
+                const prevIndex = index - 1;
+                const newValue = 
+                    value.slice(0, prevIndex) + 
+                    " " + 
+                    value.slice(prevIndex + 1);
+                onChange(newValue.trimEnd());
+            }
+        }
+    };
+
+    const handlePaste = (e) => {
+        e.preventDefault();
+        const pasted = e.clipboardData
+            .getData("text")
+            .replace(/\D/g, "")
+            .slice(0, length);
+
+        onChange(pasted);
+
+        // Move focus to the last pasted element
+        if (pasted.length > 0) {
+             const focusIndex = Math.min(pasted.length, length) - 1;
+             inputsRef.current[focusIndex]?.focus();
+        }
+    };
+
+
+    return (
+        <div>
+            <div className="flex gap-2">
+                {Array.from({ length }).map((_, index) => (
+                    <input
+                        key={index}
+                        ref={(el) => (inputsRef.current[index] = el)}
+                        value={value[index] || ""}
+                        onChange={(e) => handleChange(e, index)}
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                        onPaste={handlePaste}
+                        inputMode="numeric"
+                        maxLength={1}
+                        className="w-10 h-12 text-center border rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+
+
+// Import your components and hook
+// import { RHFOtpInput } from './RHFOtpInput'; 
+// import { useVerification } from './useVerification'; 
+
+
+
+export function RHFOtpInputWrapper({
+    length = 6,
+    fieldWatcher,
+    verificationWatcher,
+    fieldName,
+    otpSendAction,
+    otpVerifyaction,
+    setValue,
+    name
+}) {
+    const { 
+        canVerify, otpSent, loading, otp, setOtp, 
+        sendOtp, verifyOtp, error, timeLeft, canResend 
+    } = useVerification({
+        value: fieldWatcher,
+        onReset: () => setValue(fieldName, false),
+        otpLength: length
+    });
+
+    const wrappedVerify = verifyOtp(
+        otpVerifyaction,
+        () => setValue(fieldName, true, { shouldDirty: true })
+    );
+
+    // Production-ready error logic: React Crash se bachne ke liye string check
+    const getDisplayError = () => {
+        // priority 1: Custom Verification Error (Invalid OTP)
+        if (error) return error;
+        // priority 2: RHF Validation Error
+        
+    };
+
+    const displayError = getDisplayError();
+
+    return (
+        <div className='flex flex-col gap-1'>
+            <div className='flex items-center gap-3'>
+                
+                {/* 1. OTP Inputs */}
+                {canVerify && otpSent && !verificationWatcher && (
+                    <RHFOtpInput 
+                        value={otp}
+                        onChange={setOtp}
+                        onComplete={wrappedVerify}
+                        length={length}
+                    />
+                )}
+                
+                {/* 2. Action Button */}
+                {canVerify && !verificationWatcher && (
+                    <div className='flex items-center gap-2'>
+                        <button
+                            type="button"
+                            disabled={loading || (otpSent && otp.length !== length)}
+                            onClick={!otpSent ? () => sendOtp(otpSendAction) : wrappedVerify}
+                            className={`border-2 px-3 h-9 rounded-md text-sm transition-all font-bold flex items-center
+                                ${loading ? 'bg-gray-100 text-gray-400 border-gray-200' : 
+                                  otpSent ? 'text-amber-900 bg-amber-200 border-amber-300 hover:bg-amber-400' : 
+                                  'text-rose-700 bg-rose-200 border-rose-300 hover:bg-rose-400'}`}
+                        > 
+                            {loading && <Loader2 className='animate-spin mr-2' size={16} />}
+                            {!loading && (otpSent ? `Verify` : `Send OTP`)}
+                            {loading && (otpSent ? 'Verifying...' : 'Sending...')}
+                        </button>
+
+                        {/* 3. Resend/Timer Section */}
+                        {otpSent && (
+                            <div className="flex items-center">
+                                {!canResend ? (
+                                    <div className="flex items-center gap-2 text-gray-500 bg-gray-50 px-2 py-1.5 rounded border border-gray-200 text-[11px] font-medium">
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                                        </span>
+                                        {timeLeft}s
+                                    </div>
+                                ) : (
+                                    <button 
+                                        type="button" 
+                                        onClick={() => sendOtp(otpSendAction)} 
+                                        className="text-blue-600 text-xs font-bold hover:underline ml-1"
+                                    >
+                                        Resend?
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* 4. Success State */}
+                {verificationWatcher && (
+                    <div className="text-green-600 text-sm font-bold flex items-center bg-green-50 px-3 py-1.5 rounded-md border border-green-200">
+                        <CheckCircle2 className='mr-2' size={18}/> {name} Verified
+                    </div>
+                )}
+            </div>
+            
+            {/* 5. Error Display */}
+            {displayError && (
+                <p className="text-[12px] text-red-600 font-bold mt-1 flex items-center gap-1">
+                    <span>⚠️</span> {displayError}
+                </p>
+            )}
+        </div>
+    );
+}
+
+
+export const RHFTextareaWrapper = ({ name, label, register, errors, placeholder, ...rest }) => {
+  const errorMessage = errors[name]?.message;
+  return (
+    <div>
+      <label className="block text-sm font-medium text-slate-600 mb-1" htmlFor={name}>{label}</label>
+      <textarea
+        id={name}
+        {...register(name)}
+        rows={5}
+        placeholder={placeholder}
+        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 transition duration-150 resize-none ${
+          errorMessage ? 'border-red-500 focus:border-red-500' : 'border-slate-300'
+        }`}
+        {...rest}
+      />
+      {errorMessage && <p className="mt-1 text-xs text-red-500 font-medium">{errorMessage}</p>}
+    </div>
+  );
+};

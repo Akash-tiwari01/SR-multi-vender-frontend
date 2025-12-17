@@ -76,9 +76,52 @@ const post = async (endpoint, data) => {
   }
 };
 
+
+// ... API_BASE_URL and ApiError class ...
+
+const put = async (endpoint, data, token) => {
+  const url = `${API_BASE_URL}${endpoint}`;
+  
+  try {
+    // Correct way to get token in Server Actions / Server Components
+    
+
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        // Token pass ho raha hai server-to-server request mein
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+      body: JSON.stringify(data),
+    });
+
+    let responseData = null;
+    try {
+      responseData = await response.json();
+    } catch (e) {
+      if (response.status !== 204) {
+        console.error('Failed to parse JSON response:', e);
+      }
+    }
+
+    if (!response.ok) {
+      const errorMessage = responseData?.message || response.statusText;
+      throw new ApiError(errorMessage, response.status, responseData);
+    }
+
+    return responseData;
+
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new Error('Server update failed. Please check network.');
+  }
+};
+
 /**
  * API client module for external use.
  */
 export const apiClient = {
   post,
+  put
 };

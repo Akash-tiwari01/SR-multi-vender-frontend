@@ -1,5 +1,5 @@
 import UserRegistration from "@/components/auth/UserRegistration";
-import VendorRegistrationForm from "@/components/auth/VendorRegistrationForm";
+import VendorRegistrationForm from "@/app/vendor/register/VendorRegistrationForm";
 import Section from "@/components/container/genericContainer/Section";
 
 /**
