@@ -16,7 +16,8 @@ export default async function Home() {
   console.log("`````````````````````````````Homepage```````````````````````````");
 
   const data = await getInitialHomePageData();
-  const components = await data.homepageData.homepageNew || data.homepageData.homepages
+  const components = await data.homepageData.homepageNew || []
+  console.log(data);
   const renderComponent = (component) => {
     switch (component.display_type) {
       case 'COLLECTION PRODUCTS':

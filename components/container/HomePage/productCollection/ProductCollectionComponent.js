@@ -11,8 +11,10 @@ const ProductSlider = dynamic(()=>import('@/components/container/HomePage/produc
 export default function ProductCollectionComponent({
   title,
   description,
-  products,
+  collection_product_component,
 }) {
+const {product_collection} = collection_product_component;
+const {products}= product_collection
 if (products && products?.length>0)
   return (
     <Section className="container mx-auto px-4 py-8 bg-white">
