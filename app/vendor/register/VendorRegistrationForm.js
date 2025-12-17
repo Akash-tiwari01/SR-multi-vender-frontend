@@ -42,7 +42,7 @@ export default function VendorRegistrationForm() {
       name: '', phone: '', email: '', password: '',
       vendor: { vendor_type: '' }, 
       termsAccepted: false,phoneVerified: false,
-      emailVerified:false
+      emailVerified:false, confirmPassword:''
     }
   });
 
@@ -52,7 +52,6 @@ export default function VendorRegistrationForm() {
   // Submission Handler
   const onSubmit = async (data) => {
     setServerMessage(null);
-    
     try {
       const submissionData = {
         ...data,
@@ -77,7 +76,13 @@ export default function VendorRegistrationForm() {
           text: "Registration successful! Redirecting to vendor portal..." 
         });
 
-        router.push(`vendor/phasetwo`);
+        const vendorId = result._id; 
+        const vendorType = result.vendor?.vendor_type || "Individual"; // Fallback
+
+        setServerMessage({ type: 'success', text: "Success! Redirecting to setup..." });
+
+        // 3. PASS DATA TO PHASE 2 VIA URL
+        router.push(`phasetwo?id=${vendorId}&type=${vendorType}`);
         
       }else if(result?.name == "ApiError")
       {
@@ -158,7 +163,6 @@ export default function VendorRegistrationForm() {
             otpSendAction={sendEmailOtp}
             otpVerifyaction={verifyEmailOtp}
             setValue={setValue}
-            errorMessage={errors.emailVerified}
             name="Email"
             />
 
@@ -177,7 +181,6 @@ export default function VendorRegistrationForm() {
               fieldName="phoneVerified"
               otpSendAction={sendPhoneOtp}
               otpVerifyaction={verifyPhoneOtp}
-              errorMessage={errors.phoneVerified}
               setValue={setValue}
               />
 
@@ -191,7 +194,7 @@ export default function VendorRegistrationForm() {
               errors={errors}
             />
             <RHFInputWrapper
-              name="comfirmed password"
+              name="confirmPassword"
               label="Confirmed Password"
               type="password"
               register={register}

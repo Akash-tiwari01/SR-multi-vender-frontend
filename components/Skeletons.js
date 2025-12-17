@@ -77,3 +77,59 @@ export default function ProductSkeleton() {
     </div>
   );
 }
+
+const SkeletonPulse = ({ className }) => (
+  <div className={`bg-slate-200 animate-pulse rounded ${className}`} />
+);
+export  function RegistrationSkeleton() {
+  return (
+    <div className="bg-white rounded-md p-6 sm:p-10 border border-slate-200 max-w-4xl mx-auto my-10 space-y-8">
+      
+      {/* 1. Header Skeleton */}
+      <div className="flex flex-col items-center space-y-3">
+        <SkeletonPulse className="h-8 w-64" /> {/* Title */}
+        <SkeletonPulse className="h-4 w-48" /> {/* Subtitle */}
+      </div>
+
+      <div className="space-y-10">
+        {/* 2. Form Section: Store Details */}
+        <div className="space-y-4">
+          <SkeletonPulse className="h-6 w-32" /> {/* Section Title */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <SkeletonPulse className="h-4 w-20" /> {/* Label */}
+                <SkeletonPulse className="h-12 w-full" /> {/* Input */}
+              </div>
+              <div className="space-y-2">
+                <SkeletonPulse className="h-4 w-20" /> {/* Label */}
+                <SkeletonPulse className="h-24 w-full" /> {/* Textarea */}
+              </div>
+            </div>
+            <div className="space-y-4">
+               <SkeletonPulse className="h-40 w-full rounded-lg" /> {/* File Upload Box */}
+               <SkeletonPulse className="h-40 w-full rounded-lg" /> {/* File Upload Box */}
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Form Section: Address */}
+        <div className="space-y-4 pt-6 border-t border-slate-100">
+          <SkeletonPulse className="h-6 w-32" />
+          <div className="space-y-4">
+            <SkeletonPulse className="h-12 w-full" />
+            <div className="grid grid-cols-2 gap-4">
+              <SkeletonPulse className="h-12 w-full" />
+              <SkeletonPulse className="h-12 w-full" />
+            </div>
+          </div>
+        </div>
+
+        {/* 4. Action Button */}
+        <div className="pt-4">
+          <SkeletonPulse className="h-14 w-full rounded-lg" />
+        </div>
+      </div>
+    </div>
+  );
+}
