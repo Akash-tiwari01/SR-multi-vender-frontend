@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { useVerification } from '@/app/hooks/useVerification';
+import { CheckCircle2, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
 // The useFormContext import is kept here for reference if you expand to use Context later, 
 // but is not strictly necessary for these components as props are passed directly.
 
@@ -255,3 +257,225 @@ export const RHFButton = ({children,type,disabled,className,onClick })=>(
     {children}
   </button>
 )
+
+
+// RHFOtpInput.jsx
+
+export function RHFOtpInput({
+    length = 6,
+    value,
+    onChange,
+    onComplete,
+}) {
+    const inputsRef = useRef([]);
+
+    // Auto-verify when full OTP is entered
+    useEffect(() => {
+        if (value.length === length) {
+            onComplete?.(value);
+        }
+    }, [value, length, onComplete]);
+
+    const handleChange = (e, index) => {
+        // Allow only a single digit and strip non-digits
+        const digit = e.target.value.replace(/\D/g, "").slice(0, 1); 
+
+        if (!digit) return;
+
+        // Construct the new OTP string
+        const newValue =
+            value.slice(0, index) +
+            digit +
+            value.slice(index + 1);
+
+        onChange(newValue);
+
+        // Move focus to the next input
+        if (index < length - 1) {
+            inputsRef.current[index + 1].focus();
+        }
+    };
+
+    const handleKeyDown = (e, index) => {
+        if (e.key === "Backspace") {
+            e.preventDefault();
+
+            if (value[index]) {
+                // If there is a value in the current box, clear it
+                const newValue =
+                    value.slice(0, index) +
+                    " " +
+                    value.slice(index + 1);
+                
+                // Use trimEnd to ensure trailing spaces are removed if the last digit is deleted
+                onChange(newValue.trimEnd()); 
+            } else if (index > 0) {
+                // If the current box is empty, move to the previous and optionally clear it (optional, but often preferred)
+                inputsRef.current[index - 1].focus();
+                
+                // Optionally clear the previous box when backspacing from an empty one
+                const prevIndex = index - 1;
+                const newValue = 
+                    value.slice(0, prevIndex) + 
+                    " " + 
+                    value.slice(prevIndex + 1);
+                onChange(newValue.trimEnd());
+            }
+        }
+    };
+
+    const handlePaste = (e) => {
+        e.preventDefault();
+        const pasted = e.clipboardData
+            .getData("text")
+            .replace(/\D/g, "")
+            .slice(0, length);
+
+        onChange(pasted);
+
+        // Move focus to the last pasted element
+        if (pasted.length > 0) {
+             const focusIndex = Math.min(pasted.length, length) - 1;
+             inputsRef.current[focusIndex]?.focus();
+        }
+    };
+
+
+    return (
+        <div>
+            <div className="flex gap-2">
+                {Array.from({ length }).map((_, index) => (
+                    <input
+                        key={index}
+                        ref={(el) => (inputsRef.current[index] = el)}
+                        value={value[index] || ""}
+                        onChange={(e) => handleChange(e, index)}
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                        onPaste={handlePaste}
+                        inputMode="numeric"
+                        maxLength={1}
+                        className="w-10 h-12 text-center border rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+
+
+// Import your components and hook
+// import { RHFOtpInput } from './RHFOtpInput'; 
+// import { useVerification } from './useVerification'; 
+
+
+
+export function RHFOtpInputWrapper({
+    length = 6,
+    fieldWatcher,
+    verificationWatcher,
+    fieldName,
+    otpSendAction,
+    otpVerifyaction,
+    errorMessage, // RHF Error
+    setValue,
+    name
+}) {
+    const { 
+        canVerify, otpSent, loading, otp, setOtp, 
+        sendOtp, verifyOtp, error, timeLeft, canResend 
+    } = useVerification({
+        value: fieldWatcher,
+        onReset: () => setValue(fieldName, false),
+        otpLength: length
+    });
+
+    const wrappedVerify = verifyOtp(
+        otpVerifyaction,
+        () => setValue(fieldName, true, { shouldDirty: true })
+    );
+
+    // Production-ready error logic: React Crash se bachne ke liye string check
+    const getDisplayError = () => {
+        // priority 1: Custom Verification Error (Invalid OTP)
+        if (error) return error;
+        // priority 2: RHF Validation Error
+        
+        return null;
+    };
+
+    const displayError = getDisplayError();
+
+    return (
+        <div className='flex flex-col gap-1'>
+            <div className='flex items-center gap-3'>
+                
+                {/* 1. OTP Inputs */}
+                {canVerify && otpSent && !verificationWatcher && (
+                    <RHFOtpInput 
+                        value={otp}
+                        onChange={setOtp}
+                        onComplete={wrappedVerify}
+                        length={length}
+                    />
+                )}
+                
+                {/* 2. Action Button */}
+                {canVerify && !verificationWatcher && (
+                    <div className='flex items-center gap-2'>
+                        <button
+                            type="button"
+                            disabled={loading || (otpSent && otp.length !== length)}
+                            onClick={!otpSent ? () => sendOtp(otpSendAction) : wrappedVerify}
+                            className={`border-2 px-3 h-9 rounded-md text-sm transition-all font-bold flex items-center
+                                ${loading ? 'bg-gray-100 text-gray-400 border-gray-200' : 
+                                  otpSent ? 'text-amber-900 bg-amber-200 border-amber-300 hover:bg-amber-400' : 
+                                  'text-rose-700 bg-rose-200 border-rose-300 hover:bg-rose-400'}`}
+                        > 
+                            {loading && <Loader2 className='animate-spin mr-2' size={16} />}
+                            {!loading && (otpSent ? `Verify` : `Send OTP`)}
+                            {loading && (otpSent ? 'Verifying...' : 'Sending...')}
+                        </button>
+
+                        {/* 3. Resend/Timer Section */}
+                        {otpSent && (
+                            <div className="flex items-center">
+                                {!canResend ? (
+                                    <div className="flex items-center gap-2 text-gray-500 bg-gray-50 px-2 py-1.5 rounded border border-gray-200 text-[11px] font-medium">
+                                        <span className="relative flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                                        </span>
+                                        {timeLeft}s
+                                    </div>
+                                ) : (
+                                    <button 
+                                        type="button" 
+                                        onClick={() => sendOtp(otpSendAction)} 
+                                        className="text-blue-600 text-xs font-bold hover:underline ml-1"
+                                    >
+                                        Resend?
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* 4. Success State */}
+                {verificationWatcher && (
+                    <div className="text-green-600 text-sm font-bold flex items-center bg-green-50 px-3 py-1.5 rounded-md border border-green-200">
+                        <CheckCircle2 className='mr-2' size={18}/> {name} Verified
+                    </div>
+                )}
+            </div>
+            
+            {/* 5. Error Display */}
+            {displayError && (
+                <p className="text-[12px] text-red-600 font-bold mt-1 flex items-center gap-1">
+                    <span>⚠️</span> {displayError}
+                </p>
+            )}
+        </div>
+    );
+}

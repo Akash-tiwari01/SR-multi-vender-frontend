@@ -2,12 +2,17 @@
 
 import React, { useState } from 'react';
 // RHF and Zod imports
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod'; 
 import { z } from 'zod'; 
+import { vendorSchema } from '@/modules/vendor/model/vendorModel';
 // Action and Wrapper imports
 import { registerVendorAction } from '@/lib/action'; 
-import { RHFInputWrapper, RHFCheckboxWrapper, RHFOptionSelect } from '@/components/form/FormWrapper';
+import { RHFInputWrapper, RHFCheckboxWrapper, RHFOptionSelect, RHFButton, RHFOtpInput, RHFOtpInputWrapper } from '@/components/form/FormWrapper';
+//Router to redirect
+import { useVerification } from '@/app/hooks/useVerification';
+import { sendEmailOtp, verifyEmailOtp, sendPhoneOtp, verifyPhoneOtp } from '@/lib/action';
+import { useRouter } from 'next/navigation';
 
 // --- VENDOR TYPE OPTIONS ---
 const VENDOR_TYPE_OPTIONS = [
@@ -16,42 +21,18 @@ const VENDOR_TYPE_OPTIONS = [
   { value: 'Company', label: 'Company (Registered Business)' },
 ];
 
-// --- ZOD SCHEMA DEFINITION (Validation Logic) ---
-const vendorSchema = z.object({
-  name: z.string().min(3, "Full Name is required and must be at least 3 characters."),
-  
-  phone: z.string()
-    .min(10, "Phone number must be at least 10 digits.")
-    .max(15, "Phone number is too long."),
-    
-  email: z.string().email("Invalid email format. Please check your address."),
-  
-  password: z.string()
-    .min(8, "Password must be at least 8 characters.")
-    .regex(/[a-z]/, "Password must contain a lowercase letter.")
-    .regex(/[A-Z]/, "Password must contain an uppercase letter.")
-    .regex(/[0-9]/, "Password must contain a number."),
 
-  vendor: z.object({
-    vendor_type: z.enum(['Individual', 'Company'], {
-      required_error: "Vendor Type is required.",
-      invalid_type_error: "Invalid vendor type selected."
-    }),
-  }),
-
-  termsAccepted: z.boolean({
-    required_error: "You must accept the terms and conditions."
-  }).refine(val => val === true, { 
-    message: "You must accept the terms and conditions to register."
-  }),
-});
 
 
 export default function VendorRegistrationForm() {
   
+
+  const router = useRouter();
   // RHF Integration
   const { 
-    register, 
+    register,
+    control,
+    setValue, 
     handleSubmit, 
     formState: { errors, isSubmitting }, 
     reset, 
@@ -60,7 +41,8 @@ export default function VendorRegistrationForm() {
     defaultValues: {
       name: '', phone: '', email: '', password: '',
       vendor: { vendor_type: '' }, 
-      termsAccepted: false,
+      termsAccepted: false,phoneVerified: false,
+      emailVerified:false
     }
   });
 
@@ -81,44 +63,56 @@ export default function VendorRegistrationForm() {
       const result = await registerVendorAction(submissionData); 
       
       // --- SUCCESS HANDLING: Token and External Redirect ---
-      if (result && result.token) {
+      if (result && result.token && result?.name !== "ApiError") {
         // 1. Store token in local storage (for redundancy/backup if external site fails to parse URL)
         localStorage.setItem('token', result.token); 
         
         // 2. Construct the external URL with the token as a query parameter
         // This supports the external site's immediate need for the token.
-        const externalVendorPortalUrl = 'http://localhost:3005/dashboard';
-        
-        const redirectUrl = `${externalVendorPortalUrl}?auth_token=${result.token}`;
         
         // 3. Redirect to the external website
-        window.location.href = redirectUrl; 
         
         setServerMessage({ 
           type: 'success', 
           text: "Registration successful! Redirecting to vendor portal..." 
         });
+
+        router.push(`vendor/phasetwo`);
         
-      } else {
+      }else if(result?.name == "ApiError")
+      {
+        console.log(result);
         setServerMessage({ 
-          type: 'error', 
-          text: 'Registration successful, but no authorization token was received. Please try logging in.' 
+          type: 'warning', 
+          text: result?.data?.message
         });
         reset();
+      }
+       else {
+        setServerMessage({ 
+          type: 'success', 
+          text: 'Registration successful, Please try logging in.' 
+        });
       }
 
     } catch (error) {
       // Handles errors thrown by the Server Action
-      console.error("Client Registration Error:", error);
+      console.error(error);
       setServerMessage({ 
         type: 'error', 
-        text: error.message || 'A critical error occurred during registration.' 
+        text: `Network Error Please try after some time` 
       });
     } 
   };
 
+  const email = useWatch({ control, name: "email" });
+  const phone = useWatch({ control, name: "phone" });
+  const emailVerified = useWatch({ control, name: "emailVerified" });
+  const phoneVerified = useWatch({ control, name: "phoneVerified" });
+
+
   return (
-    <div className="bg-white shadow-xl rounded-2xl p-6 sm:p-10 border border-slate-200">
+    <div className="bg-white rounded-md p-6 sm:p-10 border border-slate-200">
       <h2 className="text-3xl font-bold text-slate-800 mb-6 border-b pb-4 text-center">
         Vendor Registration
       </h2>
@@ -157,7 +151,17 @@ export default function VendorRegistrationForm() {
             errors={errors}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <RHFOtpInputWrapper 
+            fieldWatcher={email}
+            verificationWatcher={emailVerified}
+            fieldName="emailVerified"
+            otpSendAction={sendEmailOtp}
+            otpVerifyaction={verifyEmailOtp}
+            setValue={setValue}
+            errorMessage={errors.emailVerified}
+            name="Email"
+            />
+
             <RHFInputWrapper
               name="phone"
               label="Phone Number"
@@ -165,14 +169,36 @@ export default function VendorRegistrationForm() {
               register={register}
               errors={errors}
             />
+
+            <RHFOtpInputWrapper
+              name="Phone"
+              fieldWatcher={phone}
+              verificationWatcher={phoneVerified}
+              fieldName="phoneVerified"
+              otpSendAction={sendPhoneOtp}
+              otpVerifyaction={verifyPhoneOtp}
+              errorMessage={errors.phoneVerified}
+              setValue={setValue}
+              />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
-            <RHFInputWrapper
+           <RHFInputWrapper
               name="password"
               label="Password"
               type="password"
               register={register}
               errors={errors}
             />
+            <RHFInputWrapper
+              name="comfirmed password"
+              label="Confirmed Password"
+              type="password"
+              register={register}
+              errors={errors}
+            />
+            
+
           </div>
         </div>
 
