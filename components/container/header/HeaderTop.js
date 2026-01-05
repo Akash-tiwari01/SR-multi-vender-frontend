@@ -7,14 +7,14 @@ import HeaderLoginComponent from './LoginComponent';
 
 const HeaderTop = () => {
   return (
-    <div className="bg-slate-950 text-white p-3 shadow-md rounded-b-md">
+    <div className="bg-brand-primary text-white p-3 shadow-md ">
       <div className="max-w-7xl mx-auto flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4">
 
         {/* Left: Logo */}
         <div className="order-1 flex items-center space-x-2">
           <Link href="/" className="flex items-center">
             <Image
-              src="/image/logo/logo.png"
+              src="/image/logo/logo3.png"
               alt="CraftCreation Logo"
               width={120}
               height={50}
@@ -32,7 +32,7 @@ const HeaderTop = () => {
               placeholder="Search for products, brands and more"
               className="w-full py-2 px-4 rounded-full text-gray-900 focus:outline-none"
             />
-            <button className="absolute right-0 top-0 mt-2.5 mr-3 text-rose-600">
+            <button className="absolute right-0 top-0 mt-2.5 mr-3 text-brand-primary">
               <Search />
             </button>
           </div>

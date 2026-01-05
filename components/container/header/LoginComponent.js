@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { Boxes, ChevronDown, HeartPlus,  LogOut,  ShoppingCartIcon, UserCircle, UserCircleIcon } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, logoutRequest } from '@/modules/user/state/userSlice';
+import CartIcon from './cart/CartIcon';
+
 
 function HeaderLoginComponent() {
   const [hover,setHover] = useState(false);
@@ -73,10 +75,8 @@ function HeaderLoginComponent() {
               </div>}
           </div>
 
-          <Link href="/cart" className="relative">
-            <ShoppingCartIcon className="hover:text-rose-100 text-white cursor-pointer" />
-            <span className="absolute -top-1 -right-2 bg-rose-500 text-white text-xs rounded-full px-1">0</span>
-          </Link>
+          {/* cart Icon */}
+          <CartIcon/>
 
           <Link href="/ViewCart" className="relative">
             <HeartPlus className="hover:text-rose-100 text-white cursor-pointer" />

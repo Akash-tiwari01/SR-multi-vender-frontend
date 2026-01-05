@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/container/header/Header";
 import Footer from "@/components/container/footer/footer";
 import { ReduxProvider } from "./providers";
+import CartDrawer from "@/components/container/header/cart/CartDrawer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +24,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-300`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-200 `}
       >
         <ReduxProvider>
         <div className="wrapper flex flex-col justify-center">
-          <Header/>
-        {children}
+        <Header/>
+          {children}
+          <CartDrawer/>
         <Footer/>
         </div>
         </ReduxProvider>

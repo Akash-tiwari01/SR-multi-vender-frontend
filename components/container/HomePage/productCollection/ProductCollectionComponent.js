@@ -1,11 +1,10 @@
-// ProductCollectionComponent.jsx (SERVER COMPONENT)
-
 import dynamic from "next/dynamic";
 import Section from "../../genericContainer/Section";
+import InfinityLoader from "@/components/InfinityLoader";
 
-// import ProductSlider from "./ProductSlider";
+
 const ProductSlider = dynamic(()=>import('@/components/container/HomePage/productCollection/ProductSlider'),{
-  loading: ()=><p>Loading Products...</p>
+  loading: ()=><InfinityLoader/>
 });
 
 export default function ProductCollectionComponent({
@@ -17,14 +16,13 @@ const {product_collection} = collection_product_component;
 const {products}= product_collection
 if (products && products?.length>0)
   return (
-    <Section className="container mx-auto px-4 py-8 bg-white">
+    <Section className=" mx-auto px-4 py-8 bg-white">
       <div className="max-w-8xl mx-auto">
-        {title && <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
+        {title && <h2 className="text-3xl font-bold mb-4 text-brand-primary text-center">
           {title}
         </h2>}
-
         <div
-          className="text-center text-base text-gray-600 mb-10"
+          className="text-center text-base text-brand-secondary mb-5"
           dangerouslySetInnerHTML={{ __html: description }}
         />
       </div>

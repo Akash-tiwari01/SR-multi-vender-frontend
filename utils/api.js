@@ -29,7 +29,7 @@ export class ApiError extends Error {
  * @returns {Promise<object>} The JSON response data from the server.
  * @throws {ApiError | Error} Throws custom error for bad response or generic error for fetch issues.
  */
-const post = async (endpoint, data) => {
+const post = async (endpoint, data,header={}) => {
   const url = `${API_BASE_URL}${endpoint}`;
 
   // Optimization: Use AbortController for future request cancellation/timeouts
@@ -40,6 +40,7 @@ const post = async (endpoint, data) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...header
       },
       body: JSON.stringify(data),
       signal: controller.signal,

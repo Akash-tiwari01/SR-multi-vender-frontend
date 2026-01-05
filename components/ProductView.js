@@ -3,7 +3,7 @@ import ProductImage from './ProductImage';
 import Image from 'next/image';
 
 export default function ProductView({product}) {
- 
+ console.log(product);
   const images = product.media || []
 
   return (
@@ -13,10 +13,10 @@ export default function ProductView({product}) {
         <ProductImage images={images}/>
         {/* RIGHT: Details (col-span 5) */}
         <div className="h-[80vh] lg:col-span-6 overflow-x-scroll scrollbar-hide">
-          <h1 className="text-3xl lg:text-4xl font-serif text-rose-900 mb-2">{product?.name || "Untiteled Product"}</h1>
+          <h1 className="text-3xl lg:text-4xl font-serif text-brand-primary mb-2">{ "Untiteled Product"}</h1>
           {product?.vendor?.name?<div className="flex items-center gap-3 mb-6">
             <span className="text-xs text-gray-600">Sold By:</span>
-            <button className="text-sm font-semibold text-rose-800">{product?.vendor?.name}</button>
+            <button className="text-sm font-semibold text-brand-primary">{product?.vendor?.name}</button>
           </div>:""}
           <div className='details mb-3'>
             <p className='

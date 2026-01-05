@@ -7,6 +7,8 @@ import { addToCartRequest } from "@/modules/products/state/productSlice";
 import { formatPrice } from "@/utils/helperFunction";
 import VariationSelector from "./VariationSelector";
 import ProductSpecs from "./ProductSpecs";
+import ButtonPrimary from "@/components/ButtonPrimary";
+import { ButtonSecondary } from "@/components/ButtonSecondary";
 
 
 export default function ProductInfo() {
@@ -14,44 +16,44 @@ export default function ProductInfo() {
     (state) => state.product
   );
   const dispatch = useDispatch();
-
+    console.log('selectedVariation: ',selectedVariation, "currentProduct:",currentProduct);
   if (!currentProduct) return null;
 
   const price = selectedVariation?.sale_price ?? currentProduct.sale_price;
   const sku = selectedVariation?.sku ?? currentProduct.sku;
 
   return (
-    <div className="h-[80vh] lg:col-span-6 overflow-x-scroll scrollbar-hide px-4">
+    <div className=" lg:col-span-6 px-4">
       
       {/* Title */}
-      <h1 className="text-3xl lg:text-4xl font-serif text-rose-900 mb-2">
+      <h1 className="text-2xl lg:text-2xl font-bold text-brand-primary mb-2">
         {currentProduct.name || "Untitled Product"}
       </h1>
 
       {/* Vendor */}
       {(currentProduct.vendor?.name) && (
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-2">
           <span className="text-xs text-gray-600">Sold By:</span>
-          <button className="text-sm font-semibold text-rose-800">
+          <button className="text-sm font-semibold text-brand-secondary">
             {currentProduct.vendor.name}
           </button>
         </div>
       )}
 
       {/* Short Description */}
-      <div className="details mb-3">
+      <div className="">
         <p
-          className="line-clamp-3 text-sm font-semibold text-gray-800 leading-relaxed mt-2 mb-1"
+          className=" text-sm font-semibold text-brand-primary leading-relaxed mt-0 mb-2"
           dangerouslySetInnerHTML={{ __html: currentProduct.description }}
         />
-        <button className="flex text-rose-800 group">
+        {/* <button className="flex text-rose-800 group">
           Read more
           <ChevronsRight className="h-6 stroke-1 group-hover:ml-2 transition-all" />
-        </button>
+        </button> */}
       </div>
 
       {/* Price */}
-      <div className="text-4xl font-bold text-rose-900 mb-6">
+      <div className="text-3xl font-bold text-brand-secondary mb-2">
         {formatPrice(price)}
       </div>
 
@@ -59,8 +61,8 @@ export default function ProductInfo() {
       <VariationSelector />
 
       {/* Actions */}
-      <div className="flex gap-4 mb-6 mt-4">
-        <button
+      <div className="flex gap-4 mb-6 ">
+        <ButtonPrimary
           onClick={() =>
             dispatch(
               addToCartRequest({
@@ -70,16 +72,25 @@ export default function ProductInfo() {
             )
           }
           disabled={status === "loading"}
-          className="flex-1 bg-rose-900 text-white py-3 rounded shadow disabled:opacity-70"
+          className=""
         >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="16" height="16" 
+            viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" strokeWidth="3.5" 
+            strokeLinecap="round" strokeLinejoin="round"
+          >
+            <path d="M5 12h14m-7-7v14"/>
+          </svg>
           {status === "loading" ? "Adding..." : "Add to Cart"}
-        </button>
+        </ButtonPrimary>
 
-        <button className="flex-1 border border-rose-900 text-rose-900 py-3 rounded">
+        <ButtonSecondary className="">
           Buy Now
-        </button>
+        </ButtonSecondary>
 
-        <button className="w-12 h-12 border rounded flex items-center justify-center">
+        <button className="w-1/6 h-12 border rounded flex items-center justify-center text-4xl">
           ♡
         </button>
       </div>

@@ -21,6 +21,8 @@ const productSlice = createSlice({
             acc[opt.label] = opt.value;
             return acc;
          }, {});
+      }else{
+        state.selectedVariation = null;
       }
     },
     updateOption: (state, action) => {

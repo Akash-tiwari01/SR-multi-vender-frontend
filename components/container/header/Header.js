@@ -11,9 +11,8 @@ const Header = () => {
     <header className="sticky top-0 z-50">
       <HeaderTop />
     </header>
-      <Section>
-      <HeaderNav />
-      </Section>
+    <HeaderNav />
+      
     </>
   );
 };

@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+  /* Design Tokens Definition */
+  --color-brand-primary: #051f20;
+  --color-brand-secondary: #daac47;
+  /* --color-brand-secondary: #d9aa42; */
+  --color-brand-accent: #9ed36a;
+  --color-brand-accentp: #e68aa0;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 9%;
 }
 
 /* @theme inline {
@@ -12,12 +21,12 @@
   --font-mono: var(--font-geist-mono);
 } */
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   /* background: var(--background); */
@@ -857,4 +866,13 @@ body {
 /* Hide scrollbar for Firefox */
 .scrollbar-hide {
   scrollbar-width: none;
+}
+
+.scrollbar-show::-webkit-scrollbar {
+  display: contents;
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-show {
+  scrollbar-width: 2px;
 }

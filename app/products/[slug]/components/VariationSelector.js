@@ -26,8 +26,8 @@ const VariationSelector = () => {
                   className={cn(
                     "px-4 py-2 text-sm rounded-md border transition-all",
                     isSelected
-                      ? "border-rose-600 bg-rose-50 text-rose-700 font-medium ring-1 ring-rose-600"
-                      : "border-slate-200 text-slate-600 hover:border-rose-300"
+                      ? "border-brand-primary bg-brand-secondary/20 text-brand-primary font-medium ring-1 ring-brand-primary"
+                      : "border-brand-primary/40 text-brand-primary/50 hover:border-brand-primary"
                   )}
                 >
                   {opt.value}

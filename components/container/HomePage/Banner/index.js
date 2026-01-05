@@ -1,6 +1,7 @@
 "use client"
 import dynamic from 'next/dynamic';
 import BannerSlide from './BannerSlide';
+import Section from '../../genericContainer/Section';
 
 const SwiperContainer = dynamic(() => import('./SwiperWrapper'), {
   ssr: false,
@@ -19,8 +20,8 @@ export default function Banner({ data }) {
   if (!data?.length) return null;
 
   return (
-    <section className="w-full h-[450px] overflow-hidden bg-amber-950 rounded-md my-2 shadow-md">
+    <Section className="w-full max:h-[450px] overflow-hidden bg-amber-950 ">
       <SwiperContainer slides={data} />
-    </section>
+    </Section>
   );
 }

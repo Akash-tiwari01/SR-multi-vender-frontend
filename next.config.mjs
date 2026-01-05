@@ -20,6 +20,10 @@ const nextConfig = {
             port: "5058",
             pathname: "/**",
           },
+          {
+            protocol: "https",
+            hostname: "**.devtunnels.ms",
+          },
         ]
       : [
           {
