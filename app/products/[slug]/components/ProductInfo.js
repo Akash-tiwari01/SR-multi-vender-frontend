@@ -9,6 +9,7 @@ import { addToCart } from '@/redux/cart/cartSlice';
 import { formatPrice } from '@/utils/helperFunction';
 import VariationSelector from './VariationSelector';
 import ProductSpecs from './ProductSpecs';
+import { ButtonSecondary } from '@/components/ButtonSecondary';
 
 export default function ProductInfo() {
   const router = useRouter();
@@ -150,7 +151,7 @@ export default function ProductInfo() {
           Add to Cart
         </button>
 
-        <button
+        <ButtonSecondary
           onClick={handleBuyNow}
           disabled={!inStock || stock <= 0}
           className='flex-1 border border-rose-900 text-rose-900 py-3 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-rose-50 transition-colors'
