@@ -1,80 +1,85 @@
 "use client";
-
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
+import { cn } from "@/utils/cn";
 
 export default function ImageMagnifier({
   src,
   zoomLevel = 2.5,
-  lensSize = 120,
+  isEnabled = true,
 }) {
   const containerRef = useRef(null);
-
-  const [lensPos, setLensPos] = useState(null);
-  const [imgSize, setImgSize] = useState({ width: 0, height: 0 });
-
-  // Runs once image is fully loaded
-  const handleImageReady = useCallback(() => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    setImgSize({ width: rect.width, height: rect.height });
-  }, []);
+  const [showMagnifier, setShowMagnifier] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e) => {
-    if (!containerRef.current || !imgSize.width) return;
+    if (!isEnabled || !containerRef.current) return;
 
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { left, top, width, height } = containerRef.current.getBoundingClientRect();
+    
+    // Calculate percentage position (0% to 100%)
+    const x = ((e.pageX - left - window.scrollX) / width) * 100;
+    const y = ((e.pageY - top - window.scrollY) / height) * 100;
 
-    // Outside image → hide lens
-    if (x < 0 || y < 0 || x > rect.width || y > rect.height) {
-      setLensPos(null);
-      return;
-    }
-
-    setLensPos({ x, y });
+    // Boundary check
+    setCursorPosition({ x: e.pageX - left - window.scrollX, y: e.pageY - top - window.scrollY });
+    setPosition({ x, y });
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-[80vh] hidden md:block overflow-hidden"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={() => setLensPos(null)}
-    >
-      {/* Base image */}
-      <Image
-        src={src}
-        alt="Product image"
-        fill
-        priority
-        sizes="(min-width: 768px) 50vw, 100vw"
-        className="object-contain rounded-md"
-        onLoadingComplete={handleImageReady}
-        unoptimized
-      />
-
-      {/* Magnifier lens */}
-      {lensPos && (
-        <div
-          className="absolute pointer-events-none rounded-full border border-gray-300 shadow-md"
-          style={{
-            width: lensSize,
-            height: lensSize,
-            left: lensPos.x - lensSize / 2,
-            top: lensPos.y - lensSize / 2,
-            zIndex: 30,
-            backgroundImage: `url(${src})`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: `${imgSize.width * zoomLevel}px ${
-              imgSize.height * zoomLevel
-            }px`,
-            backgroundPosition: `-${
-              lensPos.x * zoomLevel - lensSize / 2
-            }px -${lensPos.y * zoomLevel - lensSize / 2}px`,
-          }}
+    <div className="relative flex flex-col md:flex-row gap-4 w-full h-full">
+      {/* 1. Main Image Container */}
+      <div
+        ref={containerRef}
+        className={cn(
+          "relative w-full h-[400px] md:h-[590px] bg-gray-300 cursor-crosshair overflow-hidden",
+          !isEnabled && "cursor-default"
+        )}
+        onMouseEnter={() => isEnabled && setShowMagnifier(true)}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => setShowMagnifier(false)}
+      >
+        <Image
+          src={src}
+          alt="Product base"
+          fill
+          unoptimized
+          className="object-contain" // Keeps original aspect ratio
         />
+
+        {/* --- Highlight Box (The Lens) --- */}
+        {isEnabled && showMagnifier && (
+          <div
+            className="absolute border border-brand-secondary bg-brand-secondary/5 pointer-events-none"
+            style={{
+              width: `${100 / zoomLevel}%`,
+              height: `${100 / zoomLevel}%`,
+              left: `${position.x}%`,
+              top: `${position.y}%`,
+              transform: `translate(-50%, -50%)`,
+            }}
+          />
+        )}
+      </div>
+
+      {/* 2. Side Zoom Panel: Shows Original High-Res Image */}
+      {isEnabled && showMagnifier && (
+        <div 
+          className="hidden lg:block absolute left-[102%] top-0 w-full h-full z-50 overflow-hidden bg-white border shadow-2xl rounded-xl"
+        >
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundImage: `url('${src}')`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: `${zoomLevel * 100}%`, // Zoom relative to container
+              backgroundPosition: `${position.x}% ${position.y}%`, // Precise mapping
+              width: "100%",
+              height: "100%",
+            }}
+          />
+        </div>
       )}
     </div>
   );

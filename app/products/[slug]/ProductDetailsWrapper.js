@@ -15,6 +15,7 @@ export default function ProductDetailsWrapper({ product }) {
       dispatch(setProductData(product));
     }
   }, [product, dispatch]);
+  console.log(product);
 
   if (!product) return null;
 
@@ -24,11 +25,11 @@ export default function ProductDetailsWrapper({ product }) {
   const displayImages = product.media || [];
 
   return (
-    <Section className=" ">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+    <Section className="">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-2  lg:gap-12">
         {/* Left: Gallery */}
-        <div className="lg:col-span-6">
-           <ProductImage images={displayImages} />
+        <div className="lg:col-span-6 ">
+           <ProductImage  />
         </div>
 
         {/* Right: Info & Cart */}
@@ -36,7 +37,6 @@ export default function ProductDetailsWrapper({ product }) {
            <ProductInfo />
         </div>
       </div>
-
       {/* Bottom: Specifications */}
     </Section>
   );

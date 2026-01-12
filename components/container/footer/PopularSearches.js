@@ -17,7 +17,7 @@ export default function PopularSearches() {
       "Table Decor",
       "Love Birds Showpieces",
       "Wall Hangings",
-      "Radha Krishna Paintings",
+      "Radha Krishna Paintings",  
       "Krishna Paintings",
       "Cotton Bedsheets",
       "Wall Decoration Items",
@@ -35,20 +35,20 @@ export default function PopularSearches() {
   
     return (
       // Outer div for the component's container and separating line
-      <div className="bg-slate-950 border-t border-slate-200">
+      <div className="bg-brand-primary border-t border-slate-200">
         {/* Container for the content, centered and padded */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Header - Changed to rose color, bolder font, and slightly larger size */}
-          <h2 className="text-xl font-semibold text-rose-600 mb-3">
+          <h2 className="text-xl font-semibold text-brand-secondary mb-3">
             Popular Searches
           </h2>
-          <div className="flex flex-wrap items-center text-slate-700 text-sm leading-6">
+          <div className="flex flex-wrap items-center  text-sm leading-6">
             {items.map((item, index) => (
               <span key={index} className="flex items-center py-1">
                 <a
                   href="#"
                   // Link color is slate-700, hover changes to rose-400
-                  className="text-slate-700 hover:text-rose-400 transition duration-300 whitespace-nowrap"
+                  className="text-white hover:text-brand-secondary transition duration-300 whitespace-nowrap"
                 >
                   {item}
                 </a>

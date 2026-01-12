@@ -13,7 +13,7 @@ export default function SwiperWrapper({ slides }) {
       slidesPerView={1}
       autoplay={{ delay: 4000, disableOnInteraction: false }}
       pagination={{ clickable: true }}
-      className="w-full h-full bg-black"
+      className="w-full h-full"
     >
       {slides.map((slide, index) => (
         <SwiperSlide key={slide._id}>

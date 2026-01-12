@@ -43,7 +43,7 @@ export default async function Home() {
     <InfinityLoader className=""/>
   </Section>
   return (
-    <div className='px-2 '> 
+    <div className=''> 
       {
         components?.map((component)=>(
           <section key={component._id}

@@ -6,7 +6,7 @@ import Section from "@/components/container/genericContainer/Section";
 
 export default function RelatedProducts({ products }) {
   return (
-    <Section className="mt-2">
+    <Section>
       <h2 className="text-lg font-semibold mb-4">Related Products</h2>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

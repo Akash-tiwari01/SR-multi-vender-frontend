@@ -16,7 +16,7 @@ export default function ProductInfo() {
     (state) => state.product
   );
   const dispatch = useDispatch();
-
+    console.log('selectedVariation: ',selectedVariation, "currentProduct:",currentProduct);
   if (!currentProduct) return null;
 
   const price = selectedVariation?.sale_price ?? currentProduct.sale_price;
@@ -156,7 +156,7 @@ export default function ProductInfo() {
           className='flex-1 border border-rose-900 text-rose-900 py-3 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-rose-50 transition-colors'
         >
           Buy Now
-        </button>
+        </ButtonSecondary>
 
         <button className='w-12 h-12 border rounded flex items-center justify-center hover:bg-gray-50 transition-colors'>
           ♡

@@ -59,6 +59,10 @@ function ProductCard({ product }) {
     toast.success(`${product.name} added to cart!`);
   };
 
+const ProductCard = ({ product }) => {
+  const item = product.is_variable_product?product.variations[0]:product;
+  console.log(item);
+  const discount = Math.round(((item?.regular_price - item?.sale_price) / item?.regular_price) * 100);
   return (
     <div className='group relative bg-white rounded-xl hover:shadow-xl transition-all duration-300 ease-in-out overflow-hidden flex flex-col h-full w-full'>
       {/* 1. Image Section */}
@@ -73,9 +77,7 @@ function ProductCard({ product }) {
             unoptimized
             className='object-contain w-full h-full transition-opacity duration-500 ease-in-out opacity-100 group-hover:opacity-0'
           />
-
-          {/* Hover Image */}
-          {product?.media?.[1] && (
+          {item?.media?.[1] && (
             <Image
               src={getImageUrl(product?.media?.[1])}
               alt={product?.name || 'Product Image Hover'}
@@ -146,6 +148,6 @@ function ProductCard({ product }) {
       </div>
     </div>
   );
-}
+};
 
 export default ProductCard;
