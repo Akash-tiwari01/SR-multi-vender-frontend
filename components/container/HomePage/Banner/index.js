@@ -20,8 +20,8 @@ export default function Banner({ data }) {
   if (!data?.length) return null;
 
   return (
-    <Section className="w-full max:h-[450px] overflow-hidden bg-amber-950 ">
+    <div className="w-full h-[450px] overflow-hidden">
       <SwiperContainer slides={data} />
-    </Section>
+    </div>
   );
 }

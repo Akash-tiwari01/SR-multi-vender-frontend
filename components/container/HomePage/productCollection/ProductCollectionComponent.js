@@ -12,8 +12,8 @@ export default function ProductCollectionComponent({
   description,
   collection_product_component,
 }) {
-const {product_collection} = collection_product_component;
-const {products}= product_collection
+const { products = [] } = collection_product_component?.product_collection ?? {};
+
 if (products && products?.length>0)
   return (
     <Section className=" mx-auto px-4 py-8 bg-white">
