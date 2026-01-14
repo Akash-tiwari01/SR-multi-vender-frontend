@@ -1,10 +1,7 @@
 import React from 'react';
 import ProductCard from "@/components/ProductCard";
 
-// Note: Removed "use client" - this is now a Server Component
 export default function ProductGrid({ products }) {
-  
-  // Guard Clause: Handle empty states
   if (!products || products.length === 0) {
     return (
       <div className="w-full text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">

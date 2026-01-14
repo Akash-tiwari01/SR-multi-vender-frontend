@@ -1,8 +1,6 @@
 import React from 'react';
 import CollectionCard from './CollectionCard';
-// Import the updated dedicated sizing utility
 import { getBentoGridClassesByIndex } from '@/utils/bentoLayoutMapper'; 
-// Import the updated configuration utility
 import { getGridConfigurationByLength } from '@/utils/gridConfiguration'; 
 
 /**
@@ -24,7 +22,6 @@ export default function DynamicGrid({ product_collections }) {
             <div className={gridContainerClasses}>
                 {product_collections.map((collection, index) => {
                     const gridClasses = getBentoGridClassesByIndex(index, length); 
-                    
                     return (
                         <CollectionCard 
                             key={collection.collection_id} 

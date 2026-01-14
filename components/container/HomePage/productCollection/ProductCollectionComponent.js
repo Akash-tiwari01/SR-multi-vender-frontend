@@ -13,7 +13,7 @@ export default function ProductCollectionComponent({
   collection_product_component,
 }) {
 const { products = [] } = collection_product_component?.product_collection ?? {};
-
+console.log(products);
 if (products && products?.length>0)
   return (
     <Section className=" mx-auto px-4 py-8 bg-white">
@@ -21,12 +21,12 @@ if (products && products?.length>0)
         {title && <h2 className="text-3xl font-bold mb-4 text-brand-primary text-center">
           {title}
         </h2>}
-        <div
+        {description && <div
           className="text-center text-base text-brand-secondary mb-5"
           dangerouslySetInnerHTML={{ __html: description }}
-        />
+        />}
       </div>
-
+          
       <ProductSlider products={products} />
     </Section>
   );

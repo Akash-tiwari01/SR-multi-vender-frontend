@@ -55,7 +55,7 @@ export default function OrderSummary({
                 return (
                   <div key={itemKey} className='flex gap-3'>
                     {item.image && (
-                      <div className='w-16 h-16 flex-shrink-0 rounded bg-gray-100 overflow-hidden relative'>
+                      <div className='w-16 h-16 shrink-0 rounded bg-gray-100 overflow-hidden relative'>
                         <Image
                           src={item.image}
                           alt={item.name}

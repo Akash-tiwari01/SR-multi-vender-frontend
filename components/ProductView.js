@@ -30,13 +30,10 @@ export default function ProductView({product}) {
               mb-1' 
               dangerouslySetInnerHTML={{ __html: product?.description }} 
               />
-              <button className='flex text-rose-800 group'>Read more<ChevronsRight className='h-6 stroke-1 group-hover:ml-2 transition-all'/></button>
+              <button className='flex text-rose-800 text-sm group'>Read more<ChevronsRight className='h-6 stroke-1 group-hover:ml-2 transition-all'/></button>
               </div>
-
           <div className="text-4xl font-bold text-rose-900 mb-6">₹{product?.sale_price}</div>
-
           <div>
-            
           </div>
           <div className="flex gap-4 mb-6">
             <button className="flex-1 bg-rose-900 text-white py-3 rounded shadow">Add to Cart</button>

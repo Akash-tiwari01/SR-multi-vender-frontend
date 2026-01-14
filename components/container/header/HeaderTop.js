@@ -1,9 +1,10 @@
 // components/HeaderTop.js
-
+"use client"
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search } from 'lucide-react';
-import HeaderLoginComponent from './LoginComponent';
+import dynamic from 'next/dynamic';
+const  HeaderLoginComponent = dynamic(()=> import('./LoginComponent'),{ssr:false});
 
 const HeaderTop = () => {
   return (

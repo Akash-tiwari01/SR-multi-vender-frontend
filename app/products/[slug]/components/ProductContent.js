@@ -13,7 +13,7 @@ export default async function ProductContent({ params }) {
     const { product, relatedProducts = [] } = data;
   
     return (
-      <main className="min-h-screen text-slate-900">
+      <main className="min-h-screen">
         {/* Product Details Section */}
         <ProductDetailsWrapper product={product} /> 
         

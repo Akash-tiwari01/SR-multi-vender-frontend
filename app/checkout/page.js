@@ -19,6 +19,7 @@ import PaymentMethod from '@/components/checkout/PaymentMethod';
 import OrderSummary from '@/components/checkout/OrderSummary';
 import { CheckCircle2, ArrowLeft, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import InfinityLoader from '@/components/InfinityLoader';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -37,10 +38,11 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
+  console.log(cartItems);
   // Sync cart and validate on mount
   useEffect(() => {
     dispatch(syncCartFromStorage());
-
+    
     if (cartItems.length > 0) {
       dispatch(validateCartRequest());
     }
@@ -244,7 +246,7 @@ export default function CheckoutPage() {
     return (
       <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
         <div className='text-center'>
-          <Loader2 className='w-12 h-12 animate-spin text-blue-600 mx-auto mb-4' />
+          <InfinityLoader/>
           <p className='text-gray-600'>Validating your cart...</p>
         </div>
       </div>

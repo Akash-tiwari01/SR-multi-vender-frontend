@@ -30,7 +30,7 @@ const initialState = {
   validatedCart: null,
   isCodAvailable: false,
   validationErrors: [],
-  status: 'idle', // 'idle' | 'validating' | 'validated' | 'error'
+  status: 'idle', // 'idle' | 'validating' | 'validated' | 'error',
 };
 
 const cartSlice = createSlice({
