@@ -1,37 +1,52 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import { debounce } from '@/utils/debounce';
-import { Search, RotateCcw, DollarSign } from 'lucide-react'; // Optional: install lucide-react
+import { Search, RotateCcw, SlidersHorizontal, ChevronDown } from 'lucide-react';
+
+// --- Constants ---
+const MIN_LIMIT = 500;
+const MAX_LIMIT = 5000000;
+const STEP = 500;
+
+/**
+ * @principle Single Responsibility (SRP)
+ * Separate formatting logic from the UI component.
+ */
+const formatCurrency = (val) => {
+  if (val >= 100000) return `${(val / 100000).toFixed(1)}L`;
+  if (val >= 1000) return `${(val / 1000).toFixed(1)}K`;
+  return val;
+};
 
 export default function FilterSidebar({ currentFilters }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // 1. Local states to prevent "stuttering" while typing
+  // 1. Local UI States
   const [localSearch, setLocalSearch] = useState(currentFilters['search[name]'] || '');
-  const [localPrice, setLocalPrice] = useState({
-    min: currentFilters.min_price || '',
-    max: currentFilters.max_price || ''
+  const [priceRange, setPriceRange] = useState({
+    min: Number(currentFilters.min_price) || MIN_LIMIT,
+    max: Number(currentFilters.max_price) || MAX_LIMIT
   });
 
-  // Sync local state if filters change (e.g., on Reset)
+  // Sync state with URL (Handles external resets/back button)
   useEffect(() => {
     setLocalSearch(currentFilters['search[name]'] || '');
-    setLocalPrice({
-      min: currentFilters.min_price || '',
-      max: currentFilters.max_price || ''
+    setPriceRange({
+      min: Number(currentFilters.min_price) || MIN_LIMIT,
+      max: Number(currentFilters.max_price) || MAX_LIMIT
     });
   }, [currentFilters]);
 
-  // 2. Optimized URL Creator
+  // 2. URL Strategy (Dependency Inversion style)
   const updateUrl = useCallback((updates) => {
     const params = new URLSearchParams(searchParams.toString());
     
     Object.entries(updates).forEach(([name, value]) => {
-      if (value) {
+      if (value && value !== MIN_LIMIT.toString() && value !== MAX_LIMIT.toString()) {
         params.set(name, value);
       } else {
         params.delete(name);
@@ -41,88 +56,138 @@ export default function FilterSidebar({ currentFilters }) {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }, [searchParams, pathname, router]);
 
-  // 3. Debounced Handlers
-  const debouncedUpdate = useCallback(
-    debounce((updates) => updateUrl(updates), 500),
-    [updateUrl]
-  );
+  const debouncedUpdate = useMemo(() => debounce(updateUrl, 400), [updateUrl]);
 
+  // 3. Handlers
   const handleSearchChange = (val) => {
     setLocalSearch(val);
     debouncedUpdate({ 'search[name]': val });
   };
 
-  const handlePriceChange = (type, val) => {
-    setLocalPrice(prev => ({ ...prev, [type]: val }));
-    debouncedUpdate({ [`${type}_price`]: val });
+  const handleSliderChange = (e, type) => {
+    const value = Number(e.target.value);
+    const newRange = { ...priceRange, [type]: value };
+
+    if (type === 'min' && value >= priceRange.max - STEP) return;
+    if (type === 'max' && value <= priceRange.min + STEP) return;
+
+    setPriceRange(newRange);
+    debouncedUpdate({ min_price: newRange.min, max_price: newRange.max });
   };
 
   return (
-    <aside className="w-full max-w-xs space-y-8 p-6 bg-white rounded-md h-full">
-      <div className="flex items-center justify-between">
-        <h2 className="font-bold text-xl text-slate-800">Filters</h2>
+    <aside className="w-full max-w-[300px] bg-white h-screen sticky top-0 border-r border-slate-100 flex flex-col">
+      {/* Header */}
+      <div className="p-5 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal size={18} className="text-brand-primary" />
+          <h2 className="font-bold text-slate-800 uppercase tracking-tight text-sm">Filters</h2>
+        </div>
         <button 
           onClick={() => router.push(pathname)}
-          className="text-xs flex items-center gap-1 text-blue-600 hover:underline font-medium"
+          className="text-[11px] px-2 py-1 font-bold text-brand-secondary hover:bg-brand-secondary/10 rounded-md transition-all flex items-center gap-1"
         >
-          <RotateCcw size={14} /> Reset
+          <RotateCcw size={12} /> RESET
         </button>
       </div>
 
-      {/* Search Product Section */}
-      <div className="space-y-3">
-        <label className="text-sm font-semibold text-slate-700">Search Product</label>
-        <div className="relative">
-          <Search className="absolute left-3 top-2.5 text-slate-400" size={18} />
-          <input
-            type="text"
-            placeholder="Search by name..."
-            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
-            onChange={(e) => handleSearchChange(e.target.value)}
-            value={localSearch}
-          />
-        </div>
-      </div>
-
-      {/* Price Range Section */}
-      <div className="space-y-3">
-        <label className="text-sm font-semibold text-slate-700 ">Price Range</label>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="relative">
-            <span className="absolute left-3 top-2 text-slate-400 text-sm">$</span>
+      <div className="p-6 space-y-10 overflow-y-auto">
+        {/* Search Section */}
+        <section className="space-y-3">
+          <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Product Search</label>
+          <div className="relative group">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors" size={16} />
             <input
-              type="number"
-              placeholder="Min"
-              className="w-full pl-6 pr-2 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm"
-              onChange={(e) => handlePriceChange('min', e.target.value)}
-              value={localPrice.min}
+              type="text"
+              placeholder="Search items..."
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-brand-primary/20 focus:bg-white outline-none transition-all text-sm"
+              onChange={(e) => handleSearchChange(e.target.value)}
+              value={localSearch}
             />
           </div>
-          <div className="relative">
-            <span className="absolute left-3 top-2 text-slate-400 text-sm">$</span>
+        </section>
+
+        {/* Price Slider Section */}
+        <section className="space-y-6">
+          <div className="flex justify-between items-center">
+            <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Price Range</label>
+            <span className="text-[12px] font-bold text-brand-primary py-1 px-2 bg-brand-primary/5 rounded">
+              ₹{formatCurrency(priceRange.min)} — ₹{formatCurrency(priceRange.max)}
+            </span>
+          </div>
+
+          <div className="relative h-6 flex items-center px-2">
+            <div className="absolute left-2 right-2 h-1.5 bg-slate-200 rounded-full" />
+            <div 
+              className="absolute h-1.5 bg-brand-primary rounded-full shadow-[0_0_8px_rgba(var(--brand-primary-rgb),0.4)]" 
+              style={{ 
+                left: `${((priceRange.min - MIN_LIMIT) / (MAX_LIMIT - MIN_LIMIT)) * 100}%`, 
+                right: `${100 - ((priceRange.max - MIN_LIMIT) / (MAX_LIMIT - MIN_LIMIT)) * 100}%` 
+              }}
+            />
+
             <input
-              type="number"
-              placeholder="Max"
-              className="w-full pl-6 pr-2 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm"
-              onChange={(e) => handlePriceChange('max', e.target.value)}
-              value={localPrice.max}
+              type="range"
+              min={MIN_LIMIT}
+              max={MAX_LIMIT}
+              step={STEP}
+              value={priceRange.min}
+              onChange={(e) => handleSliderChange(e, 'min')}
+              className="absolute w-full appearance-none bg-transparent pointer-events-none cursor-pointer z-20 slider-thumb"
+            />
+            <input
+              type="range"
+              min={MIN_LIMIT}
+              max={MAX_LIMIT}
+              step={STEP}
+              value={priceRange.max}
+              onChange={(e) => handleSliderChange(e, 'max')}
+              className="absolute w-full appearance-none bg-transparent pointer-events-none cursor-pointer z-30 slider-thumb"
             />
           </div>
-        </div>
+          
+          <div className="flex justify-between text-[10px] font-bold text-slate-400">
+            <span className="bg-slate-50 px-2 py-1 rounded">
+            <input
+              type="Number"
+              min={MIN_LIMIT}
+              max={MAX_LIMIT}
+              value={priceRange.min}
+              onChange={(e) => handleSliderChange(e, 'min')}
+              className="bg-slate-50 px-2 py-1 rounded"
+            /></span>
+            <span className="border-brand-primary border-1 px-2 py-1 rounded">₹
+            <input
+              type="Number"
+              min={MIN_LIMIT}
+              max={MAX_LIMIT}
+              value={priceRange.max}
+              onChange={(e) => handleSliderChange(e, 'max')}
+              className="text-[12px] outline-0"
+            /></span>
+          </div>
+        </section>
       </div>
 
-      {/* Example: Category Section (Highly recommended for sidebars) */}
-      <div className="pt-4 border-t border-slate-100">
-        <h3 className="text-sm font-semibold text-slate-700 mb-3">Availability</h3>
-        <label className="flex items-center gap-2 cursor-pointer group">
-          <input 
-            type="checkbox" 
-            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-            onChange={(e) => updateUrl({ in_stock: e.target.checked ? 'true' : '' })}
-          />
-          <span className="text-sm text-slate-600 group-hover:text-slate-900">In Stock Only</span>
-        </label>
-      </div>
+      <style jsx>{`
+        .slider-thumb::-webkit-slider-thumb {
+          appearance: none;
+          pointer-events: auto;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #daac47;
+          border: 3px solid var(--brand-primary);
+          cursor: grab;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slider-thumb::-webkit-slider-thumb:active {
+          cursor: grabbing;
+          transform: scale(1.15);
+          box-shadow: 0 0 0 8px var(--brand-primary-opacity);
+        }
+      `}</style>
     </aside>
   );
 }

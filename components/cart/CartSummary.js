@@ -2,6 +2,7 @@
 
 import { ShoppingBag, Tag, Truck, Receipt } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import ButtonPrimary from '../ButtonPrimary';
 
 export default function CartSummary({
   itemCount,
@@ -96,18 +97,17 @@ export default function CartSummary({
       )}
 
       {/* Checkout Button */}
-      <button
+      <ButtonPrimary
         onClick={handleCheckout}
         disabled={isValidating || itemCount === 0}
-        className='w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md'
       >
         {isValidating ? 'Validating...' : 'Proceed to Checkout'}
-      </button>
+      </ButtonPrimary>
 
       {/* Security Badge */}
       <div className='mt-4 text-center'>
         <p className='text-xs text-gray-500'>
-          🔒 Secure checkout • Safe payment options
+           Secure checkout • Safe payment options
         </p>
       </div>
     </div>

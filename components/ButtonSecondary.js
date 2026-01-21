@@ -7,13 +7,12 @@ export function ButtonSecondary({children, onClick, disabled, className}) {
           /* Gradient: Base (brand-secondary) -> Darker Gold -> Highlight */
           bg-linear-to-tr from-brand-primary via-brand-primary/90 to-brand-primary 
           hover:bg-black
-          
           bg-size[200%_auto] 
           hover:text-brand-secondary
           text-brand-secondary 
           py-2.5 
           md:text-base
-          text-xs
+          text-[8px]
           font-bold 
           tracking-widest 
           rounded-md 

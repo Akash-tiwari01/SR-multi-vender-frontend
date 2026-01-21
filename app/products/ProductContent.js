@@ -5,7 +5,7 @@ import InfiniteProductList from '@/modules/collections/compoenets/InfiniteProduc
 import Link from 'next/link';
 import Section from '@/components/container/genericContainer/Section'; // Assuming this is a basic wrapper
 
-export default async function CollectionContent({ promiseParams, promiseFilters }) {
+export default async function ProductContent({ promiseParams, promiseFilters }) {
   // 1. Await dynamic data INSIDE the suspense boundary
   const { slug } = await promiseParams;
   const filters = await promiseFilters;

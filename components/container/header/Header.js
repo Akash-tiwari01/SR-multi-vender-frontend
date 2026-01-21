@@ -8,11 +8,10 @@ const Header = () => {
   console.log("Header Mount");
   return (
    <>
-    <header className="sticky top-0 z-50">
+    <header className="flex flex-col justify-center sticky top-0 z-50">
       <HeaderTop />
     </header>
-    <HeaderNav />
-      
+      <HeaderNav />
     </>
   );
 };

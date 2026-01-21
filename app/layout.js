@@ -31,11 +31,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-200 `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-200 flex flex-col items-center`}
       >
         <ReduxProvider>
           <Toaster position='top-right' />
-          <div className='wrapper flex flex-col justify-center'>
+          <div className='wrapper mx-auto w-full'>
             <Header />
             {children}
             <Footer />

@@ -8,7 +8,7 @@ const  HeaderLoginComponent = dynamic(()=> import('./LoginComponent'),{ssr:false
 
 const HeaderTop = () => {
   return (
-    <div className="bg-brand-primary text-white p-3 shadow-md ">
+    <div className=" bg-brand-primary text-white p-3 shadow-md w-full">
       <div className="max-w-7xl mx-auto flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4">
 
         {/* Left: Logo */}

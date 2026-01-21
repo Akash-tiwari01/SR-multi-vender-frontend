@@ -1,11 +1,11 @@
 // app/collections/[slug]/CollectionContent.js
-import { getProductsCached } from '@/modules/collections/services/productService';
-import FilterSidebar from '@/modules/collections/compoenets/FilterSlidebar';
-import InfiniteProductList from '@/modules/collections/compoenets/InfiniteProductList';
+import { getProductsCached } from '@/modules/categorys/services/productService';
+import FilterSidebar from '@/modules/categorys/compoenets/FilterSlidebar';
+import InfiniteProductList from '@/modules/categorys/compoenets/InfiniteProductList';
 import Link from 'next/link';
-import Section from '@/components/container/genericContainer/Section'; // Assuming this is a basic wrapper
+import Section from '@/components/container/genericContainer/Section'; 
 
-export default async function CollectionContent({ promiseParams, promiseFilters }) {
+export default async function CategoryContent({ promiseParams, promiseFilters }) {
   // 1. Await dynamic data INSIDE the suspense boundary
   const { slug } = await promiseParams;
   const filters = await promiseFilters;
@@ -14,11 +14,12 @@ export default async function CollectionContent({ promiseParams, promiseFilters 
   const initialData = await getProductsCached(slug, filters, 1);
   // console.log(initialData); // Keep the log for debugging if needed
 
-  const collectionName = initialData?.product_collection?.name || 'Collection';
+  const collectionName = initialData?.product_category?.name || 'Collection';
 
   return (
-    <div className='px-2  '>
+    <div className='  px-2  '>
       
+  
       <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 md:gap-2 ">
         
         {/* === Sidebar: Filters (1/4 or 1/5 width) === */}

@@ -41,7 +41,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }) {
   return (
     <div className='flex gap-4 py-4 border-b border-gray-200 last:border-b-0'>
       {/* Product Image */}
-      <div className='relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100'>
+      <div className='relative w-24 h-24 shrink-0 rounded-lg overflow-hidden bg-gray-100'>
         {image ? (
           <Image src={image} alt={name} fill className='object-cover' />
         ) : (
@@ -93,7 +93,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }) {
             >
               <Minus className='w-4 h-4' />
             </button>
-            <span className='px-4 py-2 min-w-[3rem] text-center font-medium'>
+            <span className='px-4 py-2 min-w-12 text-center font-medium'>
               {quantity}
             </span>
             <button

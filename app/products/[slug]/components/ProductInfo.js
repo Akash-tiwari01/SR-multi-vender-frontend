@@ -2,14 +2,16 @@
 
 import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
-import { ShoppingCart, ChevronsRight } from "lucide-react";
-import { addToCartRequest } from "@/modules/products/state/productSlice";
+import { addToCart } from "@/redux/cart/cartSlice";
+import { toast } from "react-hot-toast";
 import { formatPrice } from "@/utils/helperFunction";
 import VariationSelector from "./VariationSelector";
 import ProductSpecs from "./ProductSpecs";
 import ButtonPrimary from "@/components/ButtonPrimary";
 import { ButtonSecondary } from "@/components/ButtonSecondary";
-
+import ReviewStars from "./ReviewStars";
+import calculateDiscountPercentage from "@/utils/calculateDiscountPercentage";
+import { useState } from "react";
 
 export default function ProductInfo() {
   const { currentProduct, selectedVariation, status } = useSelector(
@@ -19,9 +21,42 @@ export default function ProductInfo() {
     console.log('selectedVariation: ',selectedVariation, "currentProduct:",currentProduct);
   if (!currentProduct) return null;
 
-  const price = selectedVariation?.sale_price ?? currentProduct.sale_price;
-  const sku = selectedVariation?.sku ?? currentProduct.sku;
 
+  const price = selectedVariation?.sale_price ?? currentProduct.sale_price;
+  const originalPrice = selectedVariation?.regular_price ?? currentProduct.regular_price;
+  const sku = selectedVariation?.sku ?? currentProduct.sku;
+  const discount = calculateDiscountPercentage(originalPrice, price)
+  console.log(currentProduct.description);
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const product = currentProduct;
+    if (!product.in_stock || product.stock <= 0) {
+      toast.error('This product is out of stock');
+      return;
+    }
+    dispatch(
+      addToCart({
+        product: product._id,
+        variation: null,
+        quantity: 1,
+        productData: {
+          slug: product.slug,
+          name: product.name,
+          image: product.media?.[0] || '',
+          price: parseFloat(product.sale_price) || 0,
+          regularPrice:
+            parseFloat(product.regular_price) ||
+            parseFloat(product.sale_price) ||
+            0,
+          vendor: product.vendor?._id || null,
+          vendorName: product.vendor?.name || 'Unknown Vendor',
+          stock: product.stock || 0,
+        },
+      })
+    );
+    toast.success(`${product.name} added to cart!`);
+  };
   return (
     <div className=" lg:col-span-6 px-4">
       
@@ -40,39 +75,55 @@ export default function ProductInfo() {
         </div>
       )}
 
-      {/* Short Description */}
-      <div className="">
-        <p
-          className=" text-sm font-semibold text-brand-primary leading-relaxed mt-0 mb-2"
-          dangerouslySetInnerHTML={{ __html: currentProduct.description }}
-        />
-        {/* <button className="flex text-rose-800 group">
-          Read more
-          <ChevronsRight className="h-6 stroke-1 group-hover:ml-2 transition-all" />
-        </button> */}
+      <div className="mb-5">
+        <ReviewStars rating={4.5} count={25}/>
       </div>
+
+      {/* Details */}
+      <div className="mb-2 ">
+      <ProductSpecs specifications={currentProduct.specifications} description={currentProduct.description} />
+      </div>
+
+      
+      
 
       {/* Price */}
-      <div className="text-3xl font-bold text-brand-secondary mb-2">
-        {formatPrice(price)}
+      <div className="flex flex-col gap-1 font-sans">
+      {/* Top Row: Discount Badge (High Visibility for FOMO) */}
+      {discount && (
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-xs font-bold text-red-600 ring-1 ring-inset ring-red-600/20">
+            -{discount}% OFF
+          </span>
+        </div>
+      )}
+
+      {/* Middle Row: Primary Price and Comparison */}
+      <div className="flex items-baseline gap-2">
+        <span className="text-4xl font-extrabold tracking-tight text-slate-900">
+          {formatPrice(price)}
+        </span>
+        
+        {discount && (
+          <span className="text-lg font-medium text-slate-500 line-through decoration-slate-400/50">
+            {formatPrice(originalPrice)}
+          </span>
+        )}
       </div>
 
+      {/* Bottom Row: Tax/Shipping Info (Transparency improves Trust) */}
+      <p className="text-xs text-slate-500">
+        Prices include VAT. <span className="underline cursor-help">Shipping calculated at checkout.</span>
+      </p>
+    </div>
       {/* Variations */}
       <VariationSelector />
 
       {/* Actions */}
       <div className="flex gap-4 mb-6 ">
         <ButtonPrimary
-          onClick={() =>
-            dispatch(
-              addToCartRequest({
-                product: currentProduct._id,
-                variation: selectedVariation?._id,
-              })
-            )
-          }
+          onClick={handleAddToCart}
           disabled={status === "loading"}
-          className=""
         >
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
@@ -96,11 +147,11 @@ export default function ProductInfo() {
       </div>
 
       {/* Trust Badges */}
-      <div className="border-t">
+      <div className="border-t pt-2">
         <div className="flex gap-10  flex-wrap justify-center ">
           
           {currentProduct?.cod_available && <div className="flex items-center gap-1 flex-col">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
                 <Image
                   src={'/icons/cash-on-delivery.png'}
                   alt="icon"
@@ -108,12 +159,12 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-sm font-medium capitalize text-center">
+              <div className="text-xs font-medium capitalize text-center">
               COD Available
               </div>
           </div>}
           {<div className="flex items-center gap-1 flex-col">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
                 <Image
                   src={'/icons/authenticity.png'}
                   alt="icon"
@@ -121,12 +172,12 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-sm font-medium capitalize text-center">
+              <div className="text-xs font-medium capitalize text-center">
               100% Authentic
               </div>
           </div>}
           {currentProduct?.return_available && <div className="flex items-center gap-1 flex-col">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
                 <Image
                   src={'/icons/return.png'}
                   alt="icon"
@@ -134,12 +185,12 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-sm font-medium capitalize text-center">
+              <div className="text-xs font-medium capitalize text-center">
               7 days return
               </div>
           </div>}
           {currentProduct?.exchange_available && <div className="flex items-center gap-1 flex-col">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
                 <Image
                   src={'/icons/return.png'}
                   alt="icon"
@@ -147,12 +198,12 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-sm font-medium capitalize text-center">
+              <div className="text-xs font-medium capitalize text-center">
               7 days replacement
               </div>
           </div>}
           <div className="flex items-center gap-1 flex-col">
-              <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
                 <Image
                   src={'/icons/makiinindia.png'}
                   alt="icon"
@@ -160,18 +211,14 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-sm font-medium capitalize text-center">
+              <div className="text-xs font-medium capitalize text-center">
               Make In India
               </div>
           </div>
         </div>
       </div>
 
-      {/* Details */}
-      <div className="mt-2 border-t">
-      <ProductSpecs specifications={currentProduct.specifications} />
-        
-      </div>
+      
     </div>
   );
 }
