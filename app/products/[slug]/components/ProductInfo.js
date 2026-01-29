@@ -12,6 +12,7 @@ import { ButtonSecondary } from "@/components/ButtonSecondary";
 import ReviewStars from "./ReviewStars";
 import calculateDiscountPercentage from "@/utils/calculateDiscountPercentage";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function ProductInfo() {
   const { currentProduct, selectedVariation, status } = useSelector(
@@ -21,12 +22,13 @@ export default function ProductInfo() {
     console.log('selectedVariation: ',selectedVariation, "currentProduct:",currentProduct);
   if (!currentProduct) return null;
 
-
+    console.log(currentProduct.vendor.vendor.store_active);
   const price = selectedVariation?.sale_price ?? currentProduct.sale_price;
   const originalPrice = selectedVariation?.regular_price ?? currentProduct.regular_price;
   const sku = selectedVariation?.sku ?? currentProduct.sku;
   const discount = calculateDiscountPercentage(originalPrice, price)
-  console.log(currentProduct.description);
+  const vendor = 
+  console.log(currentProduct);
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -66,7 +68,17 @@ export default function ProductInfo() {
       </h1>
 
       {/* Vendor */}
-      {(currentProduct.vendor?.name) && (
+
+      {currentProduct.vendor.vendor.store_active?(currentProduct.vendor.vendor.store_name) && (
+        <Link href={`/store/${currentProduct.vendor.vendor.store_slug}`}>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-xs text-gray-600">Sold By:</span>
+            <button className="text-sm font-semibold text-brand-secondary">
+              {currentProduct.vendor.vendor.store_name}
+            </button>
+          </div>
+        </Link>
+      ):(currentProduct.vendor.vendor.name) && (
         <div className="flex items-center gap-3 mb-2">
           <span className="text-xs text-gray-600">Sold By:</span>
           <button className="text-sm font-semibold text-brand-secondary">

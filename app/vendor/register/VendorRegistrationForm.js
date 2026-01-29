@@ -13,6 +13,7 @@ import { RHFInputWrapper, RHFCheckboxWrapper, RHFOptionSelect, RHFButton, RHFOtp
 import { useVerification } from '@/app/hooks/useVerification';
 import { sendEmailOtp, verifyEmailOtp, sendPhoneOtp, verifyPhoneOtp } from '@/lib/action';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 // --- VENDOR TYPE OPTIONS ---
 const VENDOR_TYPE_OPTIONS = [
@@ -115,18 +116,31 @@ export default function VendorRegistrationForm() {
   const emailVerified = useWatch({ control, name: "emailVerified" });
   const phoneVerified = useWatch({ control, name: "phoneVerified" });
 
+  const baseCardStyles = "flex-1 flex items-center justify-center p-6 text-md font-bold transition-all duration-200 hover:opacity-90 ";
 
   return (
-    <div className="bg-white rounded-md p-6 sm:p-10 border border-slate-200">
-      <h2 className="text-3xl font-bold text-slate-800 mb-6 border-b pb-4 text-center">
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="flex flex-col md:flex-row w-full borde overflow-hidden border-b border-slate-400">
+      
+      {/* Vendor Option */}
+      <Link 
+        href="/user/register" 
+        className={`${baseCardStyles}  text-brand-primary hover:bg-brand-secondary md:border-r`}
+      >
+        Customer Registration
+      </Link>
+      {/* Customer Option */}
+      <div className={`${baseCardStyles} bg-brand-secondary text-brand-primary border-b md:border-b-0  border-brand-primary`}>
         Vendor Registration
-      </h2>
+      </div>
+    </div>
 
+    <div className='p-6 sm:p-10'>
       {/* Message Box */}
       {serverMessage && (
         <div 
           className={`p-4 mb-6 rounded-lg font-medium ${
-            serverMessage.type === 'success' ? 'bg-rose-100 text-rose-700' : 'bg-red-100 text-red-700'
+            serverMessage.type === 'success' ? 'bg-rose-100 text-brand-accent' : 'bg-red-100 text-red-700'
           }`}
         >
           {serverMessage.text}
@@ -138,7 +152,7 @@ export default function VendorRegistrationForm() {
         
         {/* === Personal Details === */}
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-slate-700 border-l-4 border-rose-500 pl-3">Your Account</h3>
+          <h3 className="text-xl font-semibold text-brand-primary border-l-4 border-brand-primary pl-3">Your Account</h3>
           
           <RHFInputWrapper
             name="name"
@@ -207,7 +221,7 @@ export default function VendorRegistrationForm() {
 
         {/* === Vendor Details (Nested) === */}
         <div className="pt-4 space-y-4 border-t border-slate-200">
-          <h3 className="text-xl font-semibold text-slate-700 border-l-4 border-rose-500 pl-3">Vendor Information</h3>
+          <h3 className="text-xl font-semibold text-brand-primary border-l-4 border-brand-primary pl-3">Vendor Information</h3>
           
           <RHFOptionSelect
             name="vendor.vendor_type"
@@ -233,7 +247,7 @@ export default function VendorRegistrationForm() {
         <button
           type="submit"
           disabled={isSubmitting} 
-          className="w-full py-3 bg-rose-600 text-white font-semibold rounded-lg shadow-md hover:bg-rose-700 transition duration-300 ease-in-out disabled:bg-rose-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+          className="w-full py-3 bg-brand-secondary text-brand-primary font-semibold rounded-lg shadow-md hover:bg-brand-secondary/80 transition duration-300 ease-in-out disabled:bg-brand-secondary/80 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
         >
           {isSubmitting ? (
             <>
@@ -252,6 +266,9 @@ export default function VendorRegistrationForm() {
       <p className="text-sm text-center text-slate-500 mt-6">
         By registering, you agree to the Vendor Terms and Conditions.
       </p>
+    </div>
+
+      
     </div>
   );
 }

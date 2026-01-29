@@ -93,13 +93,13 @@ export default function VendorOnboardingForm() {
     <div className="max-w-5xl mx-auto my-12 px-4">
       {/* --- HEADER SECTION --- */}
       <div className="mb-10 flex flex-col items-center text-center">
-        <div className="h-16 w-16 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mb-4 shadow-sm">
+        <div className="h-16 w-16 bg-brand-secondary/10 text-brand-secondary rounded-full flex items-center justify-center mb-4 shadow-sm">
           <Store size={32} />
         </div>
-        <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Complete Your Profile</h2>
-        <p className="text-slate-500 mt-2 max-w-md">
+        <h2 className="text-4xl font-extrabold text-brand-primary tracking-tight">Complete Your Profile</h2>
+        <p className="text-brand-primary/60 mt-2 max-w-md">
           Fill in your business details to start selling as an 
-          <span className="ml-1 px-2 py-0.5 bg-rose-50 text-rose-700 font-bold rounded-full text-sm border border-rose-100">
+          <span className="ml-1 px-2 py-0.5 bg-brand-secondary/10 text-brand-secondary font-bold rounded-full text-sm border border-rose-100">
             {vendorType}
           </span>
         </p>
@@ -119,8 +119,8 @@ export default function VendorOnboardingForm() {
         {/* --- SECTION 1: BUSINESS IDENTITY --- */}
         <section className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
           <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 bg-slate-900 text-white rounded-lg"><Store size={20}/></div>
-            <h3 className="text-xl font-bold text-slate-800">Store Identity</h3>
+            <div className="p-2 bg-brand-primary text-white rounded-lg"><Store size={20}/></div>
+            <h3 className="text-xl font-bold text-brand-primary/90">Store Identity</h3>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -142,8 +142,8 @@ export default function VendorOnboardingForm() {
         {/* --- SECTION 2: LOGISTICS --- */}
         <section className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 bg-slate-900 text-white rounded-lg"><MapPin size={20}/></div>
-            <h3 className="text-xl font-bold text-slate-800">Pickup Address</h3>
+            <div className="p-2 bg-brand-primary text-white rounded-lg"><MapPin size={20}/></div>
+            <h3 className="text-xl font-bold text-brand-primary/90">Pickup Address</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <div className="md:col-span-2"><RHFInputWrapper name="address_1" label="Street Address" register={register} errors={errors} /></div>
@@ -158,8 +158,8 @@ export default function VendorOnboardingForm() {
         {/* --- SECTION 3: COMPLIANCE --- */}
         <section className="bg-slate-50 p-8 rounded-2xl border border-slate-200 shadow-inner">
           <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 bg-slate-900 text-white rounded-lg"><ShieldCheck size={20}/></div>
-            <h3 className="text-xl font-bold text-slate-800">Legal Verification</h3>
+            <div className="p-2 bg-brand-primary text-white rounded-lg"><ShieldCheck size={20}/></div>
+            <h3 className="text-xl font-bold text-brand-primary/90">Legal Verification</h3>
           </div>
 
           <div className="space-y-8">
@@ -189,7 +189,7 @@ export default function VendorOnboardingForm() {
           <RHFButton 
             type="submit" 
             disabled={isSubmitting} 
-            className="w-full md:w-auto md:px-20 h-16 bg-slate-900 hover:bg-black text-white rounded-full text-lg font-bold shadow-xl transition-all active:scale-95 disabled:opacity-70"
+            className="w-full md:w-auto md:px-20 h-16 bg-brand-primary hover:bg-black text-white rounded-full text-lg font-bold shadow-xl transition-all active:scale-95 disabled:opacity-70"
           >
             {isSubmitting ? "Processing Details..." : (
               <span className="flex items-center gap-2">Verify & Create Account <ArrowRight size={20}/></span>

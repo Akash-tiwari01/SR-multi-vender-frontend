@@ -1,28 +1,22 @@
-// components/Menu/MenuController.jsx
-import { useEffect, useState } from 'react';
-import { getMenuData} from '../menuService'
-import MegaMenu from './MegaMenu';
-import MobileMenu from './MobileMenu';
+// components/Menu/MenuServerContainer.jsx (Server Component)
+import { getMenuData } from '../menuService';
+import MegaMenu from './MegaMenu'; 
 
-const MenuController = ({ slug, isMobileOpen }) => {
-  const [menu, setMenu] = useState(null);
+export default async function MenuController({ slug }) {
+  // Logic resides in the Service, called directly during Prerendering
+  const menu = await getMenuData(slug);
 
-  useEffect(() => {
-    const loadData = async () => {
-      const data = await getMenuData(slug);
-      setMenu(data);
-    };
-    loadData();
-  }, [slug]);
+  if (!menu) {
+    return null; // Or a basic fallback menu
+  }
 
-  if (!menu) return null;
-
+  // We pass the data to the components that need interactivity
   return (
     <>
       <MegaMenu items={menu.items} />
-      <MobileMenu items={menu.items} isOpen={isMobileOpen} />
+      {/* MobileMenu likely needs state (isOpen), so it stays a Client Component 
+          but receives data as props */}
+      {/* <MobileMenu items={menu.items} /> */}
     </>
   );
-};
-
-export default MenuController;
+}

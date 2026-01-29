@@ -3,11 +3,9 @@ import { Suspense } from 'react';
 import CategoryContent from './CategoryContent'; 
 import { CollectionSkeleton } from '@/components/Skeletons';
 
-// Note: Humne params/searchParams ko yahan await nahi kiya
 export default function Page({ params, searchParams }) {
   return (
     <>
-      {/* Dynamic Content: Iske andar await hoga */}
       <Suspense fallback={<CollectionSkeleton />}>
         <CategoryContent promiseParams={params} promiseFilters={searchParams} />
       </Suspense>

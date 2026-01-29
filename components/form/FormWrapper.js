@@ -3,6 +3,7 @@ import { useVerification } from '@/app/hooks/useVerification';
 import { CheckCircle2, Loader2, Upload, X, FileText, AlertCircle } from 'lucide-react';
 import React, { useState, useEffect, useRef,useMemo } from 'react';
 import { uploadFileAction } from '@/lib/action';
+import { cn } from '@/utils/cn';
 
 // The useFormContext import is kept here for reference if you expand to use Context later, 
 // but is not strictly necessary for these components as props are passed directly.
@@ -39,17 +40,17 @@ export const RHFInputWrapper = ({ name, label, register, errors, type = 'text', 
   const errorMessage = errors[name]?.message || getNestedError(errors, name);
   const hasError = !!errorMessage;
 
-  const inputClass = "w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 transition duration-150";
+  const inputClass = "w-full p-3 border rounded-lg   transition duration-150";
   
   const finalInputClass = `${inputClass} ${
     hasError 
       ? 'border-red-500 focus:border-red-500' 
-      : 'border-slate-300 focus:border-rose-500'
+      : 'border-slate-300 focus:border-brand-primary'
   }`;
 
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-600 mb-1" htmlFor={name}>
+      <label className="block text-sm font-medium text-brand-primary/60 mb-1" htmlFor={name}>
         {label}
       </label>
       <input 
@@ -88,12 +89,14 @@ export const RHFCheckboxWrapper = ({ name, label, register, errors, ...rest }) =
           id={name}
           // The register function handles setting the value (true/false)
           {...register(name)}
-          className={`h-4 w-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500 ${
-            hasError ? 'border-red-500' : ''
-          }`}
+          className={cn(`h-4 w-4 rounded transition-all duration-200 cursor-pointer  ${
+            hasError 
+          ? "border-red-500 focus:ring-red-500" 
+          : "border-brand-primary/30 text-brand-secondary focus:ring-brand-primary"
+          }`)}
           {...rest}
         />
-        <label className="text-sm font-medium text-slate-700 select-none" htmlFor={name}>
+        <label className="text-sm font-medium text-brand-primary/70 select-none" htmlFor={name}>
           {label}
         </label>
       </div>
@@ -121,7 +124,7 @@ export const RHFOptionSelect = ({ name, label, register, errors, options, ...res
   const errorMessage = errors[name]?.message || getNestedError(errors, name);
   const hasError = !!errorMessage;
 
-  const selectClass = "w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 transition duration-150 appearance-none bg-white pr-8";
+  const selectClass = "w-full p-3 border rounded-lg  transition duration-150 appearance-none bg-white pr-8";
   
   const finalSelectClass = `${selectClass} ${
     hasError 
@@ -131,7 +134,7 @@ export const RHFOptionSelect = ({ name, label, register, errors, options, ...res
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-slate-600 mb-1" htmlFor={name}>
+      <label className="block text-sm font-medium text-brand-primary/60 mb-1" htmlFor={name}>
         {label}
       </label>
       <select 
@@ -148,7 +151,7 @@ export const RHFOptionSelect = ({ name, label, register, errors, options, ...res
       </select>
       
       {/* Custom dropdown arrow for better styling */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 top-6 flex items-center px-2 text-slate-700">
+      <div className="pointer-events-none absolute inset-y-0 right-0 top-6 flex items-center px-2 text-brand-primary/70">
         <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
       </div>
 
@@ -225,7 +228,7 @@ export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
   return (
     <div className="flex flex-col gap-2 w-full">
       <div className="flex justify-between items-center px-1">
-        <label className="text-sm font-bold text-slate-700">{label}</label>
+        <label className="text-sm font-bold text-brand-primary/70">{label}</label>
         {fileValue && !loading && (
           <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 uppercase tracking-wider">
             <CheckCircle2 size={12} /> Verified
@@ -240,7 +243,7 @@ export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
       >
         {loading ? (
           <div className="flex flex-col items-center gap-2">
-            <Loader2 className="h-8 w-8 text-rose-500 animate-spin" />
+            <Loader2 className="h-8 w-8 text-brand-accent animate-spin" />
             <p className="text-xs font-medium text-slate-500">Uploading...</p>
           </div>
         ) : fileValue ? (
@@ -266,7 +269,7 @@ export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
             </div>
             
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold text-slate-700 truncate block">
+              <p className="text-[11px] font-bold text-brand-primary/70 truncate block">
                 {fileValue.split(/[\\/]/).pop()}
               </p>
               <p className="text-[10px] text-slate-400">Ready for submission</p>
@@ -275,17 +278,17 @@ export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
             <button 
               type="button" 
               onClick={handleRemove}
-              className="p-2 bg-white text-slate-400 hover:text-rose-600 rounded-full border border-slate-100 shadow-sm transition-transform hover:scale-110"
+              className="p-2 bg-white text-slate-400 hover:text-brand-primary/60   rounded-full border border-slate-100 shadow-sm transition-transform hover:scale-110"
             >
               <X size={18} />
             </button>
           </div>
         ) : (
           <label className="flex flex-col items-center justify-center w-full py-6 cursor-pointer group">
-            <div className="p-3 bg-rose-50 text-rose-500 rounded-full mb-2 group-hover:bg-rose-100 transition-colors">
+            <div className="p-3 bg-brand-primary/10 text-brand-primary/50 rounded-full mb-2 group-hover:bg-brand-primary/10 transition-colors">
               <Upload size={20} />
             </div>
-            <span className="text-xs font-bold text-slate-600">Upload {label}</span>
+            <span className="text-xs font-bold text-brand-primary/60">Upload {label}</span>
             <input type="file" className="hidden" onChange={handleFileChange} accept="image/*,.pdf" />
           </label>
         )}
@@ -307,7 +310,7 @@ export const RHFButton = ({children,type,disabled,className,onClick })=>(
   <button
     type={type?type:"button"}
     disabled={disabled} 
-    className={`w-full py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out disabled:bg-blue-400 disabled:cursor-not-allowed flex items-center justify-center space-x-2 ${className}`}
+    className={`w-full py-3 bg-brand-primary text-white font-semibold rounded-lg shadow-md hover:bg-black transition duration-300 ease-in-out disabled:bg-brand-secondary/60 disabled:cursor-not-allowed flex items-center justify-center space-x-2 ${className}`}
     onClick={onClick || null}
   >
     {children}
@@ -410,7 +413,7 @@ export function RHFOtpInput({
                         onPaste={handlePaste}
                         inputMode="numeric"
                         maxLength={1}
-                        className="w-10 h-12 text-center border rounded-md text-lg focus:outline-none focus:ring-2 focus:ring-rose-500"
+                        className="w-10 h-12 text-center border rounded-md text-lg focus:outline-none "
                     />
                 ))}
             </div>
@@ -497,8 +500,8 @@ export function RHFOtpInputWrapper({
                                 {!canResend ? (
                                     <div className="flex items-center gap-2 text-gray-500 bg-gray-50 px-2 py-1.5 rounded border border-gray-200 text-[11px] font-medium">
                                         <span className="relative flex h-2 w-2">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-secondary/70 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-secondary/70"></span>
                                         </span>
                                         {timeLeft}s
                                     </div>
@@ -506,7 +509,7 @@ export function RHFOtpInputWrapper({
                                     <button 
                                         type="button" 
                                         onClick={() => sendOtp(otpSendAction)} 
-                                        className="text-blue-600 text-xs font-bold hover:underline ml-1"
+                                        className="bg-brand-secondary/90 text-xs font-bold hover:underline ml-1"
                                     >
                                         Resend?
                                     </button>
@@ -539,13 +542,13 @@ export const RHFTextareaWrapper = ({ name, label, register, errors, placeholder,
   const errorMessage = errors[name]?.message;
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-600 mb-1" htmlFor={name}>{label}</label>
+      <label className="block text-sm font-medium text-brand-primary/60 mb-1" htmlFor={name}>{label}</label>
       <textarea
         id={name}
         {...register(name)}
         rows={5}
         placeholder={placeholder}
-        className={`w-full p-3 border rounded-lg focus:ring-2 focus:ring-rose-500 transition duration-150 resize-none ${
+        className={`w-full p-3 border rounded-lg  transition duration-150 resize-none ${
           errorMessage ? 'border-red-500 focus:border-red-500' : 'border-slate-300'
         }`}
         {...rest}

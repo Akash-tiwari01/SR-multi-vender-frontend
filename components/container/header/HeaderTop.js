@@ -2,17 +2,18 @@
 "use client"
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import BottomNav from './BottomNav';
+import SearchBar from './SearchBar';
 const  HeaderLoginComponent = dynamic(()=> import('./LoginComponent'),{ssr:false});
 
 const HeaderTop = () => {
   return (
     <div className=" bg-brand-primary text-white p-3 shadow-md w-full">
-      <div className="max-w-7xl mx-auto flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-y-4">
 
         {/* Left: Logo */}
-        <div className="order-1 flex items-center space-x-2">
+        <div className=" flex items-center  space-x-2">
           <Link href="/" className="flex items-center">
             <Image
               src="/image/logo/logo3.png"
@@ -25,22 +26,13 @@ const HeaderTop = () => {
           </Link>
         </div>
 
-        {/* Center: Search Bar */}
-        <div className="order-3 md:order-2 w-full md:max-w-xl md:flex-1 md:mx-6">
-          <div className="relative bg-white rounded-full">
-            <input
-              type="text"
-              placeholder="Search for products, brands and more"
-              className="w-full py-2 px-4 rounded-full text-gray-900 focus:outline-none"
-            />
-            <button className="absolute right-0 top-0 mt-2.5 mr-3 text-brand-primary">
-              <Search />
-            </button>
+        {/* Mobile Search bar */}
+          <div className='md:hidden'>
+          <SearchBar isMobile={true}/>
           </div>
-        </div>
-
         {/* Right: User / Cart / Wishlist */}
         <HeaderLoginComponent/>
+        <BottomNav/>
 
       </div>
     </div>

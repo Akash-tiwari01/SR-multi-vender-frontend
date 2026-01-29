@@ -27,7 +27,7 @@ export default async function Home() {
       case 'COLLECTION':
         return <CollectionGridComponent key={component?._id} {...component} />;
       case 'SLIDER':
-        return <Banner key={component._id} data={component.slider_component} />;
+        return <div className="md:p-2"><Banner key={component._id} data={component.slider_component} /></div>;
       case 'GALLERY':
         return <GalleryComponent key={component._id} {...component} />;
       case 'IMAGE':

@@ -70,24 +70,43 @@ export default function CustomerRegistrationForm() {
     ? (serverMessage.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')
     : '';
 
-  return (
-    <div className="bg-white shadow-xl rounded-2xl p-6 sm:p-10 border border-slate-200 max-w-lg mx-auto my-12">
-      <h2 className="text-3xl font-bold text-slate-800 mb-6 border-b pb-4 text-center">
+    const baseCardStyles = "flex-1 flex items-center justify-center p-6 text-md font-bold transition-all duration-200 hover:opacity-90 ";
+    return (
+    <div className="bg-white shadow-xl rounded-2xl  border border-slate-200 max-w-lg mx-auto my-12 overflow-hidden">
+      <div className="flex flex-col md:flex-row w-full borde overflow-hidden border-b border-slate-400">
+      {/* Customer Option */}
+      <div className={`${baseCardStyles} bg-brand-secondary text-brand-primary border-b md:border-b-0 md:border-r border-brand-primary`}>
         Customer Registration
-      </h2>
+      </div>
 
-      {/* Message Box */}
+      {/* Vendor Option */}
+      <Link 
+        href="/vendor/register" 
+        className={`${baseCardStyles}  text-brand-primary hover:bg-brand-secondary`}
+      >
+        Vendor Registration
+      </Link>
+    </div>
+
+      <div className='p-6'>
+
+        {/* Message Box */}
       {serverMessage && (
-        <div className={`p-4 mb-6 rounded-lg font-medium ${messageClass}`}>
+        <div 
+          className={`p-4 mb-6 rounded-lg font-medium ${
+            serverMessage.type === 'success' ? 'bg-rose-100 text-brand-accent' : 'bg-red-100 text-red-700'
+          }`}
+        >
           {serverMessage.text}
         </div>
       )}
+        
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         
         {/* === Account Details === */}
         <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-slate-700 border-l-4 border-blue-500 pl-3">Your Details</h3>
+          <h3 className="text-xl font-semibold text-brand-primary/90 border-l-4 border-brand-primary pl-3">Your Details</h3>
           
           <RHFInputWrapper
             name="name"
@@ -156,8 +175,9 @@ export default function CustomerRegistrationForm() {
 
       <p className="text-sm text-center text-slate-500 mt-6">
         Already have an account? 
-        <Link href="/user/login" className="text-blue-600 hover:underline font-medium ml-1">Log In here</Link>.
+        <Link href="/user/login" className="text-brand-secondary hover:underline font-medium ml-1">Log In here</Link>.
       </p>
+      </div>
     </div>
   );
 }

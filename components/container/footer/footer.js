@@ -1,201 +1,76 @@
-"use client";
-
-import Image from "next/image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFacebookF,
-  faTwitter,
-  faInstagram,
-  faLinkedinIn,
-  faYoutube,
-} from "@fortawesome/free-brands-svg-icons";
-import PopularSearches from "./PopularSearches";
 import Link from "next/link";
-import FeaturesSection from "./FeatureSection";
+import PopularSearches from "./PopularSearches";
+import { getMenuData } from "@/modules/menu/menuService";
 
-export default function Footer() {
+// Utility to handle conditional linking
+const SmartLink = ({ item, className }) => {
+  if (item.url && item.url !== "") {
+    return (
+      <Link href={item.url} className={className}>
+        {item.label}
+      </Link>
+    );
+  }
+  return <span className={className}>{item.label}</span>;
+};
+
+export default async function Footer() {
+  const menuData = await getMenuData("footer_menu");
+
+  if (!menuData || !menuData.items) return null;
+
+  // Extract "Popular Searches" specifically for the top section
+  const popularSearchesItem = menuData.items.find(
+    (item) => item.label === "Popular Searches"
+  );
+  
+  // Filter out Popular Searches from the main grid to avoid duplication
+  const gridItems = menuData.items.filter(
+    (item) => item.label !== "Popular Searches"
+  );
+
   return (
     <div>
-      {/* Renders FeaturesSection component */}
+      {/* Dynamic Popular Searches */}
+      {popularSearchesItem && (
+        <PopularSearches items={popularSearchesItem.children} />
+      )}
 
-      {/* Main Footer Section - Slate Background, White/Rose Text */}
-      <footer className="bg-brand-primary text-white pt-12 pb-8 mt-1">
+      {/* Main Footer Section */}
+      <footer className="bg-brand-primary text-white pt-12 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-5 gap-y-10">
-          {/* Get in Touch */}
-          <div className="space-y-4 col-span-2 md:col-span-1">
-            <h4 className="text-xl font-bold text-brand-secondary border-b border-brand-secondary pb-2 mb-4">
-              Get in touch
-            </h4>
-            <p className="text-slate-300 text-sm">
-              B-9, 3rd Floor, Above B.K. Sweets, Dwarka More, New Delhi - 110059
-            </p>
-            <p className="text-sm">
-              <a
-                href="mailto:srccindiapl@gmail.com"
-                className="text-slate-300 hover:text-brand-secondary transition duration-300"
-              >
-                srccindiapl@gmail.com
-              </a>
-              <br />
-              <a
-                href="tel:+919266749755"
-                className="text-slate-300 hover:text-brand-secondary transition duration-300"
-              >
-                +91-9266749755
-              </a>
-            </p>
-            <div className="flex space-x-4 pt-2">
-              {[faFacebookF, faTwitter, faInstagram, faLinkedinIn, faYoutube].map(
-                (icon, index) => (
-                  <a
-                    key={index}
-                    href="#"
-                    aria-label={`Follow us on ${icon.iconName}`}
-                    className="text-slate-300 hover:text-brand-secondary transition duration-300 text-lg"
-                  >
-                    <FontAwesomeIcon icon={icon} />
-                  </a>
-                )
+          {gridItems.map((column) => (
+            <div key={column.id} className="space-y-4">
+              <h4 className="text-xl font-bold text-brand-secondary border-b border-brand-secondary pb-2 mb-4">
+                {column.label}
+              </h4>
+              {column.children && column.children.length > 0 && (
+                <ul className="space-y-2 text-sm">
+                  {column.children.map((child) => (
+                    <li key={child.id}>
+                      <SmartLink 
+                        item={child} 
+                        className="text-slate-300 hover:text-brand-secondary transition duration-300" 
+                      />
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
-          </div>
-
-          {/* Top Categories */}
-          <div className="space-y-4">
-            <h4 className="text-xl font-bold text-brand-secondary border-b border-brand-secondary pb-2 mb-4">
-              Top Categories
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Product1
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Product2
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Product3
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Product4
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* About Store */}
-          <div className="space-y-4">
-            <h4 className="text-xl font-bold text-brand-secondary border-b border-brand-secondary pb-2 mb-4">
-              About Store
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Bulk Order
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Reviews
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Useful Links */}
-          <div className="space-y-4">
-            <h4 className="text-xl font-bold text-brand-secondary border-b border-brand-secondary pb-2 mb-4">
-              Useful Links
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Quotes and Wishes
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Aartis
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Blogs
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* Help & Policies */}
-          <div className="space-y-4">
-            <h4 className="text-xl font-bold text-brand-secondary border-b border-brand-secondary pb-2 mb-4">
-              Help & Policies
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/ContactUS"
-                  className="text-slate-300 hover:text-brand-secondary transition duration-300"
-                >
-                  Contact US
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/FaqSection"
-                  className="text-slate-300 hover:text-brand-secondary transition duration-300"
-                >
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Payment Security
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-slate-300 hover:text-brand-secondary transition duration-300">
-                  Return Policy
-                </a>
-              </li>
-            </ul>
-          </div>
+          ))}
         </div>
       </footer>
 
-      {/* Renders PopularSearches component */}
-      <PopularSearches />
-      
-      {/* Bottom Bar - Rose Background, White Text */}
-      <footer className="bg-brand-secondary text-brand-primary py-4 flex items-center justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
-          {/* Copyright Text */}
-          <p className="text-center md:text-left text-sm mb-3 md:mb-0 ">
-            Copyright © 2025{" "}
-            <span className="font-semibold">SR CRAFT CREATIONS</span> all rights
-            reserved.
-            {/* <br className="md:hidden" />
-            “SR Craft Creations” is a registered brand name of{" "}
-            <span className="font-semibold">Intellozene</span>
-            <br className="md:hidden" />
-            “SR Craft Creations” is a registered brand name of{" "}
-            <span className="font-semibold">Intellozene</span> */}
+      {/* Bottom Bar */}
+      <footer className="bg-brand-secondary text-brand-primary py-4 flex items-center justify-center mb-10 md:mb-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-row  justify-between items-center gap-1">
+          <p className="text-center md:text-left text-sm mb-3 md:mb-0">
+            Copyright © 2026
+            <span className="font-semibold"> SR CRAFT CREATIONS</span> all rights reserved.
+          </p>
+          <p className="text-center md:text-left text-sm mb-3 md:mb-0">
+             Design & Developed by 
+            <span className="font-semibold"> Digital Creatorss</span> .
           </p>
         </div>
       </footer>
