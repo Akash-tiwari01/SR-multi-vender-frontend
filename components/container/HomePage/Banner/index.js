@@ -10,7 +10,7 @@ const SwiperContainer = dynamic(() => import('./SwiperWrapper'), {
 
 function BannerPlaceholder({ slide }) {
   return (
-    <div className="w-full h-[40vh] md:h-[80vh] bg-gray-900 md:rounded-md my-2 shadow-md p-2">
+    <div className="w-full h-[80vh] md:h-[80vh] bg-gray-900 md:rounded-md my-2 shadow-md p-2">
       {slide && <BannerSlide slide={slide} isPriority={true} />}
     </div>
   );

@@ -17,19 +17,49 @@ export default function BannerSlide({ slide, isPriority }) {
       aria-label={slide.title || "Promotion Banner"}
     >
       {isVideoAsset ? (
-        <video
-          src={mediaUrl}
-          autoPlay
-          muted
-          loop
-          playsInline
-          /* object-cover + inset-0 ensures it fills the aspect-ratio box */
-          className="absolute inset-0 w-full h-full object-fill transition-transform duration-700 "
-          poster="/images/banner-placeholder.jpg"
-        />
+        <div >
+            <div className="flex md:hidden">
+              <video
+                src={getImageUrl(slide?.imageMobile)}
+                autoPlay
+                muted
+                loop
+                playsInline
+                /* object-cover + inset-0 ensures it fills the aspect-ratio box */
+                className="absolute inset-0 w-full h-full object-fill transition-transform duration-700 "
+                poster="/images/banner-placeholder.jpg"
+              />
+          </div>
+          <div className="hidden md:flex lg:hidden">
+              <video
+                src={getImageUrl(slide?.imageTablet)}
+                autoPlay
+                muted
+                loop
+                playsInline
+                /* object-cover + inset-0 ensures it fills the aspect-ratio box */
+                className="absolute inset-0 w-full h-full object-fill transition-transform duration-700 "
+                poster="/images/banner-placeholder.jpg"
+              />
+          </div>
+          <div className="hidden lg:flex">
+              <video
+                src={getImageUrl(slide?.image)}
+                autoPlay
+                muted
+                loop
+                playsInline
+                /* object-cover + inset-0 ensures it fills the aspect-ratio box */
+                className="absolute inset-0 w-full h-full object-fill transition-transform duration-700"
+                poster="/images/banner-placeholder.jpg"
+              />
+          </div>
+        </div>
       ) : (
-        <Image
-          src={mediaUrl}
+        <div>
+          <div className="flex md:hidden">
+          <Image
+          src={getImageUrl(slide?.imageMobile)}
           alt={slide.title || "Promotion Banner"}
           fill
           priority={isPriority}
@@ -39,6 +69,34 @@ export default function BannerSlide({ slide, isPriority }) {
           quality={90} // 100 is often overkill; 90 saves bandwidth with no visible loss
           unoptimized 
         />
+        </div>
+        <div className="hidden md:flex lg:hidden">
+          <Image
+          src={getImageUrl(slide?.imageTablet)}
+          alt={slide.title || "Promotion Banner"}
+          fill
+          priority={isPriority}
+          /* object-cover maintains visual consistency without stretching */
+          className="object-contain transition-transform duration-700 "
+          sizes="100vw"
+          quality={90} // 100 is often overkill; 90 saves bandwidth with no visible loss
+          unoptimized 
+        />
+        </div>
+        <div className="hidden lg:flex">
+          <Image
+          src={getImageUrl(slide?.image)}
+          alt={slide.title || "Promotion Banner"}
+          fill
+          priority={isPriority}
+          /* object-cover maintains visual consistency without stretching */
+          className="object-contain transition-transform duration-700 "
+          sizes="100vw"
+          quality={90} // 100 is often overkill; 90 saves bandwidth with no visible loss
+          unoptimized 
+        />
+        </div>
+        </div>
       )}
 
       {/* Optional: Overlay Gradient for Text Readability if you add titles later */}
