@@ -1,6 +1,5 @@
 // src/modules/user/repositories/UserAPIRepository.js
 import { apiClient } from "@/utils/api";
-import { nextApiFetch } from "@/utils/nextApiFetch";
 
 /**
  * @description Handles direct communication with the external User/Auth backend API.
@@ -33,10 +32,8 @@ export class UserAPIRepository {
   }
 
   async login(credentials){
-    console.log("HiiiiSR");
 
     const result = await apiClient.post('/api/users/login',credentials);
-    console.log(result);
     return result;
   }
 

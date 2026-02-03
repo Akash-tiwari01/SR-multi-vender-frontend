@@ -8,7 +8,6 @@ const initialState = {
   isLoading: false,
   isAuthChecking:true,
   error: null,
-  
   // State for OTP flow
   isOtpSent: false,
   otp_id: null, 
@@ -24,7 +23,6 @@ const userSlice = createSlice({
       state.error = null;
     },
     loginSuccess: (state, action) => { // Used for both login types on success
-      console.log(action,"hii 1111111111111111111111111111111111");
       state.isLoading = false;
       state.isLoggedIn = true;
       state.user = action.payload.user;
