@@ -1,37 +1,36 @@
 import React from 'react';
 import CollectionCard from './CollectionCard';
-import { getBentoGridClassesByIndex } from '@/utils/bentoLayoutMapper'; 
-import { getGridConfigurationByLength } from '@/utils/gridConfiguration'; 
+import { GRID_CONFIGS } from '@/config/constant'
 
-/**
- * Renders collections in a dynamic, responsive Bento Grid layout.
- * It integrates separate logic for container configuration and card sizing.
- */
 export default function DynamicGrid({ product_collections }) {
-    const length = product_collections?.length || 0;
-    
-    if (length === 0) {
-        return <div className="text-center p-10 text-gray-500">No collections found.</div>;
-    }
-    const { baseGridCols, minHeightClass } = getGridConfigurationByLength(length); 
+  const items = product_collections || [];
+  const length = items.length;
 
-    const gridContainerClasses = `grid ${baseGridCols} gap-4 grid-flow-row-dense auto-rows-[15rem]`;
-
+  if (length === 0) {
     return (
-        <div className={`container mx-auto p-2 md:p-4 ${minHeightClass}`}>
-            <div className={gridContainerClasses}>
-                {product_collections.map((collection, index) => {
-                    const gridClasses = getBentoGridClassesByIndex(index, length); 
-                    return (
-                        <CollectionCard 
-                            key={collection.collection_id} 
-                            collection={collection} 
-                            // Card receives the index-based sizing logic
-                            gridClasses={gridClasses}
-                        />
-                    );
-                })}
-            </div>
-        </div>
+      <div className="py-20 text-center border-2 border-dashed border-gray-200 rounded-3xl">
+        <p className="text-gray-400 font-medium">No collections curated yet.</p>
+      </div>
     );
+  }
+
+  // Get configuration or fallback to uniform grid if length > 6
+  const config = GRID_CONFIGS[length] || { 
+    container: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3", 
+    items: Array(length).fill("h-[300px]") 
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className={`grid gap-4 md:gap-6 ${config.container}`}>
+        {items.map((col, index) => (
+          <CollectionCard 
+            key={col._id || index} 
+            collection={col} 
+            gridClasses={config.items[index]} 
+          />
+        ))}
+      </div>
+    </div>
+  );
 }

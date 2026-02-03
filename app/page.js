@@ -12,12 +12,12 @@ import TextComponent from "@/components/container/HomePage/TextComponent";
 import GalleryComponent from "@/components/container/HomePage/GalleryComponent";
 import ImageComponent from "@/components/container/HomePage/ImageComponent";
 import Banner from "@/components/container/HomePage/Banner";
+import { CollectionSkeleton } from "@/components/Skeletons";
+import { Suspense } from "react";
 export default async function Home() {
-  console.log("`````````````````````````````Homepage```````````````````````````");
 
   const data = await getInitialHomePageData();
   const components = await data.homepageData.homepageNew || []
-  console.log(data);
   const renderComponent = (component) => {
     switch (component.display_type) {
       case 'COLLECTION PRODUCTS':
@@ -25,7 +25,7 @@ export default async function Home() {
           <ProductCollectionComponent key={component._id} {...component} />
         );
       case 'COLLECTION':
-        return <CollectionGridComponent key={component?._id} {...component} />;
+        return <Suspense fallback={<CollectionSkeleton/>}><CollectionGridComponent key={component?._id} {...component} />;</Suspense>
       case 'SLIDER':
         return <div className="md:p-2"><Banner key={component._id} data={component.slider_component} /></div>;
       case 'GALLERY':

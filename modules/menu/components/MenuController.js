@@ -1,4 +1,5 @@
 // components/Menu/MenuServerContainer.jsx (Server Component)
+import BottomNav from '@/components/container/header/BottomNav';
 import { getMenuData } from '../menuService';
 import MegaMenu from './MegaMenu'; 
 
@@ -14,6 +15,7 @@ export default async function MenuController({ slug }) {
   return (
     <>
       <MegaMenu items={menu.items} />
+
       {/* MobileMenu likely needs state (isOpen), so it stays a Client Component 
           but receives data as props */}
       {/* <MobileMenu items={menu.items} /> */}

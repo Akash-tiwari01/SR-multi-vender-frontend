@@ -12,8 +12,8 @@ const Header = () => {
     <Suspense fallback={<div className="h-20 bg-brand-primary animate-pulse" />}>
         <HeaderTop />
     </Suspense>
-    </header>
       <HeaderNav />
+    </header>
     </>
   );
 };

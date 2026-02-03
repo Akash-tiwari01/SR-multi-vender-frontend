@@ -1,16 +1,18 @@
 /** @type {import('next').NextConfig} */
 
 const isDev = process.env.NODE_ENV === "development";
+
 const nextConfig = {
-  /* config options here */
   reactCompiler: true,
-  
   cacheComponents: true,
+  // Note: cacheComponents is an experimental feature in some canary versions
+  
   logging: {
     fetches: {
       fullUrl: true,
     },
   },
+
   images: {
     remotePatterns: isDev
       ? [
@@ -21,6 +23,12 @@ const nextConfig = {
             pathname: "/**",
           },
           {
+            protocol: "http",
+            hostname: "192.168.1.52",
+            port: "3000",
+            pathname: "/**",
+          },
+          {
             protocol: "https",
             hostname: "**.devtunnels.ms",
           },
@@ -28,7 +36,8 @@ const nextConfig = {
       : [
           {
             protocol: "https",
-            hostname: "https://sr-multi-vender-admin-api.onrender.com", // hosting domain
+            // FIX: Removed 'https://' - hostname must be just the domain
+            hostname: "sr-multi-vender-admin-api.onrender.com",
             pathname: "/**",
           },
         ],

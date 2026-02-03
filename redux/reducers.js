@@ -3,12 +3,14 @@ import productsReducer from '@/modules/products/state/productSlice';
 import collectionsReducer from './collections/collectionSlice';
 import userReducer from '@/modules/user/state/userSlice';
 import cartReducer from './cart/cartSlice';
+import reviewReducer from '@/modules/Reviews/reviewSlice'
 
 const rootReducer = combineReducers({
   user: userReducer,
   collections: collectionsReducer,
   product: productsReducer,
   cart: cartReducer,
+  review: reviewReducer,
 });
 
 export default rootReducer;

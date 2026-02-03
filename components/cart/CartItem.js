@@ -1,5 +1,6 @@
 'use client';
 
+import { getImageUrl } from '@/utils/helperFunction';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -21,6 +22,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }) {
       onUpdateQuantity(product, variation, quantity + 1);
     }
   };
+  console.log(image);
 
   const handleDecrease = () => {
     if (quantity > 1) {
@@ -43,7 +45,7 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }) {
       {/* Product Image */}
       <div className='relative w-24 h-24 shrink-0 rounded-lg overflow-hidden bg-gray-100'>
         {image ? (
-          <Image src={image} alt={name} fill className='object-cover' />
+          <Image src={getImageUrl(image)} alt={name} fill className='object-cover' unoptimized={true}/>
         ) : (
           <div className='w-full h-full flex items-center justify-center text-gray-400'>
             No Image

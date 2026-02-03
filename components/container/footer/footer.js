@@ -30,7 +30,7 @@ export default async function Footer() {
   );
 
   return (
-    <div>
+    <div className="mt-2">
       {/* Dynamic Popular Searches */}
       {popularSearchesItem && (
         <PopularSearches items={popularSearchesItem.children} />
@@ -63,7 +63,7 @@ export default async function Footer() {
 
       {/* Bottom Bar */}
       <footer className="bg-brand-secondary text-brand-primary py-4 flex items-center justify-center mb-10 md:mb-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-row  justify-between items-center gap-1">
+        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-row  justify-between items-center gap-1">
           <p className="text-center md:text-left text-sm mb-3 md:mb-0">
             Copyright © 2026
             <span className="font-semibold"> SR CRAFT CREATIONS</span> all rights reserved.

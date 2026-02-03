@@ -10,7 +10,7 @@ const VariationSelector = () => {
   if (!currentProduct?.variation_attrs?.length) return null;
 
   return (
-    <div className="space-y-4 my-6">
+    <div className="space-y-2 my-4">
       {currentProduct.variation_attrs.map((attr) => (
         <div key={attr._id}>
           <span className="text-sm font-semibold text-slate-700 block mb-2">

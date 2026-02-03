@@ -3,6 +3,7 @@
 import { ShoppingBag, Tag, Truck, Receipt } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import ButtonPrimary from '../ButtonPrimary';
+import { useSelector } from 'react-redux';
 
 export default function CartSummary({
   itemCount,
@@ -15,8 +16,14 @@ export default function CartSummary({
 }) {
   const router = useRouter();
   const total = subtotal + deliveryCharges - discount;
+  const {user, token} = useSelector(state=>state.user)
 
   const handleCheckout = () => {
+    if(!user && !token)
+    {
+      router.push('/user/login');
+
+    }
     if (onCheckout) {
       onCheckout();
     } else {

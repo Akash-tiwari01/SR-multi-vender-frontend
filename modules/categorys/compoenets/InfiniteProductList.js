@@ -12,7 +12,6 @@ export default function InfiniteProductList({ initialData, slug, currentFilters 
   const [mounted, setMounted] = useState(false);
   
   const observerTarget = useRef(null);
-  console.log(initialData);
   useEffect(() => { setMounted(true); }, []);
 
   // Sync state when filters change (Server sends new initialData)

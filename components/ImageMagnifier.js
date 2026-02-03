@@ -33,7 +33,7 @@ export default function ImageMagnifier({
       <div
         ref={containerRef}
         className={cn(
-          "relative w-full h-[400px] md:h-[590px] bg-gray-300 cursor-crosshair overflow-hidden",
+          "relative w-full h-[400px] md:h-[590px] bg-white cursor-crosshair overflow-hidden",
           !isEnabled && "cursor-default"
         )}
         onMouseEnter={() => isEnabled && setShowMagnifier(true)}
@@ -51,7 +51,7 @@ export default function ImageMagnifier({
         {/* --- Highlight Box (The Lens) --- */}
         {isEnabled && showMagnifier && (
           <div
-            className="absolute border border-brand-secondary bg-brand-secondary/5 pointer-events-none"
+            className="absolute border border-brand-secondary bg-brand-secondary/5 pointer-events-none hidden md:content"
             style={{
               width: `${100 / zoomLevel}%`,
               height: `${100 / zoomLevel}%`,
@@ -66,7 +66,7 @@ export default function ImageMagnifier({
       {/* 2. Side Zoom Panel: Shows Original High-Res Image */}
       {isEnabled && showMagnifier && (
         <div 
-          className="hidden lg:block absolute left-[102%] top-0 w-full h-full z-50 overflow-hidden bg-white border shadow-2xl rounded-xl"
+          className="hidden lg:block absolute left-[102%] top-0 w-full h-full z-50 overflow-hidden  border shadow-2xl rounded-xl"
         >
           <div
             className="w-full h-full"

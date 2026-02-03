@@ -9,7 +9,7 @@ const  HeaderLoginComponent = dynamic(()=> import('./LoginComponent'),{ssr:false
 
 const HeaderTop = () => {
   return (
-    <div className=" bg-brand-primary text-white p-3 shadow-md w-full">
+    <div className=" bg-premium-dark text-white p-3 shadow-md w-full">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-y-4">
 
         {/* Left: Logo */}
@@ -32,7 +32,6 @@ const HeaderTop = () => {
           </div>
         {/* Right: User / Cart / Wishlist */}
         <HeaderLoginComponent/>
-        <BottomNav/>
 
       </div>
     </div>

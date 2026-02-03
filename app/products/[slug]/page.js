@@ -6,7 +6,6 @@ import ProductSkeleton from '@/components/Skeletons';
 import { getProductBySlug } from '@/modules/products/services/productServices'; 
 import ProductContent from './components/ProductContent';
 /**
- * 1. 🌐 generateMetadata
  * Scalability: Absolute URL handling for SEO
  */
 export async function generateMetadata({ params }) {

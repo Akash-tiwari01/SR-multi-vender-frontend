@@ -1,14 +1,39 @@
 @import "tailwindcss";
 
 @theme {
-  /* Design Tokens Definition */
   --color-brand-primary: #051f20;
-  --color-brand-secondary: #daac47;
-  /* --color-brand-secondary: #d9aa42; */
-  --color-brand-accent: #9ed36a;
-  --color-brand-accentp: #e68aa0;
+  --color-brand-secondary: #daac47; /* Gold */
+  --color-brand-accent: #9ed36a;    /* Green */
+  --color-brand-accent-pink: #e68aa0;
 }
 
+@layer utilities {
+  /* THE "SOPHISTICATED DEEP" GRADIENT
+     1. Base: Your dark primary.
+     2. Subtle Spotlight: A faint radial glow of the green in the top right.
+     3. Bottom Fade: A smooth transition to deep black/primary.
+  */
+  .bg-premium-dark {
+    background: 
+      radial-gradient(circle at 80% 20%, color-mix(in srgb, var(--color-brand-accent), transparent 85%), transparent 40%),
+      radial-gradient(circle at 10% 80%, color-mix(in srgb, var(--color-brand-secondary), transparent 92%), transparent 30%),
+      var(--color-brand-primary);
+  }
+
+  /* THE "GOLDEN HOUR" BORDER/TEXT GRADIENT
+     Perfect for buttons or cards that need to "pop".
+  */
+  .bg-brand-mesh {
+    background: linear-gradient(
+      110deg, 
+      var(--color-brand-primary) 0%, 
+      #082d2e 40%, 
+      #0a3a3b 100%
+    );
+    position: relative;
+    overflow: hidden;
+  }
+}
 :root {
   --background: 0 0% 100%;
   --foreground: 0 0% 9%;
@@ -17,7 +42,7 @@
 
 body {
 
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif, Helvetica, sans-serif;
 }
 
 @layer utilities {
@@ -241,13 +266,13 @@ body {
 
   .store-description-container em {
     @apply not-italic font-medium;
-    color: var(--color-brand-secondary);
+    color: var(--color-brand-primary);
+    font-weight:600
   }
 
   /* Paragraph Spacing */
   .store-description-container p {
-    @apply mb-4 flex;
-    display: flex
+    @apply mb-4;
 
     
   }
@@ -264,7 +289,7 @@ body {
   .store-description-container ul li::before {
     content: "✦";
     @apply absolute left-2 font-bold;
-    color: var(--color-brand-secondary);
+    color: var(--color-brand-primary);
   }
 
   /* List Styling (Ordered) */
@@ -279,7 +304,7 @@ body {
 
   .store-description-container ol li::marker {
     @apply font-bold;
-    color: var(--color-brand-secondary);
+    color: var(--color-brand-primary);
   }
 
   /* Link Styling */

@@ -30,6 +30,7 @@ export class ApiError extends Error {
  * @throws {ApiError | Error} Throws custom error for bad response or generic error for fetch issues.
  */
 const post = async (endpoint, data,header={}) => {
+  console.log("hello11111111111111111111111111111111111111111111111111111");
   const url = `${API_BASE_URL}${endpoint}`;
 
   // Optimization: Use AbortController for future request cancellation/timeouts
@@ -120,9 +121,93 @@ const put = async (endpoint, data, token) => {
 };
 
 /**
+ * GET Method
+ * Supports SRP by handling query parameter serialization and fetch logic.
+ * Adheres to DIP by providing a clean interface for fetching resources.
+ */
+const get = async (endpoint, params = {}, token = null) => {
+  // 1. Handle Query Parameters (Scalability)
+  // Converts { page: 1, search: 'test' } to ?page=1&search=test
+  const queryString = Object.keys(params).length
+    ? `?${new URLSearchParams(params).toString()}`
+    : '';
+  
+  const url = `${API_BASE_URL}${endpoint}${queryString}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    });
+
+    let responseData = null;
+    try {
+      responseData = await response.json();
+    } catch (e) {
+      if (response.status !== 204) {
+        console.error('JSON Parse Error:', e);
+      }
+    }
+
+    if (!response.ok) {
+      const errorMessage = responseData?.message || response.statusText;
+      throw new ApiError(errorMessage, response.status, responseData);
+    }
+
+    return responseData;
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new Error('Data fetch failed. Please check network.');
+  }
+};
+
+/**
+ * DELETE Method
+ * Follows the same pattern for consistency (LSP) across the application.
+ */
+const remove = async (endpoint, token = null) => {
+  const url = `${API_BASE_URL}${endpoint}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    });
+
+    let responseData = null;
+    try {
+      // Some APIs return a message on delete, others return 204 No Content
+      responseData = await response.json();
+    } catch (e) {
+      if (response.status !== 204) {
+        console.error('JSON Parse Error:', e);
+      }
+    }
+
+    if (!response.ok) {
+      const errorMessage = responseData?.message || response.statusText;
+      throw new ApiError(errorMessage, response.status, responseData);
+    }
+
+    return responseData;
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    throw new Error('Deletion failed. Please check network.');
+  }
+};
+
+/**
  * API client module for external use.
  */
 export const apiClient = {
+  get,
   post,
-  put
+  put,
+  delete: remove, // 'delete' is a reserved keyword, so we use 'remove' internally
 };

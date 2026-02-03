@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
@@ -14,7 +14,6 @@ import {
   Blocks
 } from 'lucide-react';
 import { selectCartItemCount } from '@/redux/cart/cartSlice';
-import CategoriesSlider from '../categories/CategoriesSlider';
 
 // --- Types & Constants (Open/Closed Principle) ---
 
@@ -23,10 +22,14 @@ export default function BottomNav() {
   const pathname = usePathname();
   const cartItemCount = useSelector(selectCartItemCount);
   const { user } = useSelector((state) => state.user);
+  const [mounted, setMounted] = useState(false);
   
   const firstName = user?.name ? user.name.split(' ')[0] : 'Login';
   const profileHref = user ? "/profile" : "/user/login";
 
+  useEffect(()=>{
+    setMounted(true);
+  },[])
   // Configuration array makes it easy to add/remove items without changing JSX
   const navigationItems = useMemo(() => [
     { label: 'Home', href: '/', icon: Home },
@@ -67,11 +70,16 @@ export default function BottomNav() {
                           size={22} 
                           strokeWidth={active ? 2.5 : 2} 
                         />
-      
-                        {/* Enhanced Badge System */}
-                        {item.badgeCount !== undefined && item.badgeCount > 0 && (
-                          <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white ring-2 ring-white">
-                            {item.badgeCount > 99 ? '99+' : item.badgeCount}
+{/*       
+                      {( mounted && wishListItemCount > 0) && (
+                            <span className='absolute -top-2 -right-2 bg-rose-500 text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center'>
+                              {cartItemCount}
+                            </span>
+                        )} */}
+
+                        {mounted && typeof item.badgeCount === "number" && (
+                          <span className="absolute -top-2 -right-2 bg-rose-500 text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                            {item.badgeCount > 99 ? '99+' : item.badgeCount??0}
                           </span>
                         )}
                       </div>

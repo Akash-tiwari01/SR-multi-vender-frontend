@@ -1,171 +1,183 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
+import { ShoppingCart, Share2, Heart, Zap } from "lucide-react";
 
 import { getImageUrl } from "@/utils/helperFunction";
-import { cn } from "@/utils/cn";
 import { addToCart } from "@/redux/cart/cartSlice";
 import calculateDiscountPercentage from "@/utils/calculateDiscountPercentage";
+import ReviewStars from "@/modules/Reviews/Components/ReviewStars";
 
-import ButtonPrimary from "./ButtonPrimary";
-import { ButtonSecondary } from "./ButtonSecondary";
-import ReviewStars from "@/app/products/[slug]/components/ReviewStars";
+const SLIDE_DURATION = 3000;
 
 function ProductCard({ product }) {
   const dispatch = useDispatch();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const timerRef = useRef(null);
 
-  const discount = calculateDiscountPercentage(
-    product?.regular_price,
-    product?.sale_price
-  );
-
+  const images = product?.media?.length > 0 ? product.media : ["/placeholder.png"];
   const outOfStock = !product?.in_stock || product?.stock <= 0;
+  const discount = calculateDiscountPercentage(product?.regular_price, product?.sale_price);
 
-  const item =
-    product?.is_variable_product && product?.variations?.length > 0
-      ? product.variations[0]
-      : product;
+  // --- Slider Logic ---
+  const nextSlide = useCallback(() => {
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  }, [images.length]);
 
-  const handleAddToCart = (e) => {
+  const startSlider = () => {
+    stopSlider();
+    if (!outOfStock && images.length > 1) {
+      timerRef.current = setInterval(nextSlide, SLIDE_DURATION);
+    }
+  };
+
+  const stopSlider = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  useEffect(() => {
+    isHovered ? stopSlider() : startSlider();
+    return () => stopSlider();
+  }, [isHovered, images.length]);
+
+  // --- Action Handlers ---
+  const handleShare = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (outOfStock) {
-      toast.error("This product is out of stock");
-      return;
+    const url = `${window.location.origin}/products/${product.slug}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: product.name, url });
+      } catch (err) { console.error("Share failed", err); }
+    } else {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied to clipboard!");
     }
+  };
 
-    dispatch(
-      addToCart({
-        product: product._id,
-        variation: null,
-        quantity: 1,
-        productData: {
-          slug: product.slug,
-          name: product.name,
-          image: product.media?.[0] || "",
-          price: Number(product.sale_price) || 0,
-          regularPrice:
-            Number(product.regular_price) ||
-            Number(product.sale_price) ||
-            0,
-          vendor: product.vendor?._id || null,
-          vendorName: product.vendor?.name || "Unknown Vendor",
-          stock: product.stock || 0,
-        },
-      })
-    );
-
-    toast.success(`${product.name} added to cart!`);
+  const handleAddToCart = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (outOfStock) return toast.error("Out of stock");
+    
+    dispatch(addToCart({
+      product: product._id,
+      quantity: 1,
+      productData: { ...product, image: images[0] }
+    }));
+    toast.success("Added to cart");
   };
 
   return (
-    <div className="group relative bg-white rounded-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full w-full">
-      {/* Image Section */}
-      <div className="relative aspect-square overflow-hidden border-b border-gray-200">
-        <Link
-          href={`/products/${product?.slug}`}
-          className="relative block w-full h-full group"
-        >
-          {/* Base Image */}
-          <Image
-            src={getImageUrl(product?.media?.[0])}
-            alt={product?.name || "Product Image"}
-            fill
-            unoptimized
-            className="object-contain w-full h-full transition-opacity duration-500 ease-in-out opacity-100 group-hover:opacity-0"
-            sizes="(min-width: 768px) 25vw, 50vw"
-          />
-
-          {/* Hover Image */}
-          {product?.media?.[1] && (
+    <div 
+      className="group relative flex flex-col h-full w-full overflow-hidden rounded-md bg-white border border-slate-100 transition-all duration-500 hover:shadow-md"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Top Section: Image & Overlay Actions */}
+      <div className="relative aspect-square w-full overflow-hidden bg-slate-50">
+        <Link href={`/products/${product?.slug}`} className="block h-full w-full">
+          {images.map((img, idx) => (
             <Image
-              src={getImageUrl(product?.media?.[1])}
-              alt={product?.name || "Product Image Hover"}
+              key={idx}
+              src={getImageUrl(img)}
+              alt={product.name}
               fill
+              className={`object-cover transition-all duration-700 ease-in-out ${
+                idx === currentIndex ? "opacity-100 scale-100" : "opacity-0 scale-110"
+              }`}
               unoptimized
-              className="object-contain w-full h-full absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100"
-              sizes="(min-width: 768px) 25vw, 50vw"
             />
-          )}
+          ))}
         </Link>
 
-        {/* Discount Badge */}
-        {discount > 0 && (
-          <div className="absolute right-0 bottom-0 z-20">
-            <span className="bg-brand-accent text-brand-primary text-[9px] font-bold tracking-widest uppercase px-2.5 pt-1 pb-2 rounded-tl-sm shadow-sm">
-              {discount}% OFF
-            </span>
-          </div>
-        )}
+        {/* TOP FLOATING ACTIONS - Hidden until hover */}
+        <div className="absolute top-3 right-3 flex flex-col gap-2 z-30 translate-x-12 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
+          <button onClick={handleShare} title="Share" className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
+            <Share2 size={16} />
+          </button>
+          <button title="Add to Wishlist" className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:text-rose-500 transition-colors">
+            <Heart size={16} />
+          </button>
+          <button onClick={handleAddToCart} title="Quick Add" className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:bg-brand-accent hover:text-brand-primary transition-colors">
+            <ShoppingCart size={16} />
+          </button>
+        </div>
 
-        {/* Out of Stock Overlay */}
-        {outOfStock && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-30">
-            <span className="bg-gray-600/80 text-white px-4 py-2 w-full text-center font-semibold">
-              Out of Stock
-            </span>
-          </div>
+        {/* Indicators */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1 z-20">
+          {images.length > 1 && images.map((_, idx) => (
+            <div key={idx} className={`h-1 rounded-full transition-all ${idx === currentIndex ? "w-4 bg-brand-secondary" : "w-1 bg-white/50"}`} />
+          ))}
+        </div>
+        
+        {discount > 0 && (
+          <span className="absolute left-3 top-3 bg-brand-accent px-2 py-1 text-[10px] font-bold text-brand-primary rounded-md shadow-sm z-10">
+            -{discount}%
+          </span>
         )}
       </div>
 
       {/* Content Section */}
-      <div className="px-2 pt-1 flex flex-col grow bg-white">
-        <div className="grow">
-          <p className="text-[10px] text-gray-400 uppercase tracking-[2px] font-medium">
-            Sold By: {product?.vendor?.name}
+      <div className="flex grow flex-col p-4 bg-white">
+        <div className="mb-2">
+          <p className="text-[9px] font-bold uppercase tracking-[2px] text-slate-400">
+            Sold By: {product?.vendor?.name || "Unknown"}
           </p>
-
           <Link href={`/products/${product?.slug}`}>
-            <h3 className="text-brand-primary font-medium text-sm md:text-base line-clamp-1 group-hover:text-brand-secondary transition-colors duration-300">
-              {product?.name}
+            <h3 className="mt-1 line-clamp-1 text-sm font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors">
+              {product.name}
             </h3>
           </Link>
         </div>
 
-        <div className="mt-1">
-          <ReviewStars rating={4.5} size={15} />
-
-          <div className="flex flex-col md:flex-row md:items-baseline md:gap-2 mt-1">
-            <span className="text-[.8rem] md:text-[1.1rem] font-bold text-brand-primary">
-              ₹{item?.sale_price}
-            </span>
-
-            {discount > 0 && (
-              <span className="text-[.6rem] md:text-[.9rem] text-gray-400 line-through">
-                ₹{item?.regular_price}
-              </span>
-            )}
-          </div>
+        {/* INTEGRATED REVIEW STARS */}
+        <div className="mb-2">
+          <ReviewStars 
+            rating={product?.averageRating || 0} 
+            size={14} 
+            showLabel={true} 
+          />
         </div>
 
-        {/* Desktop Actions */}
-        <div className="hidden md:block mt-2">
-          <ButtonPrimary disabled={outOfStock} onClick={handleAddToCart}>
-            {outOfStock ? "OUT OF STOCK" : "ADD TO CART"}
-          </ButtonPrimary>
-
-          <ButtonSecondary
-            disabled={outOfStock}
-            onClick={handleAddToCart}
-            className="mt-2"
-          >
-            {outOfStock ? "OUT OF STOCK" : "BUY NOW"}
-          </ButtonSecondary>
+        <div className=" flex items-baseline gap-2">
+          <span className="text-lg font-bold text-brand-primary">₹{product.sale_price}</span>
+          {discount > 0 && (
+            <span className="text-xs text-slate-400 line-through">₹{product.regular_price}</span>
+          )}
         </div>
 
-        {/* Mobile Action */}
-        <button
-          onClick={handleAddToCart}
-          disabled={outOfStock}
-          className="md:hidden mt-3 w-full bg-linear-to-r from-brand-secondary via-[#f2c977] to-brand-secondary text-brand-primary py-2.5 rounded-lg active:scale-95 transition-transform flex items-center justify-center shadow-sm"
-        >
-          {outOfStock ? "OUT OF STOCK" : "ADD TO CART"}
-        </button>
+        {/* DUAL CTA BUTTONS */}
+        <div className="mt-auto pt-2">
+          {outOfStock ? (
+            <button
+              disabled
+              className="w-full rounded-lg bg-slate-200 py-2.5 text-[11px] font-bold uppercase text-slate-500"
+            >
+              OUT OF STOCK
+            </button>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={handleAddToCart}
+                className="flex items-center justify-center rounded-lg border-2 border-brand-primary py-2 text-[11px] font-bold text-brand-primary transition-all hover:bg-brand-primary hover:text-white"
+              >
+                ADD TO CART
+              </button>
+              <button
+                className="flex items-center justify-center gap-2 rounded-lg bg-brand-secondary py-2 text-[11px] font-bold text-brand-primary transition-all hover:brightness-110 active:scale-95 shadow-sm"
+              >
+                <Zap size={14} fill="currentColor" />
+                BUY NOW
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

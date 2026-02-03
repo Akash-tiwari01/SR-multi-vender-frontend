@@ -9,7 +9,7 @@ import VariationSelector from "./VariationSelector";
 import ProductSpecs from "./ProductSpecs";
 import ButtonPrimary from "@/components/ButtonPrimary";
 import { ButtonSecondary } from "@/components/ButtonSecondary";
-import ReviewStars from "./ReviewStars";
+import ReviewStars from "../../../../modules/Reviews/Components/ReviewStars";
 import calculateDiscountPercentage from "@/utils/calculateDiscountPercentage";
 import { useState } from "react";
 import Link from "next/link";
@@ -18,17 +18,15 @@ export default function ProductInfo() {
   const { currentProduct, selectedVariation, status } = useSelector(
     (state) => state.product
   );
+  
   const dispatch = useDispatch();
-    console.log('selectedVariation: ',selectedVariation, "currentProduct:",currentProduct);
+  const badgeHeight = 'w6 h-6'
+  const badgeText = 'text-[12px] text-center line-height'
   if (!currentProduct) return null;
-
-    console.log(currentProduct.vendor.vendor.store_active);
   const price = selectedVariation?.sale_price ?? currentProduct.sale_price;
   const originalPrice = selectedVariation?.regular_price ?? currentProduct.regular_price;
   const sku = selectedVariation?.sku ?? currentProduct.sku;
   const discount = calculateDiscountPercentage(originalPrice, price)
-  const vendor = 
-  console.log(currentProduct);
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -60,7 +58,8 @@ export default function ProductInfo() {
     toast.success(`${product.name} added to cart!`);
   };
   return (
-    <div className=" lg:col-span-6 px-4">
+   <div className="lg:col-span-6 px-4 leading-3 capitalize flex justify-center">
+     <div className="container xl:max-w-2xl max-w-xl">
       
       {/* Title */}
       <h1 className="text-2xl lg:text-2xl font-bold text-brand-primary mb-2">
@@ -91,19 +90,19 @@ export default function ProductInfo() {
         <ReviewStars rating={4.5} count={25}/>
       </div>
 
+      
       {/* Details */}
-      <div className="mb-2 ">
+      <div className="mb-10 ">
       <ProductSpecs specifications={currentProduct.specifications} description={currentProduct.description} />
       </div>
-
       
       
 
       {/* Price */}
-      <div className="flex flex-col gap-1 font-sans">
+      <div className="flex flex-col gap-3 font-sans">
       {/* Top Row: Discount Badge (High Visibility for FOMO) */}
       {discount && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <span className="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-xs font-bold text-red-600 ring-1 ring-inset ring-red-600/20">
             -{discount}% OFF
           </span>
@@ -112,7 +111,7 @@ export default function ProductInfo() {
 
       {/* Middle Row: Primary Price and Comparison */}
       <div className="flex items-baseline gap-2">
-        <span className="text-4xl font-extrabold tracking-tight text-slate-900">
+        <span className="text-3xl font-bold  text-brand-primary">
           {formatPrice(price)}
         </span>
         
@@ -130,6 +129,8 @@ export default function ProductInfo() {
     </div>
       {/* Variations */}
       <VariationSelector />
+
+      
 
       {/* Actions */}
       <div className="flex gap-4 mb-6 ">
@@ -153,17 +154,17 @@ export default function ProductInfo() {
           Buy Now
         </ButtonSecondary>
 
-        <button className="w-1/6 h-12 border rounded flex items-center justify-center text-4xl">
-          ♡
-        </button>
+       
       </div>
 
+      
+
       {/* Trust Badges */}
-      <div className="border-t pt-2">
-        <div className="flex gap-10  flex-wrap justify-center ">
+      <div className="border-t pt-4">
+        <div className="flex gap-3 md:gap-6 lg:gap-10 flex-wrap justify-center ">
           
-          {currentProduct?.cod_available && <div className="flex items-center gap-1 flex-col">
-              <div className="w-10 h-10 flex items-center justify-center overflow-hidden">
+          {currentProduct?.cod_available && <div className="flex items-center gap-3 flex-col">
+              <div className={`${badgeHeight} flex items-center justify-center `}>
                 <Image
                   src={'/icons/cash-on-delivery.png'}
                   alt="icon"
@@ -171,12 +172,12 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-xs font-medium capitalize text-center">
-              COD Available
+              <div className={badgeText}>
+              COD<br className="md:hidden"/> Available
               </div>
           </div>}
-          {<div className="flex items-center gap-1 flex-col">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+          {<div className="flex items-center gap-3 flex-col">
+              <div className={`${badgeHeight} flex items-center justify-center `}>
                 <Image
                   src={'/icons/authenticity.png'}
                   alt="icon"
@@ -184,12 +185,12 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-xs font-medium capitalize text-center">
-              100% Authentic
+              <div className={badgeText}>
+              100%<br className="md:hidden"/> Authentic
               </div>
           </div>}
-          {currentProduct?.return_available && <div className="flex items-center gap-1 flex-col">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+          {currentProduct?.return_available && <div className="flex items-center gap-3 flex-col">
+              <div className={`${badgeHeight} flex items-center justify-center `}>
                 <Image
                   src={'/icons/return.png'}
                   alt="icon"
@@ -197,12 +198,12 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-xs font-medium capitalize text-center">
-              7 days return
+              <div className={badgeText}>
+              7 days<br className="md:hidden"/> return
               </div>
           </div>}
-          {currentProduct?.exchange_available && <div className="flex items-center gap-1 flex-col">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+          {currentProduct?.exchange_available && <div className="flex items-center gap-3 flex-col">
+              <div className={`${badgeHeight} flex items-center justify-center `}>
                 <Image
                   src={'/icons/return.png'}
                   alt="icon"
@@ -210,12 +211,12 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-xs font-medium capitalize text-center">
-              7 days replacement
+              <div className={badgeText}>
+              7 days<br className="md:hidden"/> replacement
               </div>
           </div>}
-          <div className="flex items-center gap-1 flex-col">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+          <div className="flex items-center gap-3 flex-col">
+              <div className={`${badgeHeight} flex items-center justify-center `}>
                 <Image
                   src={'/icons/makiinindia.png'}
                   alt="icon"
@@ -223,8 +224,8 @@ export default function ProductInfo() {
                   height={40}
                 />
               </div>
-              <div className="text-xs font-medium capitalize text-center">
-              Make In India
+              <div className={badgeText}>
+              Make In<br className="md:hidden"/> India
               </div>
           </div>
         </div>
@@ -232,5 +233,6 @@ export default function ProductInfo() {
 
       
     </div>
+   </div>
   );
 }

@@ -19,8 +19,3 @@ export async function getProductBySlug(slug) {
   }
 }
 
-export async function getRelatedProducts(slug) {
-  // Simulating a separate fetch for PPR demonstration
-  // In real app, this might be a separate endpoint
-  return []; 
-}

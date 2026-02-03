@@ -12,7 +12,6 @@ export default async function ProductContent({ promiseParams, promiseFilters }) 
 
   // 2. Initial Fetch using the Service (Not Action)
   const initialData = await getProductsCached(slug, filters, 1);
-  // console.log(initialData); // Keep the log for debugging if needed
 
   const collectionName = initialData?.product_collection?.name || 'Collection';
 

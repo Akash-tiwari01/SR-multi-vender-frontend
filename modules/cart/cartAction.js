@@ -40,7 +40,6 @@ export async function getCartDataAction() {
  * Syncs local Redux state changes to the Backend.
  */
 export async function updateRemoteCartAction(items) {
-    console.log("update Cart");
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value || null;
     const guestId = cookieStore.get("guest_id")?.value || null;

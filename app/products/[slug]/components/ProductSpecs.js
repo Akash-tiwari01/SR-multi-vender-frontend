@@ -1,84 +1,116 @@
-"use client"
-import { ChevronUp, LucideChevronDown } from "lucide-react";
-import {useState} from "react";
+"use client";
 
-const ProductSpecs = ({ specifications = [] , description="" }) => {
-  if (!specifications.length) return null;
-  const [showSpecifications, setShowSpecifications] = useState(-1)
-  console.log(description);
+import { LucideChevronDown } from "lucide-react";
+import { useState } from "react";
+
+const ProductSpecs = ({ specifications = [], description = "" }) => {
+  // Early exit logic - SOLID: Don't render empty components
+  if (!specifications.length && !description) return null;
+
+  // Refined State: Using named indices for readability
+  // -1: closed, 0: description, 1: specifications
+  const [activeTab, setActiveTab] = useState(null);
+
+  const toggleTab = (index) => {
+    setActiveTab((prev) => (prev === index ? null : index));
+  };
+
   return (
-    <div >
-      <section className="border-b border-slate-900">
-        <div className="overflow-hidden rounded-md  bg-white  py-2">
-          <div>
-            <button className="text-xl font-semibold text-slate-900  text-left  flex justify-between w-full transition-all duration-500 ease-in-out"  onClick={()=>{setShowSpecifications(showSpecifications==0?-1:0)}}> Description {showSpecifications==0?<ChevronUp/>:<LucideChevronDown/>}</button>
-          </div>
-          {/* Short Description */}
-          <div
-            className={`${showSpecifications==0?'content':'hidden'} description text-sm  text-brand-primary leading-relaxed my-4 mb-2`}
-            dangerouslySetInnerHTML={{ __html: description }}
-          />
-        </div>
-      </section>
-      <section className="border-b border-slate-900">
-        <div className="overflow-hidden rounded-md  bg-white py-2">
-            <div>
-              <button className="text-xl font-semibold text-slate-900  text-left  flex justify-between w-full transition-all duration-500 ease-in-out"  onClick={()=>{setShowSpecifications(showSpecifications==1?-1:1)}}> Specifications {showSpecifications==1?<ChevronUp/>:<LucideChevronDown/>}</button>
-            </div>
-            <div className={`${showSpecifications==1?'content':'hidden'} py-5 pr-10`}>
-            <table className={` w-full border-collapse border`}>
-            {/* Table Header */}
-            <thead className={` w-full transition-all duration-500 ease-in-out mt-4 border`}>
-              <tr className="bg-slate-200 border-b border-slate-800 w-full mt-4">
-                <th
-                  scope="col"
-                  className="w-1/3 px-5 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide"
-                >
-                  Feature
-                </th>
-                <th
-                  scope="col"
-                  className="px-5 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wide"
-                >
-                  Details
-                </th>
-              </tr>
-            </thead>
+    <div className="w-full space-y-2">
+      {/* SECTION: Description */}
+      {description && (
+        <section className="border-b border-brand-primary/10">
+          <div className="overflow-hidden bg-white py-2">
+            <button
+              className="flex w-full items-center justify-between py-4 text-left transition-all hover:opacity-80"
+              onClick={() => toggleTab(0)}
+            >
+              <span className="text-xl font-semibold text-brand-primary">
+                Description
+              </span>
+              <LucideChevronDown
+                className={`h-5 w-5 text-brand-secondary transition-transform duration-300 ${
+                  activeTab === 0 ? "rotate-180" : "rotate-0"
+                }`}
+              />
+            </button>
 
-            {/* Table Body */}
-            <tbody className={`${showSpecifications==1?'content':'hidden'} w-full transition-all duration-500 ease-in-out`}>
-              {specifications.map((spec, i) => (
-                <tr
-                  key={spec._id || i}
-                  className="border-b last:border-b-0 hover:bg-slate-50/40 transition"
-                >
-                  <td className="w-1/3 px-5 py-4 text-sm text-slate-500 font-medium align-top">
-                    {spec.label}
-                  </td>
-                  <td className="px-5 py-4 text-sm text-slate-800 align-top">
-                    {spec.value}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            {/* Smooth Height Transition Hack */}
+            <div
+              className={`grid transition-all duration-500 ease-in-out ${
+                activeTab === 0 ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div
+                  className="description py-4 text-sm leading-relaxed text-brand-primary/80 prose prose-slate"
+                  dangerouslySetInnerHTML={{ __html: description }}
+                />
+              </div>
             </div>
-        </div>
-      </section>
-      <section >
-        <div className="overflow-hidden rounded-md  bg-white  py-2">
-          <div>
-            <button className="text-xl font-semibold text-slate-900  text-left  flex justify-between w-full transition-all duration-500 ease-in-out"  onClick={()=>{setShowSpecifications(showSpecifications==2?-1:2)}}> Reviews {showSpecifications==2?<ChevronUp/>:<LucideChevronDown/>}</button>
           </div>
-          {/* Short Description */}
-          <div
-            className={`${showSpecifications==2?'content':'hidden'}  text-sm  text-brand-primary leading-relaxed mt-4 mb-2`}
-            dangerouslySetInnerHTML={{ __html: description }}
-          />
-        </div>
-      </section>
+        </section>
+      )}
+
+      {/* SECTION: Specifications */}
+      {specifications.length > 0 && (
+        <section className="border-b border-brand-primary/10">
+          <div className="overflow-hidden bg-white py-2">
+            <button
+              className="flex w-full items-center justify-between py-4 text-left transition-all hover:opacity-80"
+              onClick={() => toggleTab(1)}
+            >
+              <span className="text-xl font-semibold text-brand-primary">
+                Specifications
+              </span>
+              <LucideChevronDown
+                className={`h-5 w-5 text-brand-secondary transition-transform duration-300 ${
+                  activeTab === 1 ? "rotate-180" : "rotate-0"
+                }`}
+              />
+            </button>
+
+            <div
+              className={`grid transition-all duration-500 ease-in-out ${
+                activeTab === 1 ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+              }`}
+            >
+              <div className="overflow-hidden">
+                <div className="py-5 pr-0 md:pr-10">
+                  <table className="w-full border-separate border-spacing-0 overflow-hidden rounded-lg border border-brand-primary/10">
+                    <thead>
+                      <tr className="bg-brand-primary/[0.03]">
+                        <th className="w-1/3 px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-brand-primary/60">
+                          Feature
+                        </th>
+                        <th className="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-brand-primary/60">
+                          Details
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-primary/5">
+                      {specifications.map((spec, i) => (
+                        <tr
+                          key={spec._id || i}
+                          className="transition-colors hover:bg-brand-accent/5"
+                        >
+                          <td className="w-1/3 px-5 py-4 text-sm font-semibold text-brand-primary/70 align-top">
+                            {spec.label}
+                          </td>
+                          <td className="px-5 py-4 text-sm text-brand-primary align-top">
+                            {spec.value}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </div>
-    
   );
 };
 

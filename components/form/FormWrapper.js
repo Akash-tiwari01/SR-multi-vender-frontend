@@ -4,6 +4,7 @@ import { CheckCircle2, Loader2, Upload, X, FileText, AlertCircle } from 'lucide-
 import React, { useState, useEffect, useRef,useMemo } from 'react';
 import { uploadFileAction } from '@/lib/action';
 import { cn } from '@/utils/cn';
+import InfinityLoader from '../InfinityLoader';
 
 // The useFormContext import is kept here for reference if you expand to use Context later, 
 // but is not strictly necessary for these components as props are passed directly.
@@ -291,6 +292,103 @@ export const RHFFileField = ({ name, label, setValue, watch, errors }) => {
             <span className="text-xs font-bold text-brand-primary/60">Upload {label}</span>
             <input type="file" className="hidden" onChange={handleFileChange} accept="image/*,.pdf" />
           </label>
+        )}
+      </div>
+
+      {errorMessage && (
+        <p className="flex items-center gap-1 text-[11px] text-red-500 font-bold px-1">
+          <AlertCircle size={12} /> {errorMessage}
+        </p>
+      )}
+    </div>
+  );
+};
+
+/**
+ * Multi-File Upload Component
+ * SOLID Principle: Single Responsibility - Manages a collection of file paths.
+ */
+export const RHFMultiFileField = ({ name, label, setValue, watch, errors }) => {
+  const [loading, setLoading] = useState(false);
+  
+  // 1. watch returns an array [url1, url2] or undefined
+  const fileValues = watch(name) || []; 
+  const errorMessage = errors[name]?.message;
+
+  const base = process.env.NEXT_PUBLIC_API_URI || '';
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const result = await uploadFileAction(formData);
+      if (result.success) {
+        // Normalize and Add to existing array
+        const cleanPath = result.url.replace(/\\/g, '/');
+        const updatedFiles = [...fileValues, cleanPath];
+        
+        setValue(name, updatedFiles, { 
+            shouldValidate: true, 
+            shouldDirty: true, 
+            shouldTouch: true 
+        });
+      } else {
+        alert(result.message);
+      }
+    } catch (err) {
+      console.error("Upload UI Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemove = (indexToRemove) => {
+    const updatedFiles = fileValues.filter((_, index) => index !== indexToRemove);
+    setValue(name, updatedFiles, { shouldValidate: true });
+  };
+
+  return (
+    <div className="flex flex-col gap-2 w-full">
+      <label className="text-sm font-bold text-brand-primary/70 px-1">{label}</label>
+      
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {/* Render Existing Previews */}
+        {fileValues.map((url, index) => (
+          <div key={index} className="relative group aspect-square rounded-xl border overflow-hidden bg-slate-50">
+            <img 
+              src={`${base}${url}`} 
+              alt="preview" 
+              className="h-full w-full object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => handleRemove(index)}
+              className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ))}
+
+        {/* Upload Trigger (Always visible if loading is false) */}
+        {!loading && (
+          <label className="flex flex-col items-center justify-center aspect-square rounded-xl border-2 border-dashed border-slate-200 hover:border-rose-400 cursor-pointer transition-colors bg-white">
+            <Upload size={20} className="text-slate-400" />
+            <span className="text-[10px] font-bold text-slate-400 mt-1">Add More</span>
+            <input type="file" className="hidden" onChange={handleFileChange} accept="image/*" />
+          </label>
+        )}
+
+        {/* Loading State */}
+        {loading && (
+          <div className="flex flex-col items-center justify-center aspect-square rounded-xl border-2 border-dashed border-slate-200 bg-slate-50">
+            <InfinityLoader className="h-6 w-6 text-brand-accent animate-spin" />
+          </div>
         )}
       </div>
 

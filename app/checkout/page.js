@@ -254,199 +254,178 @@ export default function CheckoutPage() {
   }
 
   return (
-    <>
+    <div className='min-h-screen bg-gray-50/50 pb-20'>
       <Toaster position='top-right' />
-      <div className='min-h-screen bg-gray-50 py-8'>
-        <div className='container mx-auto px-4 max-w-7xl'>
-          {/* Header */}
-          <div className='mb-8'>
-            <Link
-              href='/cart'
-              className='inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 transition-colors'
-            >
-              <ArrowLeft className='w-4 h-4' />
-              Back to Cart
-            </Link>
-            <h1 className='text-3xl font-bold text-gray-900'>Checkout</h1>
-          </div>
+      
+      {/* Premium Header */}
+      <nav className='bg-brand-primary border-b border-brand-secondary/20 py-6 mb-8 shadow-xl'>
+        <div className='container mx-auto px-4 max-w-7xl flex items-center justify-between'>
+          <Link
+            href='/cart'
+            className='group inline-flex items-center gap-2 text-brand-accent font-medium transition-all hover:translate-x-[-4px]'
+          >
+            <ArrowLeft className='w-5 h-5 group-hover:text-brand-secondary' />
+            <span className='hidden sm:inline'>Return to Cart</span>
+          </Link>
+          <h1 className='text-2xl font-bold text-white tracking-tight uppercase italic'>
+            Secure <span className='text-brand-secondary'>Checkout</span>
+          </h1>
+          <div className='w-10 sm:w-20'></div> {/* Spacer */}
+        </div>
+      </nav>
 
-          {/* Progress Steps */}
-          <div className='mb-8'>
-            <div className='flex items-center justify-center'>
-              {[1, 2, 3].map((s) => (
-                <div key={s} className='flex items-center'>
-                  <div
-                    className={`
-                    flex items-center justify-center w-10 h-10 rounded-full border-2 font-semibold
-                    ${
-                      step >= s
-                        ? 'bg-blue-600 border-blue-600 text-white'
-                        : 'bg-white border-gray-300 text-gray-400'
-                    }
+      <div className='container mx-auto px-4 max-w-7xl'>
+        
+        {/* Progress Stepper - Enhanced contrast */}
+        <div className='mb-12 max-w-2xl mx-auto'>
+          <div className='flex items-center justify-between relative'>
+            {/* Progress Line Background */}
+            <div className='absolute top-1/2 left-0 w-full h-0.5 bg-gray-200 -translate-y-1/2 z-0'></div>
+            
+            {[1, 2, 3].map((s) => (
+              <div key={s} className='relative z-10 flex flex-col items-center gap-3'>
+                <div
+                  className={`
+                    flex items-center justify-center w-12 h-12 rounded-full border-2 font-bold transition-all duration-300
+                    ${step >= s 
+                      ? 'bg-brand-secondary border-brand-secondary text-brand-primary shadow-[0_0_15px_rgba(218,172,71,0.3)]' 
+                      : 'bg-white border-gray-300 text-gray-400'}
                   `}
-                  >
-                    {step > s ? <CheckCircle2 className='w-6 h-6' /> : s}
-                  </div>
-                  {s < 3 && (
-                    <div
-                      className={`w-24 h-1 mx-2 ${
-                        step > s ? 'bg-blue-600' : 'bg-gray-300'
-                      }`}
-                    />
-                  )}
+                >
+                  {step > s ? <CheckCircle2 className='w-6 h-6' /> : s}
                 </div>
-              ))}
-            </div>
-            <div className='flex justify-center mt-4 gap-24'>
-              <span
-                className={`text-sm font-medium ${
-                  step >= 1 ? 'text-blue-600' : 'text-gray-400'
-                }`}
-              >
-                Address
-              </span>
-              <span
-                className={`text-sm font-medium ${
-                  step >= 2 ? 'text-blue-600' : 'text-gray-400'
-                }`}
-              >
-                Payment
-              </span>
-              <span
-                className={`text-sm font-medium ${
-                  step >= 3 ? 'text-blue-600' : 'text-gray-400'
-                }`}
-              >
-                Review
-              </span>
-            </div>
+                <span className={`text-xs font-bold uppercase tracking-wider ${step >= s ? 'text-brand-primary' : 'text-gray-400'}`}>
+                  {s === 1 ? 'Shipping' : s === 2 ? 'Payment' : 'Review'}
+                </span>
+              </div>
+            ))}
           </div>
+        </div>
 
-          <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-            {/* Left Side - Forms */}
-            <div className='lg:col-span-2'>
-              {/* Step 1: Address */}
-              {step === 1 && (
-                <AddressForm
-                  onSubmit={handleAddressSubmit}
-                  initialData={addressData}
-                />
-              )}
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-10 items-start'>
+          
+          {/* Main Content Area */}
+          <div className='lg:col-span-2 space-y-8'>
+            
+            {/* Step 1: Address Section */}
+            {step === 1 && (
+              <div className='bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden'>
+                <div className='bg-gray-50 px-6 py-4 border-b border-gray-100'>
+                  <h2 className='text-lg font-bold text-brand-primary'>Shipping Information</h2>
+                </div>
+                <div className='p-6'>
+                  <AddressForm onSubmit={handleAddressSubmit} initialData={addressData} />
+                </div>
+              </div>
+            )}
 
-              {/* Step 2: Payment */}
-              {step === 2 && (
-                <div className='space-y-6'>
+            {/* Step 2: Payment Section */}
+            {step === 2 && (
+              <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
+                <div className='bg-white rounded-2xl shadow-sm border border-gray-100 p-6'>
                   <PaymentMethod
                     isCodAvailable={isCodAvailable}
                     onSelect={handlePaymentSelect}
                     selectedMethod={paymentMethod}
                   />
-                  <div className='flex gap-4'>
-                    <button
-                      onClick={() => setStep(1)}
-                      className='flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors'
-                    >
-                      Back
-                    </button>
-                    <button
-                      onClick={handleContinueToReview}
-                      disabled={!paymentMethod}
-                      className='flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors'
-                    >
-                      Continue
-                    </button>
-                  </div>
                 </div>
-              )}
+                
+                <div className='flex flex-col sm:flex-row gap-4'>
+                  <button
+                    onClick={() => setStep(1)}
+                    className='flex-1 bg-white border-2 border-gray-200 hover:border-brand-primary text-gray-600 font-bold py-4 rounded-xl transition-all'
+                  >
+                    Back to Shipping
+                  </button>
+                  <button
+                    onClick={handleContinueToReview}
+                    disabled={!paymentMethod}
+                    className='flex-1 bg-brand-primary hover:bg-black text-brand-secondary disabled:bg-gray-200 disabled:text-gray-400 font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-brand-primary/20'
+                  >
+                    Continue to Review
+                  </button>
+                </div>
+              </div>
+            )}
 
-              {/* Step 3: Review */}
-              {step === 3 && (
-                <div className='space-y-6'>
-                  {/* Address Summary */}
-                  <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-                    <div className='flex justify-between items-start mb-4'>
-                      <h3 className='text-lg font-semibold text-gray-900'>
-                        Delivery Address
-                      </h3>
-                      <button
-                        onClick={() => setStep(1)}
-                        className='text-sm text-blue-600 hover:text-blue-700'
-                      >
-                        Edit
-                      </button>
-                    </div>
-                    <div className='text-gray-700'>
-                      <p className='font-medium'>{addressData?.name}</p>
+            {/* Step 3: Review Section */}
+            {step === 3 && (
+              <div className='space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                  {/* Summary Card: Address */}
+                  <div className='bg-white rounded-2xl shadow-sm border-t-4 border-brand-secondary p-6 relative'>
+                    <h3 className='text-sm font-bold text-brand-primary uppercase tracking-widest mb-4'>Delivery To</h3>
+                    <div className='text-gray-600 leading-relaxed'>
+                      <p className='font-bold text-gray-900'>{addressData?.name}</p>
                       <p>{addressData?.address_1}</p>
-                      {addressData?.landmark && <p>{addressData.landmark}</p>}
-                      <p>
-                        {addressData?.city}, {addressData?.state} -{' '}
-                        {addressData?.pin}
-                      </p>
-                      <p className='mt-2'>Phone: {addressData?.phone}</p>
-                      <p>Email: {addressData?.email}</p>
+                      <p>{addressData?.city}, {addressData?.state} - {addressData?.pin}</p>
+                      <p className='mt-2 font-medium text-brand-primary'>{addressData?.phone}</p>
                     </div>
+                    <button onClick={() => setStep(1)} className='absolute top-6 right-6 text-xs font-bold text-brand-accent hover:underline uppercase'>Edit</button>
                   </div>
 
-                  {/* Payment Summary */}
-                  <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-                    <div className='flex justify-between items-start'>
-                      <h3 className='text-lg font-semibold text-gray-900'>
-                        Payment Method
-                      </h3>
-                      <button
-                        onClick={() => setStep(2)}
-                        className='text-sm text-blue-600 hover:text-blue-700'
-                      >
-                        Change
-                      </button>
-                    </div>
-                    <p className='text-gray-700 mt-2'>
-                      {paymentMethod === 'COD'
-                        ? 'Cash on Delivery'
-                        : 'Online Payment'}
+                  {/* Summary Card: Payment */}
+                  <div className='bg-white rounded-2xl shadow-sm border-t-4 border-brand-accent p-6 relative'>
+                    <h3 className='text-sm font-bold text-brand-primary uppercase tracking-widest mb-4'>Payment Mode</h3>
+                    <p className='text-xl font-bold text-gray-900 mb-1'>
+                      {paymentMethod === 'COD' ? 'Cash on Delivery' : 'Online Payment'}
                     </p>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className='flex gap-4'>
-                    <button
-                      onClick={() => setStep(2)}
-                      className='flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors'
-                    >
-                      Back
-                    </button>
-                    <button
-                      onClick={handlePlaceOrder}
-                      disabled={isPlacingOrder}
-                      className='flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2'
-                    >
-                      {isPlacingOrder ? (
-                        <>
-                          <Loader2 className='w-5 h-5 animate-spin' />
-                          Processing...
-                        </>
-                      ) : (
-                        'Place Order'
-                      )}
-                    </button>
+                    <p className='text-sm text-gray-500'>Via Secure Gateway</p>
+                    <button onClick={() => setStep(2)} className='absolute top-6 right-6 text-xs font-bold text-brand-accent hover:underline uppercase'>Change</button>
                   </div>
                 </div>
-              )}
-            </div>
 
-            {/* Right Side - Order Summary */}
-            <div className='lg:col-span-1'>
-              <OrderSummary
-                validatedCart={validatedCart || []}
-                deliveryCharges={deliveryCharges}
-                codCharges={codCharges}
-                discount={0}
-              />
+                {/* Final CTA */}
+                <div className='flex flex-col sm:flex-row gap-4 pt-4'>
+                  <button
+                    onClick={() => setStep(2)}
+                    className='flex-1 bg-white border-2 border-gray-200 text-gray-600 font-bold py-4 rounded-xl'
+                  >
+                    Go Back
+                  </button>
+                  <button
+                    onClick={handlePlaceOrder}
+                    disabled={isPlacingOrder}
+                    className='flex-[2] bg-brand-primary hover:bg-black text-brand-secondary font-bold py-4 rounded-xl transition-all shadow-xl flex items-center justify-center gap-3 disabled:opacity-70'
+                  >
+                    {isPlacingOrder ? (
+                      <Loader2 className='w-6 h-6 animate-spin' />
+                    ) : (
+                      'COMPLETE PURCHASE'
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Side - Order Summary (Sticky) */}
+          <div className='lg:col-span-1 lg:sticky lg:top-8'>
+            <div className='bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden'>
+              <div className='bg-brand-primary p-4'>
+                <h2 className='text-white font-bold text-center uppercase tracking-widest text-sm'>Order Summary</h2>
+              </div>
+              <div className='p-6'>
+                <OrderSummary
+                  validatedCart={validatedCart || []}
+                  deliveryCharges={deliveryCharges}
+                  codCharges={codCharges}
+                  discount={0}
+                />
+                
+                {/* Brand Accent Pink touch for "Trust" */}
+                <div className='mt-6 pt-6 border-t border-dashed border-gray-200'>
+                  <div className='flex items-center gap-3 text-brand-accent-pink'>
+                    <div className='w-2 h-2 rounded-full bg-brand-accent-pink animate-pulse'></div>
+                    <span className='text-xs font-bold uppercase tracking-tight'>100% Secure Transaction</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -68,7 +68,6 @@ import InfinityLoader from '@/components/InfinityLoader';
   export default function CollectionContainer() {
     const dispatch = useDispatch();
     const { collections: collectionData, loading, error } = useSelector((state)=>(state.collections))
-    console.log(collectionData, 'hi');
     useEffect(()=>{
       dispatch(fetchCollectionsRequest());
     },[dispatch]);
