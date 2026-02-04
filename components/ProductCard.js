@@ -124,8 +124,8 @@ function ProductCard({ product }) {
       </div>
 
       {/* Content Section */}
-      <div className="flex grow flex-col p-4 bg-white">
-        <div className="mb-2">
+      <div className="flex grow flex-col md:p-4 bg-white">
+        <div className="mb-0 md:mb-2 p-1 md:p-0">
           <p className="text-[9px] font-bold uppercase tracking-[2px] text-slate-400">
             Sold By: {product?.vendor?.name || "Unknown"}
           </p>
@@ -137,7 +137,7 @@ function ProductCard({ product }) {
         </div>
 
         {/* INTEGRATED REVIEW STARS */}
-        <div className="mb-2">
+        <div className="mb-0 md:mb-2 px-1 md:px-0">
           <ReviewStars 
             rating={product?.averageRating || 0} 
             size={14} 
@@ -145,7 +145,7 @@ function ProductCard({ product }) {
           />
         </div>
 
-        <div className=" flex items-baseline gap-2">
+        <div className=" flex items-baseline gap-2 px-1 md:px-0">
           <span className="text-lg font-bold text-brand-primary">₹{product.sale_price}</span>
           {discount > 0 && (
             <span className="text-xs text-slate-400 line-through">₹{product.regular_price}</span>
@@ -153,24 +153,24 @@ function ProductCard({ product }) {
         </div>
 
         {/* DUAL CTA BUTTONS */}
-        <div className="mt-auto pt-2">
+        <div className="mt-auto pt-1 md:pt-2">
           {outOfStock ? (
             <button
               disabled
-              className="w-full rounded-lg bg-slate-200 py-2.5 text-[11px] font-bold uppercase text-slate-500"
+              className="w-full md:rounded-md bg-slate-200 py-2 text-[11px] font-bold uppercase text-slate-500"
             >
               OUT OF STOCK
             </button>
           ) : (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               <button
                 onClick={handleAddToCart}
-                className="flex items-center justify-center rounded-lg border-2 border-brand-primary py-2 text-[11px] font-bold text-brand-primary transition-all hover:bg-brand-primary hover:text-white"
+                className="hidden md:flex items-center justify-center rounded-lg border-2 border-brand-primary py-2 text-[11px] font-bold text-brand-primary transition-all hover:bg-brand-primary hover:text-white"
               >
                 ADD TO CART
               </button>
               <button
-                className="flex items-center justify-center gap-2 rounded-lg bg-brand-secondary py-2 text-[11px] font-bold text-brand-primary transition-all hover:brightness-110 active:scale-95 shadow-sm"
+                className=" flex items-center justify-center  gap-1 md:rounded-lg bg-brand-secondary py-2 text-[11px] font-bold text-brand-primary transition-all hover:brightness-110 active:scale-95 "
               >
                 <Zap size={14} fill="currentColor" />
                 BUY NOW

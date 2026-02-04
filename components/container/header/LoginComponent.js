@@ -23,13 +23,13 @@ function HeaderLoginComponent() {
   if (!isMounted) return <div className="w-1/2 h-16" />; // Prevent Hydration Jitter
 
   return (
-    <div className='order-2 md:order-3 md:flex items-center justify-end space-x-6 hidden w-1/2 px-6 h-16'>
+    <div className='order-2 md:order-3 flex items-center justify-end space-x-6  w-1/2 px-6 h-16'>
       <SearchBar />
 
       <div className='flex items-center space-x-6'>
         {/* Step 1: Logic Switch - User vs Guest */}
         <div 
-          className='relative py-2'
+          className='relative py-2 hidden md:content'
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
@@ -96,7 +96,7 @@ const UserMenu = ({ user, hover }) => {
           {user.name?.charAt(0).toUpperCase()}
         </div>
         <div className='hidden md:flex items-center'>
-          <span className='text-sm font-bold text-white max-w-[80px] truncate'>{user.name}</span>
+          <span className='text-sm font-bold text-white max-w-80px truncate'>{user.name}</span>
           <ChevronDown size={16} className={`text-white transition-transform duration-200 ${hover ? 'rotate-180' : ''}`} />
         </div>
       </div>
@@ -113,7 +113,7 @@ const UserMenu = ({ user, hover }) => {
               <DropdownItem href="/user/profile" icon={<User size={16}/>} label="My Profile" />
               <DropdownItem href="/user/order" icon={<ShoppingBag size={16}/>} label="Orders" />
               <DropdownItem href="/help" icon={<Headset size={16}/>} label="Support" />
-              <div className="h-[1px] bg-slate-100 my-1" />
+              <div className="h-1px bg-slate-100 my-1" />
               <DropdownItem href="/vendor/dashboard" icon={<ShieldCheck size={16}/>} label="Seller Portal" />
             </div>
 
@@ -144,12 +144,12 @@ const DropdownItem = ({ href, icon, label }) => (
   const wishListItemCount = 0; 
 
   return (
-    <div className='flex items-center space-x-5'>
+    <div className='flex items-center md:space-x-5'>
       
       {/* Wishlist Link */}
       <Link 
         href='/wishlist' 
-        className='relative group p-2 rounded-md hover:bg-white/10 transition-all duration-200'
+        className='relative group md:p-2 rounded-md hover:bg-white/10 transition-all duration-200'
       >
         <HeartPlus 
           className='text-white group-hover:text-brand-secondary transition-colors' 
@@ -167,7 +167,7 @@ const DropdownItem = ({ href, icon, label }) => (
       {/* Cart Link */}
       <Link 
         href='/cart' 
-        className='relative group p-2 rounded-md hover:bg-white/10 transition-all duration-200'
+        className='relative group md:p-2 ml-3 rounded-md hover:bg-white/10 transition-all duration-200'
       >
         <ShoppingCartIcon 
           className='text-white group-hover:text-brand-secondary transition-colors' 

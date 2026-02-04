@@ -6,10 +6,9 @@ import { usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { 
-  Search, 
   Home, 
+  Search,
   ShoppingCart, 
-  Heart, 
   User, 
   Blocks
 } from 'lucide-react';
@@ -33,21 +32,22 @@ export default function BottomNav() {
   // Configuration array makes it easy to add/remove items without changing JSX
   const navigationItems = useMemo(() => [
     { label: 'Home', href: '/', icon: Home },
-    { label: 'Cart', href: '/cart', icon: ShoppingCart, badgeCount: cartItemCount },
     {label:'Categories', icon:Blocks},
-    { label: 'Wishlist', href: '/wishlist', icon: Heart, badgeCount: 0 },
+    { label: 'Search', icon:Search, strokeWidth:4 },
+    { label: 'Cart', href: '/cart', icon: ShoppingCart, badgeCount: cartItemCount },
     { label: firstName, href: profileHref, icon: User },
   ], [cartItemCount, firstName, profileHref]);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-[100] md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-100 md:hidden">
       {/* Frosted Glass Effect Container */}
-      <div className="bg-white backdrop-blur-lg border-t border-gray-100 px-4 pb-safe-area-inset-bottom">
-        <div className="flex justify-around items-center h-16 max-w-md mx-auto">
+      <div className="bg-white backdrop-blur-lg border-t border-gray-100 px-4 ">
+        <div className="flex justify-around h-20 max-w-md mx-auto">
           {navigationItems.map((item) => {
             const active = pathname === item.href;
+            const baseStrokeWidth = item?.strokeWidth ?? 1.5;
             
-            if(item?.herf)
+            if(item?.href)
             {
                 return (
                     <Link 
@@ -55,27 +55,24 @@ export default function BottomNav() {
                       href={item.href}
                       className="relative flex flex-col items-center justify-center flex-1 group transition-all duration-300"
                     >
+                      
                       {/* Active Indicator Dot */}
                       {active && (
                         <motion.div 
                           layoutId="nav-indicator"
-                          className="absolute -top-1 w-1 h-1 rounded-full bg-[var(--color-brand-secondary)]" 
+                          className="absolute -top-1 w-1 h-1 rounded-full bg-brand-secondary" 
                         />
                       )}
       
                       <div className={`relative p-1 transition-transform active:scale-90 ${
-                        active ? 'text-[var(--color-brand-secondary)]' : 'text-[#051f20]/60'
+                        active ? 'text-brand-secondary' : 'text-brand-primary'
                       }`}>
-                        <item.icon 
-                          size={22} 
-                          strokeWidth={active ? 2.5 : 2} 
+                        <item.icon
+                          size={22}
+                          strokeWidth={active ? baseStrokeWidth + 1 : baseStrokeWidth}
                         />
-{/*       
-                      {( mounted && wishListItemCount > 0) && (
-                            <span className='absolute -top-2 -right-2 bg-rose-500 text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center'>
-                              {cartItemCount}
-                            </span>
-                        )} */}
+      
+                      
 
                         {mounted && typeof item.badgeCount === "number" && (
                           <span className="absolute -top-2 -right-2 bg-rose-500 text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -84,8 +81,8 @@ export default function BottomNav() {
                         )}
                       </div>
                           
-                      <span className={`text-[10px] mt-1 font-semibold transition-colors ${
-                        active ? 'text-[var(--color-brand-secondary)]' : 'text-[#051f20]/60'
+                      <span className={`text-[10px]  font-semibold transition-colors text-center  ${
+                        active ? 'text-brand-secondary' : 'text-brand-primary'
                       }`}>
                         {item.label}
                       </span>
@@ -107,11 +104,11 @@ export default function BottomNav() {
                       )}
       
                       <div className={`relative p-1 transition-transform active:scale-90 ${
-                        active ? 'text-[var(--color-brand-secondary)]' : 'text-[#051f20]/60'
+                        active ? 'text-brand-secondary' : 'text-brand-primary'
                       }`}>
-                        <item.icon 
-                          size={22} 
-                          strokeWidth={active ? 2.5 : 2} 
+                        <item.icon
+                          size={22}
+                          strokeWidth={active ? baseStrokeWidth + 1 : baseStrokeWidth}
                         />
       
                         {/* Enhanced Badge System */}
@@ -122,8 +119,8 @@ export default function BottomNav() {
                         )}
                       </div>
                           
-                      <span className={`text-[10px] mt-1 font-semibold transition-colors ${
-                        active ? 'text-[var(--color-brand-secondary)]' : 'text-[#051f20]/60'
+                      <span className={`text-[10px]  font-semibold transition-colors text-center  w-full  ${
+                        active ? 'text-brand-secondary' : 'text-brand-primary'
                       }`}>
                         {item.label}
                       </span>

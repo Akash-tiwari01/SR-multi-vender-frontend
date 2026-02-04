@@ -20,7 +20,7 @@ const SearchBar = ({isMobile}) => {
   return (
     <div 
       ref={searchRef}
-      className={`relative transition-all duration-500 ease-in-out flex items-center ${
+      className={`relative transition-all duration-500 ease-in-out  items-center hidden md:flex ${
         isOpen ? 'w-full md:max-w-md lg:max-w-xl' : 'w-10'
       }`}
     >
