@@ -23,13 +23,13 @@ function HeaderLoginComponent() {
   if (!isMounted) return <div className="w-1/2 h-16" />; // Prevent Hydration Jitter
 
   return (
-    <div className='order-2 md:order-3 flex items-center justify-end space-x-6  w-1/2 px-6 h-16'>
+    <div className=' flex items-center justify-end space-x-6  w-1/2 px-2 md:px-0 h-16'>
       <SearchBar />
 
       <div className='flex items-center space-x-6'>
         {/* Step 1: Logic Switch - User vs Guest */}
         <div 
-          className='relative py-2 hidden md:content'
+          className='relative py-2 hidden md:flex flex-wrap'
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
         >
@@ -55,7 +55,7 @@ const GuestMenu = ({ hover }) => (
   <>
     <Link href="/user/login" className='flex items-center gap-2 group cursor-pointer'>
       <UserCircle className='text-white group-hover:text-brand-secondary transition-colors' size={24} />
-      <div className='hidden md:flex items-center'>
+      <div className=' items-center flex'>
         <span className='text-sm font-bold text-white'>Login</span>
         <ChevronDown size={16} className={`text-white transition-transform duration-200 ${hover ? 'rotate-180' : ''}`} />
       </div>
@@ -95,7 +95,7 @@ const UserMenu = ({ user, hover }) => {
         <div className="w-8 h-8 rounded-md bg-brand-secondary flex items-center justify-center text-brand-primary font-bold border border-white/20">
           {user.name?.charAt(0).toUpperCase()}
         </div>
-        <div className='hidden md:flex items-center'>
+        <div className=' items-center flex'>
           <span className='text-sm font-bold text-white max-w-80px truncate'>{user.name}</span>
           <ChevronDown size={16} className={`text-white transition-transform duration-200 ${hover ? 'rotate-180' : ''}`} />
         </div>
@@ -144,8 +144,7 @@ const DropdownItem = ({ href, icon, label }) => (
   const wishListItemCount = 0; 
 
   return (
-    <div className='flex items-center md:space-x-5'>
-      
+    <div className='flex items-center md:space-x-0'>
       {/* Wishlist Link */}
       <Link 
         href='/wishlist' 

@@ -37,7 +37,9 @@ export default function RootLayout({ children }) {
           <Toaster position='top-right' />
           <div className='wrapper mx-auto w-full'>
             <Header />
+            <div className='min-h-[15vh]'>
             {children}
+            </div>
             <Footer />
           </div>
         </ReduxProvider>

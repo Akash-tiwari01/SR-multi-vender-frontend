@@ -7,7 +7,6 @@ import 'swiper/css/pagination';
 import CollectionSlider from '@/components/container/HomePage/CollectionGridSlider/CollectionSlider';
 import DynamicGrid from '@/components/container/HomePage/CollectionGridSlider/DynamicGrid';
 import Section from '../../genericContainer/Section';
-import { Suspense } from 'react';
 
 const swiperConfig = {
   modules: [Navigation, Pagination],
@@ -32,7 +31,7 @@ export default function CollectionGridComponent({ collections_component, title }
   );
   else if (product_collections?.length<9){
     return(
-        <Section className="container mx-auto ">
+        <Section>
         {title && <h2 className="text-3xl font-bold pt-4 text-brand-primary text-center">{title}</h2>}
         <div className="pb-4 rounded-xl ">
         <DynamicGrid product_collections={product_collections}/>
@@ -43,7 +42,7 @@ export default function CollectionGridComponent({ collections_component, title }
   }
   else{
     return(
-        <Section className="container ">
+        <Section >
         <h2 className="text-3xl font-bold pt-4 text-brand-primary text-center">{title}</h2>
         <div className="pb-4 pt-4 mx-4 rounded-xl ">
             <CollectionSlider product_collections = {product_collections}/>

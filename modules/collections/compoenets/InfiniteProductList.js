@@ -4,7 +4,7 @@ import { fetchProducts} from '@/app/collections/[slug]/action'
 import ProductCard from "@/components/ProductCard";
 import Section from "@/components/container/genericContainer/Section";
 
-export default function InfiniteProductList({ initialData, slug, currentFilters }) {
+export default function InfiniteProductList({ initialData, slug, currentFilters, isBulkOrder }) {
   const [products, setProducts] = useState(initialData?.products || []);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialData?.page < initialData?.pages);
@@ -52,7 +52,7 @@ export default function InfiniteProductList({ initialData, slug, currentFilters 
   if (!mounted) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {initialData?.products?.map((p) => <ProductCard key={p._id} product={p} />)}
+        {initialData?.products?.map((p) => <ProductCard key={p._id} product={p} isBulkOrder={isBulkOrder}/>)}
       </div>
     );
   }

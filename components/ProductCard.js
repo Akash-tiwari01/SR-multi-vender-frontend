@@ -18,11 +18,29 @@ function ProductCard({ product }) {
   const dispatch = useDispatch();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [showMobileActions, setShowMobileActions] = useState(false); // Mobile state
   const timerRef = useRef(null);
+  const cardRef = useRef(null); // Ref for outside click detection
 
   const images = product?.media?.length > 0 ? product.media : ["/placeholder.png"];
   const outOfStock = !product?.in_stock || product?.stock <= 0;
   const discount = calculateDiscountPercentage(product?.regular_price, product?.sale_price);
+
+  // --- Mobile Interaction: Close actions when clicking outside ---
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (cardRef.current && !cardRef.current.contains(event.target)) {
+        setShowMobileActions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleMobileActions = (e) => {
+    // Only toggle on mobile (prevent conflict with desktop hover if needed)
+    setShowMobileActions(!showMobileActions);
+  };
 
   // --- Slider Logic ---
   const nextSlide = useCallback(() => {
@@ -62,12 +80,13 @@ function ProductCard({ product }) {
   };
 
   const handleAddToCart = (e) => {
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault(); 
+    e.stopPropagation();
     if (outOfStock) return toast.error("Out of stock");
     
     dispatch(addToCart({
       product: product._id,
-      quantity: 1,
+      quantity: product.minQty || 1,
       productData: { ...product, image: images[0] }
     }));
     toast.success("Added to cart");
@@ -75,9 +94,14 @@ function ProductCard({ product }) {
 
   return (
     <div 
+      ref={cardRef}
       className="group relative flex flex-col h-full w-full overflow-hidden rounded-md bg-white border border-slate-100 transition-all duration-500 hover:shadow-md"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setShowMobileActions(false);
+      }}
+      onClick={toggleMobileActions} // Toggle for mobile tap
     >
       {/* Top Section: Image & Overlay Actions */}
       <div className="relative aspect-square w-full overflow-hidden bg-slate-50">
@@ -96,15 +120,37 @@ function ProductCard({ product }) {
           ))}
         </Link>
 
-        {/* TOP FLOATING ACTIONS - Hidden until hover */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 z-30 translate-x-12 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
-          <button onClick={handleShare} title="Share" className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
+        {/* TOP FLOATING ACTIONS */}
+        <div 
+          className={`
+            absolute top-3 right-3 flex flex-col gap-2 z-30 transition-all duration-300
+            /* Mobile/Active State */
+            ${showMobileActions ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"}
+            /* Desktop Hover State */
+            group-hover:translate-x-0 group-hover:opacity-100
+            /* Accessibility Focus */
+            focus-within:translate-x-0 focus-within:opacity-100
+          `}
+        >
+          <button 
+            onClick={handleShare} 
+            title="Share" 
+            className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:bg-brand-primary hover:text-white transition-colors active:scale-90"
+          >
             <Share2 size={16} />
           </button>
-          <button title="Add to Wishlist" className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:text-rose-500 transition-colors">
+          <button 
+            onClick={(e) => e.stopPropagation()} 
+            title="Add to Wishlist" 
+            className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:text-rose-500 transition-colors active:scale-90"
+          >
             <Heart size={16} />
           </button>
-          <button onClick={handleAddToCart} title="Quick Add" className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:bg-brand-accent hover:text-brand-primary transition-colors">
+          <button 
+            onClick={handleAddToCart} 
+            title="Quick Add" 
+            className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:bg-brand-accent hover:text-brand-primary transition-colors active:scale-90"
+          >
             <ShoppingCart size={16} />
           </button>
         </div>
@@ -136,7 +182,6 @@ function ProductCard({ product }) {
           </Link>
         </div>
 
-        {/* INTEGRATED REVIEW STARS */}
         <div className="mb-0 md:mb-2 px-1 md:px-0">
           <ReviewStars 
             rating={product?.averageRating || 0} 
@@ -145,6 +190,14 @@ function ProductCard({ product }) {
           />
         </div>
 
+        { product?.minQty > 1 && (
+          <div className="mb-0 md:mb-2 p-1 md:p-0">
+            <p className="text-[8px] font-extrabold uppercase  text-brand-primary">
+              Min Order Qty: { product?.minQty || "Unknown" }
+            </p>
+          </div>
+        )}
+
         <div className=" flex items-baseline gap-2 px-1 md:px-0">
           <span className="text-lg font-bold text-brand-primary">₹{product.sale_price}</span>
           {discount > 0 && (
@@ -152,7 +205,6 @@ function ProductCard({ product }) {
           )}
         </div>
 
-        {/* DUAL CTA BUTTONS */}
         <div className="mt-auto pt-1 md:pt-2">
           {outOfStock ? (
             <button
@@ -169,8 +221,9 @@ function ProductCard({ product }) {
               >
                 ADD TO CART
               </button>
-              <button
-                className=" flex items-center justify-center  gap-1 md:rounded-lg bg-brand-secondary py-2 text-[11px] font-bold text-brand-primary transition-all hover:brightness-110 active:scale-95 "
+              <button 
+                onClick={(e) => e.stopPropagation()}
+                className=" flex items-center justify-center gap-1 md:rounded-lg bg-brand-secondary py-2 text-[11px] font-bold text-brand-primary transition-all hover:brightness-110 active:scale-95 "
               >
                 <Zap size={14} fill="currentColor" />
                 BUY NOW

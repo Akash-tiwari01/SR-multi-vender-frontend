@@ -22,7 +22,7 @@ export default function DynamicGrid({ product_collections }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className={`grid gap-4 md:gap-6 ${config.container}`}>
+      <div className={`grid gap-1 md:gap-2 ${config.container}`}>
         {items.map((col, index) => (
           <CollectionCard 
             key={col._id || index} 

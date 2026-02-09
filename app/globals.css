@@ -7,6 +7,13 @@
   --color-brand-accent-pink: #e68aa0;
 }
 
+:root{
+  --color-brand-primary: #051f20;
+  --color-brand-secondary: #daac47; /* Gold */
+  --color-brand-accent: #9ed36a;    /* Green */
+  --color-brand-accent-pink: #e68aa0;
+}
+
 @layer utilities {
   /* THE "SOPHISTICATED DEEP" GRADIENT
      1. Base: Your dark primary.
@@ -75,6 +82,10 @@ body {
 /* Hide scrollbar for Firefox */
 .scrollbar-show {
   scrollbar-width: 2px;
+}
+.vendor-template-container img{
+
+    width: 100%;
 }
 
 .description{

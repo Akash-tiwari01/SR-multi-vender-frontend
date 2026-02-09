@@ -25,7 +25,7 @@ export default async function Home() {
           <ProductCollectionComponent key={component._id} {...component} />
         );
       case 'COLLECTION':
-        return <Suspense fallback={<CollectionSkeleton/>}><CollectionGridComponent key={component?._id} {...component} />;</Suspense>
+        return <Suspense fallback={<CollectionSkeleton/>}><CollectionGridComponent key={component?._id} {...component} /></Suspense>
       case 'SLIDER':
         return <div className="md:p-2"><Banner key={component._id} data={component.slider_component} /></div>;
       case 'GALLERY':
@@ -39,7 +39,7 @@ export default async function Home() {
     }
   };
   if( components == null ) 
-  return <Section className="flex items-center justify-center">
+  return <Section className="flex items-end justify-center">
     <InfinityLoader className=""/>
   </Section>
   return (
