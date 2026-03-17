@@ -11,8 +11,10 @@ function HeaderLoginComponent() {
   const [isMounted, setIsMounted] = useState(false);
   
   // Destructuring as per your state structure
-  const { user } = useSelector((state) => state.user);
-  const cartItemCount = useSelector(selectCartItemCount);
+  const user = useSelector((state) => state?.user?.user ?? null);
+  const cartItemCount = useSelector((state) => 
+  selectCartItemCount(state ?? {})
+) ?? 0;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -112,7 +114,7 @@ const UserMenu = ({ user, hover }) => {
             <div className='p-1 flex flex-col'>
               <DropdownItem href="/user/profile" icon={<User size={16}/>} label="My Profile" />
               <DropdownItem href="/user/order" icon={<ShoppingBag size={16}/>} label="Orders" />
-              <DropdownItem href="/help" icon={<Headset size={16}/>} label="Support" />
+              <DropdownItem href="/contact" icon={<Headset size={16}/>} label="Support" />
               <div className="h-1px bg-slate-100 my-1" />
               <DropdownItem href="/vendor/dashboard" icon={<ShieldCheck size={16}/>} label="Seller Portal" />
             </div>

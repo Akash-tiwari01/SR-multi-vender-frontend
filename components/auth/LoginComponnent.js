@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 import { 
     LoginSchema, 
     OTPRequestSchema, 
@@ -59,11 +60,26 @@ export default function LoginComponnent() {
 
        
 
+
+
     React.useEffect(() => {
         if (isLoggedIn) {
-            router.push('/'); // Redirect on successful login 
+            // LocalStorage Saga/Action handle kar raha hoga, 
+            // par hum yahan manual Cookie set karenge Server Components ke liye
+            const token = localStorage.getItem('token'); // Get token from where your saga saved it
+            
+            if (token) {
+                Cookies.set('token', token, { 
+                    expires: 7, // 7 days
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'strict'
+                });
+            }
+            
+            router.push('/'); 
+            router.refresh(); // Important: Refresh triggers server components to re-fetch with new cookie
         }
-    }, [ isLoggedIn, router]);
+    }, [isLoggedIn, router]);
 
     const handleSwitchMode = (mode) => {
         setLoginMode(mode);

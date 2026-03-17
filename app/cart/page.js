@@ -26,7 +26,7 @@ export default function CartPage() {
   const itemCount = useSelector(selectCartItemCount);
   const subtotal = useSelector(selectCartTotal);
   const cartByVendor = useSelector(selectCartByVendor);
-
+  console.log(cartItems);
   // Sync cart from localStorage on mount
   useEffect(() => {
     dispatch(syncCartFromStorage());

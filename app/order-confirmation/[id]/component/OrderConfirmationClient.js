@@ -7,6 +7,7 @@ import {
   Phone, MapPin, Home, ReceiptText, ArrowRight 
 } from 'lucide-react';
 import OrderSkeleton from './OrderSkeleton';
+import { useSelector } from 'react-redux';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URI || 'http://localhost:5000';
 
@@ -15,11 +16,23 @@ export default function OrderConfirmationClient({ params }) {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [formattedDate, setFormattedDate] = useState("");
-
+  const {token} = useSelector((state=>state.user))
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/orders/${resolvedParams.id}`);
+
+        if(!token || token === 'undefined'){
+          console.error("OrderConfirmation: Token missing or undefined. User might not be logged in.");
+        return [];
+        }
+        const response = await fetch(`${API_URL}/api/orders/${resolvedParams.id}`,{
+          method:'GET',
+          cache: 'no-store',
+          headers:{
+            'Content-Type':'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (response.ok) {
           const data = await response.json();
           setOrder(data);

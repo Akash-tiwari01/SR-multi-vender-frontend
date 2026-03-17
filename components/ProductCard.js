@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
+import { useRouter } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Share2, Heart, Zap } from "lucide-react";
@@ -21,7 +22,7 @@ function ProductCard({ product }) {
   const [showMobileActions, setShowMobileActions] = useState(false); // Mobile state
   const timerRef = useRef(null);
   const cardRef = useRef(null); // Ref for outside click detection
-
+  const router = useRouter();
   const images = product?.media?.length > 0 ? product.media : ["/placeholder.png"];
   const outOfStock = !product?.in_stock || product?.stock <= 0;
   const discount = calculateDiscountPercentage(product?.regular_price, product?.sale_price);
@@ -82,14 +83,29 @@ function ProductCard({ product }) {
   const handleAddToCart = (e) => {
     e.preventDefault(); 
     e.stopPropagation();
-    if (outOfStock) return toast.error("Out of stock");
+    if (outOfStock) toast.error("Out of stock");
     
-    dispatch(addToCart({
-      product: product._id,
-      quantity: product.minQty || 1,
-      productData: { ...product, image: images[0] }
-    }));
-    toast.success("Added to cart");
+    else{
+      console.log(product);
+      dispatch(addToCart({
+        product: product._id,
+        quantity: product.minQty || 1,
+        productData: { ...product, image: images[0] }
+      }));
+      toast.success("Added to cart");
+    }
+  };
+
+  const handleCheckout = (e) => {
+    console.log(product);
+    e.preventDefault(); 
+    e.stopPropagation();
+    const slug = product.slug;
+    const id = product._id;
+    if (outOfStock) toast.error("Out of stock");
+    else {
+      router.push(`/checkout/direct/${slug}/${id}`)
+    }    
   };
 
   return (
@@ -222,7 +238,7 @@ function ProductCard({ product }) {
                 ADD TO CART
               </button>
               <button 
-                onClick={(e) => e.stopPropagation()}
+                onClick={handleCheckout}
                 className=" flex items-center justify-center gap-1 md:rounded-lg bg-brand-secondary py-2 text-[11px] font-bold text-brand-primary transition-all hover:brightness-110 active:scale-95 "
               >
                 <Zap size={14} fill="currentColor" />

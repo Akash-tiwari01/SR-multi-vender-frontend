@@ -69,10 +69,10 @@ export default function ReviewForm({ isFormOpen, setIsFormOpen }) {
   if (!isFormOpen) return null;
 
   return (
-    <div className='fixed inset-0 z-[1000] flex items-center justify-center p-4 animate-in fade-in duration-300'>
+    <div className='fixed inset-0 z-1000 flex items-center justify-center p-4 animate-in fade-in duration-300'>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={() => setIsFormOpen(false)} />
 
-      <div className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl p-6 md:p-10 z-[1001]">
+      <div className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl p-6 md:p-10 z-1001">
         <button className='absolute top-5 right-5 p-2 hover:bg-slate-100 rounded-full transition-colors' onClick={() => setIsFormOpen(false)}>
           <X className="w-6 h-6 text-slate-500" />
         </button>
@@ -84,7 +84,7 @@ export default function ReviewForm({ isFormOpen, setIsFormOpen }) {
 
         <form onSubmit={handleSubmit(
           (data) => dispatch(createReviewRequest(data)),
-          (errors) => console.error("❌ ZOD VALIDATION ERRORS:", errors)
+          (errors) => console.error(" ZOD VALIDATION ERRORS:", errors)
           )} className="space-y-6">
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -118,16 +118,16 @@ export default function ReviewForm({ isFormOpen, setIsFormOpen }) {
               errors={errors} 
             />
             
-            <hr className="border-slate-200" />
+            {/* <hr className="border-slate-200" /> */}
 
             {/* Single Video Component */}
-            <RHFFileField 
+            {/* <RHFFileField 
               label="Unboxing Video (Single)" 
               name="video" 
               setValue={setValue} 
               watch={watch} 
               errors={errors} 
-            />
+            /> */}
           </div>
 
           {error && (

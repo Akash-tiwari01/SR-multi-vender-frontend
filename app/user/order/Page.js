@@ -1,26 +1,25 @@
-// app/orders/page.js
-import { Suspense } from 'react';
-import OrderList from './components/OrderList';
-import OrderSkeleton from '@/app/order-confirmation/[id]/component/OrderSkeleton';
+// app/user/order/page.tsx
+import { Suspense } from "react";
+import OrderListWrapper from "@/modules/orders/component/OrderListWrapper";
+import OrderListSkeleton from "@/modules/orders/component/OrderListSkeleton";
 
-export default function OrdersPage() {
+export default function OrderManagementPage() {
   return (
-    <section className="min-h-screen bg-gray-50 py-12">
-      <div className="container mx-auto max-w-5xl px-4">
-        <header className="mb-10">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            Order History
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Check the status of recent orders, manage returns, and download invoices.
-          </p>
-        </header>
+    <div className="min-h-screen bg-slate-50 p-4 md:p-8">
+      <header className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <h1 className="text-4xl font-black text-brand-primary tracking-tighter uppercase">
+          Order <span className="text-brand-secondary italic underline decoration-brand-accent">Vault</span>
+        </h1>
+      </header>
 
-        {/* Suspense handles the loading state while the API call is in progress */}
-        <Suspense fallback={<OrderSkeleton />}>
-          <OrderList />
+      <main className="max-w-6xl mx-auto flex flex-col gap-6">
+        {/* STRATEGY: Wrap the data-fetching component in Suspense.
+            This prevents the 'Blocking Route' error.
+        */}
+        <Suspense fallback={<OrderListSkeleton />}>
+          <OrderListWrapper />
         </Suspense>
-      </div>
-    </section>
+      </main>
+    </div>
   );
 }

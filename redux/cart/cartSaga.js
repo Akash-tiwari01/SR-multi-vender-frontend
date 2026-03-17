@@ -13,7 +13,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URI || 'http://localhost:5000';
 function* validateCart() {
   try {
     const cartItems = yield select(selectCartItems);
-
     // Transform cart items to backend format
     const cartArray = cartItems.map((item) => ({
       product: item.product,
@@ -21,7 +20,6 @@ function* validateCart() {
       quantity: item.quantity,
       slug: item.slug,
     }));
-    console.log("hii");
     // Call backend validation endpoint
     const response = yield call(fetch, `${API_URL}/api/cart/validate-cart`, {
       method: 'POST',
@@ -31,7 +29,6 @@ function* validateCart() {
       body: JSON.stringify({ cartArray }),
     });
     if (!response.ok) {
-      console.log('gggy');
       throw new Error('Failed to validate cart');
     }
 

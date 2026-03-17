@@ -13,6 +13,8 @@ import ReviewStars from "../../../../modules/Reviews/Components/ReviewStars";
 import calculateDiscountPercentage from "@/utils/calculateDiscountPercentage";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
+
 
 export default function ProductInfo() {
   const { currentProduct, selectedVariation, status } = useSelector(
@@ -22,6 +24,8 @@ export default function ProductInfo() {
   const dispatch = useDispatch();
   const badgeHeight = 'w6 h-6'
   const badgeText = 'text-[12px] text-center line-height'
+  const router = useRouter();
+  const outOfStock = !currentProduct?.in_stock || currentProduct?.stock <= 0;
   if (!currentProduct) return null;
   const price = selectedVariation?.sale_price ?? currentProduct.sale_price;
   const originalPrice = selectedVariation?.regular_price ?? currentProduct.regular_price;
@@ -56,6 +60,17 @@ export default function ProductInfo() {
       })
     );
     toast.success(`${product.name} added to cart!`);
+  };
+  const handleCheckout = (e) => {
+    console.log(currentProduct);
+    e.preventDefault(); 
+    e.stopPropagation();
+    const slug = currentProduct.slug;
+    const id = currentProduct._id;
+    if (outOfStock) toast.error("Out of stock");
+    else {
+      router.push(`/checkout/direct/${slug}/${id}`)
+    }    
   };
   return (
    <div className="lg:col-span-6 px-4 leading-3 capitalize flex justify-center">
@@ -150,7 +165,9 @@ export default function ProductInfo() {
           {status === "loading" ? "Adding..." : "Add to Cart"}
         </ButtonPrimary>
 
-        <ButtonSecondary className="">
+        <ButtonSecondary 
+        onClick={handleCheckout}
+        >
           Buy Now
         </ButtonSecondary>
 

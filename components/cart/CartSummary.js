@@ -27,7 +27,7 @@ export default function CartSummary({
     if (onCheckout) {
       onCheckout();
     } else {
-      router.push('/checkout');
+      router.push('/checkout/cart');
     }
   };
 
