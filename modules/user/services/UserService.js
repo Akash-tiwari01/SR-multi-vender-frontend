@@ -93,6 +93,22 @@ export class UserService {
     }
   }
 
-  
+  updateProfile = async (payload, token) => {
+    try {
+      const result = await this.userRepository.updateProfile(payload, token);
+      console.log(`User profile updated successfully`);
+      return result;
+    } catch (error) {
+      throw new Error(error.message || "Failed to update user profile.");
+    }
+  }
 
+  verifyToken = async (token) => {
+    try {
+      const result = await this.userRepository.verifyToken(token);
+      return result;
+    } catch (error) {
+      throw new Error("Token expired or invalid.");
+    }
+  }
 }

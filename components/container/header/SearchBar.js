@@ -5,12 +5,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const SearchBar = ({ isMobile }) => {
   const [isOpen, setIsOpen] = useState(isMobile);
   const [searchTerm, setSearchTerm] = useState('');
   const searchRef = useRef(null);
   const debouncedSearch = useDebounce(searchTerm, 500);
+  const router = useRouter();
 
   const { data, isFetching } = useQuery({
     queryKey: ['globalSearch', debouncedSearch],
@@ -46,6 +48,12 @@ const SearchBar = ({ isMobile }) => {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && searchTerm.trim().length > 0) {
+              setIsOpen(false);
+              router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+            }
+          }}
           placeholder="Search for crafts..."
           className={`w-full py-2 pl-4 pr-10 rounded-full text-gray-900 bg-white border focus:ring-2 focus:ring-brand-primary outline-none transition-all duration-500 ${
             isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
@@ -73,25 +81,53 @@ const SearchBar = ({ isMobile }) => {
             
             {/* Categories & Collections with Hover Sub-menu */}
             <div className="grid grid-cols-1 gap-4">
-              {['categories', 'collections'].map((bucketKey) => (
-                data.data?.[bucketKey]?.length > 0 && (
-                  <div key={bucketKey}>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{bucketKey}</h3>
-                    {data.data[bucketKey].map((item) => (
-                      <div key={item._id} className="relative group">
-                        <div className="flex items-center justify-between p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors">
-                          <Link href={`/${bucketKey === 'categories' ? 'category' : 'collection'}/${item.slug}`} className="flex-1 font-medium text-gray-700">
-                            {item.name}
-                          </Link>
-                          <ChevronRight size={16} className="text-gray-400" />
-                        </div>
+              {data.isFallback ? (
+                <div className="pt-2">
+                  <h3 className="text-xs font-bold text-brand-primary uppercase tracking-wider mb-2 bg-brand-primary/10 p-2 rounded">
+                    {data.message || 'Popular Items'}
+                  </h3>
+                  {Array.isArray(data.data) && data.data.map((product) => (
+                    <Link 
+                      key={product._id} 
+                      href={`/products/${product.slug}`} 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg"
+                    >
+                      <img src={product.media?.[0]} alt="" className="w-10 h-10 rounded object-cover" />
+                      <p className="text-sm font-medium text-gray-800 line-clamp-1">{product.name}</p>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {['categories', 'collections'].map((bucketKey) => (
+                    data.data?.[bucketKey]?.length > 0 && (
+                      <div key={bucketKey}>
+                        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{bucketKey}</h3>
+                        {data.data[bucketKey].map((item) => (
+                          <div key={item._id} className="relative group">
+                            <div className="flex items-center justify-between p-2 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors">
+                              <Link 
+                                href={`/${bucketKey === 'categories' ? 'category' : 'collection'}/${item.slug}`} 
+                                onClick={() => setIsOpen(false)}
+                                className="flex-1 font-medium text-gray-700"
+                              >
+                                {item.name}
+                              </Link>
+                              <ChevronRight size={16} className="text-gray-400" />
+                            </div>
 
                         {/* SUB-DROPDOWN ON HOVER */}
                         <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute left-full top-0 ml-2 w-64 bg-white border border-gray-100 shadow-2xl rounded-xl p-3 transition-all duration-200 z-[60]">
                           <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Products in {item.name}</p>
                           <div className="space-y-2">
                             {item.products?.map((prod) => (
-                              <Link key={prod._id} href={`/product/${prod.slug}`} className="flex items-center gap-2 p-1 hover:bg-brand-primary/5 rounded">
+                              <Link 
+                                key={prod._id} 
+                                href={`/products/${prod.slug}`} 
+                                onClick={() => setIsOpen(false)}
+                                className="flex items-center gap-2 p-1 hover:bg-brand-primary/5 rounded"
+                              >
                                 <img src={prod.media?.[0]} className="w-8 h-8 rounded object-cover" alt="" />
                                 <div className="overflow-hidden">
                                   <p className="text-xs font-medium text-gray-800 truncate">{prod.name}</p>
@@ -112,12 +148,19 @@ const SearchBar = ({ isMobile }) => {
                 <div className="border-t pt-4">
                   <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Standalone Hits</h3>
                   {data.data.products.map(product => (
-                    <Link key={product._id} href={`/product/${product.slug}`} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg">
-                      <img src={product.media[0]} alt="" className="w-10 h-10 rounded object-cover" />
+                    <Link 
+                      key={product._id} 
+                      href={`/products/${product.slug}`} 
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg"
+                    >
+                      <img src={product.media?.[0]} alt="" className="w-10 h-10 rounded object-cover" />
                       <p className="text-sm font-medium text-gray-800 line-clamp-1">{product.name}</p>
                     </Link>
                   ))}
                 </div>
+              )}
+                </>
               )}
             </div>
           </div>

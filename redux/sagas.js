@@ -5,7 +5,8 @@ import userRootSaga, { userWatcher } from '@/modules/user/sagas/userSaga';
 import productSaga from '@/modules/products/sagas/productSagas';
 import cartSaga from './cart/cartSaga';
 import { reviewSaga } from '@/modules/Reviews/reviewSaga';
-
+import wishlistSaga from './wishlist/wishlistSaga';
+import orderSaga from '@/modules/orders/sagas/orderSaga';
 
 export default function* rootSaga() {
   yield all([
@@ -16,5 +17,7 @@ export default function* rootSaga() {
     collectionWatcherSaga(),
     cartSaga(),
     reviewSaga(),
+    wishlistSaga(),
+    orderSaga(),
   ]);
 }

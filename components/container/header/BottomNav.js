@@ -33,7 +33,7 @@ export default function BottomNav() {
   const navigationItems = useMemo(() => [
     { label: 'Home', href: '/', icon: Home },
     {label:'Categories', icon:Blocks},
-    { label: 'Search', icon:Search, strokeWidth:4 },
+    { label: 'Search', href: '/search', icon:Search, strokeWidth:4 },
     { label: 'Cart', href: '/cart', icon: ShoppingCart, badgeCount: cartItemCount },
     { label: firstName, href: profileHref, icon: User },
   ], [cartItemCount, firstName, profileHref]);

@@ -51,4 +51,16 @@ export class UserAPIRepository {
     return result;
   }
 
+  async updateProfile(payload, token) {
+    // Uses the generalized put method from apiClient
+    const result = await apiClient.put('/api/users/profile', payload, token);
+    return result;
+  }
+
+  async verifyToken(token) {
+    // Ping profile endpoint to check if valid
+    const user = await apiClient.get('/api/users/profile', {}, token);
+    return { user, token };
+  }
+
 }

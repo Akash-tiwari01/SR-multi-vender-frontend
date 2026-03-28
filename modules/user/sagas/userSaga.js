@@ -10,7 +10,10 @@ import {
     otpRequestSuccess, 
     otpRequestFailure,
     logoutSuccess,
-    logoutRequest
+    logoutRequest,
+    updateProfileRequest,
+    updateProfileSuccess,
+    updateProfileFailure
 } from '@/modules/user/state/userSlice';
 
 // Secure Server Actions
@@ -30,7 +33,7 @@ function* initialAuthCheckWorker() {
 
         if (token) {
             // 2. Bind context [userService, method] to prevent 'this' issues
-            const { user, newToken } = yield call(userService, "verifyToken", token);
+            const { user, token: newToken } = yield call([userService, userService.verifyToken], token);
 
             yield put(loginSuccess({ user, token: newToken || token }));
             console.log("Session restored successfully.");
@@ -39,8 +42,8 @@ function* initialAuthCheckWorker() {
             console.log("No active session found.");
         }
     } catch (error) {
-        yield put(logout());
-        console.error("Session check failed:", error.message);
+        yield put(logoutRequest()); // Use Request so the watcher catches it and dumps the expired cookie
+        console.error("Session check failed, logging out:", error.message);
     }finally{
         console.log("token failed");
         yield put(authCheckedFinished());
@@ -94,9 +97,17 @@ function* logoutWorker() {
     }
 }
 
-
-
-
+function* updateProfileWorker(action) {
+    const userService = new UserService();
+    try {
+        const token = yield call(getAuthTokenAction); // Secure token extraction using Cookie
+        // Yield passing payload + token
+        const result = yield call([userService, userService.updateProfile], action.payload, token);
+        yield put(updateProfileSuccess(result)); 
+    } catch (error) {
+        yield put(updateProfileFailure(error.message));
+    }
+}
 
 // --- WATCHER (Listens for specific actions) ---
 export function* userWatcher() {
@@ -104,6 +115,7 @@ export function* userWatcher() {
     yield takeLatest(otpRequest.type, otpRequestWorker);
     yield takeLatest('user/otpVerify', otpVerifyWorker); 
     yield takeLatest(logoutRequest.type, logoutWorker);
+    yield takeLatest(updateProfileRequest.type, updateProfileWorker);
 }
 
 // --- ROOT USER SAGA (Exported to global rootSaga) ---

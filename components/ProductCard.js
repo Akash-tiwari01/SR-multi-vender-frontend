@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { useRouter } from 'next/navigation';
 import Image from "next/image";
@@ -10,6 +10,7 @@ import { ShoppingCart, Share2, Heart, Zap } from "lucide-react";
 
 import { getImageUrl } from "@/utils/helperFunction";
 import { addToCart } from "@/redux/cart/cartSlice";
+import { toggleWishlistItemRequest, selectIsInWishlist } from "@/redux/wishlist/wishlistSlice";
 import calculateDiscountPercentage from "@/utils/calculateDiscountPercentage";
 import ReviewStars from "@/modules/Reviews/Components/ReviewStars";
 
@@ -17,6 +18,7 @@ const SLIDE_DURATION = 3000;
 
 function ProductCard({ product }) {
   const dispatch = useDispatch();
+  const isWishlisted = useSelector((state) => selectIsInWishlist(state, product?._id));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [showMobileActions, setShowMobileActions] = useState(false); // Mobile state
@@ -77,6 +79,15 @@ function ProductCard({ product }) {
     } else {
       await navigator.clipboard.writeText(url);
       toast.success("Link copied to clipboard!");
+    }
+  };
+
+  const handleToggleWishlist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (product) {
+      dispatch(toggleWishlistItemRequest(product));
+      toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
     }
   };
 
@@ -156,11 +167,13 @@ function ProductCard({ product }) {
             <Share2 size={16} />
           </button>
           <button 
-            onClick={(e) => e.stopPropagation()} 
-            title="Add to Wishlist" 
-            className="p-2.5 bg-white rounded-full shadow-lg text-brand-primary hover:text-rose-500 transition-colors active:scale-90"
+            onClick={handleToggleWishlist} 
+            title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"} 
+            className={`p-2.5 bg-white rounded-full shadow-lg transition-colors active:scale-90 ${
+              isWishlisted ? "text-rose-500" : "text-brand-primary hover:text-rose-500"
+            }`}
           >
-            <Heart size={16} />
+            <Heart size={16} fill={isWishlisted ? "currentColor" : "none"} />
           </button>
           <button 
             onClick={handleAddToCart} 

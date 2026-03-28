@@ -11,8 +11,10 @@ export default function ProductCollectionComponent({
   title,
   description,
   collection_product_component,
+  products: directProducts
 }) {
-const { products = [] } = collection_product_component?.product_collection ?? {};
+const { products: collectionProducts = [] } = collection_product_component?.product_collection ?? {};
+const products = directProducts?.length > 0 ? directProducts : collectionProducts;
 console.log(products);
 if (products && products?.length>0)
   return (

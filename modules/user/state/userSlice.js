@@ -67,12 +67,25 @@ const userSlice = createSlice({
     },
     logoutSuccess: (state) => {
       Object.assign(state, initialState);
+    },
+    updateProfileRequest: (state, action) => {
+      state.isLoading = true;
+      state.error = null;
+    },
+    updateProfileSuccess: (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload; // Replace entire user object!
+    },
+    updateProfileFailure: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     }
 
   },
 });
 
 export const { 
+    updateProfileRequest, updateProfileSuccess, updateProfileFailure,
     loginRequest, loginSuccess, loginFailure, logout,
     otpRequest, otpRequestSuccess, otpRequestFailure, otpVerify,logoutRequest,logoutSuccess,
     resetOtpState, authCheckedFinished

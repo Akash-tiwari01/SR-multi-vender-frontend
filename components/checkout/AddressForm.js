@@ -28,11 +28,11 @@ export default function AddressForm({ onSubmit, initialData = {} }) {
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-      <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-        <h2 className='text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2'>
-          <User className='w-5 h-5' />
-          Contact Information
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 md:space-y-6'>
+      <div className='bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6'>
+        <h2 className='text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center gap-2'>
+          <User className='w-5 h-5 text-brand-primary' />
+          Contact Info
         </h2>
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -108,9 +108,9 @@ export default function AddressForm({ onSubmit, initialData = {} }) {
         </div>
       </div>
 
-      <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-        <h2 className='text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2'>
-          <MapPin className='w-5 h-5' />
+      <div className='bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6'>
+        <h2 className='text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-6 flex items-center gap-2'>
+          <MapPin className='w-5 h-5 text-brand-primary' />
           Delivery Address
         </h2>
 
@@ -228,9 +228,9 @@ export default function AddressForm({ onSubmit, initialData = {} }) {
       <button
         type='submit'
         disabled={isSubmitting}
-        className='w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200'
+        className='w-full bg-brand-primary hover:bg-black disabled:bg-gray-300 text-brand-secondary font-black py-4 px-6 rounded-xl transition-all duration-300 shadow-lg'
       >
-        {isSubmitting ? 'Processing...' : 'Continue to Payment'}
+        {isSubmitting ? 'Processing...' : 'CONTINUE TO PAYMENT'}
       </button>
     </form>
   );

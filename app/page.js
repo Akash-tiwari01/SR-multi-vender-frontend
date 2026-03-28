@@ -20,7 +20,9 @@ export default async function Home() {
   const components = await data.homepageData.homepageNew || []
   const renderComponent = (component) => {
     switch (component.display_type) {
+      case 'CATAGORY PRODUCTS':
       case 'COLLECTION PRODUCTS':
+      case 'PRODUCT':
         return (
           <ProductCollectionComponent key={component._id} {...component} />
         );

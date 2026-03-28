@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { syncCartFromStorage, selectCartItemCount } from '@/redux/cart/cartSlice';
+import { syncWishlistFromStorage, syncWishlistRequest, selectWishlistItemCount } from '@/redux/wishlist/wishlistSlice';
 import SearchBar from './SearchBar';
 import { User, LogOut, LayoutDashboard, Headset, ShoppingBag, ShieldCheck,UserCircle, ChevronDown, ArrowRight, Package, ShoppingCartIcon, HeartPlus } from 'lucide-react';
 import Link from 'next/link';
@@ -10,17 +11,28 @@ function HeaderLoginComponent() {
   const [hover, setHover] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   
-  // Destructuring as per your state structure
   const user = useSelector((state) => state?.user?.user ?? null);
+  const token = useSelector((state) => state?.user?.token ?? null);
   const cartItemCount = useSelector((state) => 
-  selectCartItemCount(state ?? {})
-) ?? 0;
+    selectCartItemCount(state ?? {})
+  ) ?? 0;
+  const wishListItemCount = useSelector((state) => 
+    selectWishlistItemCount(state ?? {})
+  ) ?? 0;
   const dispatch = useDispatch();
 
   useEffect(() => {
     setIsMounted(true);
     dispatch(syncCartFromStorage());
+    dispatch(syncWishlistFromStorage());
   }, [dispatch]);
+
+  // Sync wishlist with DB if logged in
+  useEffect(() => {
+    if (token) {
+       dispatch(syncWishlistRequest());
+    }
+  }, [token, dispatch]);
 
   if (!isMounted) return <div className="w-1/2 h-16" />; // Prevent Hydration Jitter
 
@@ -43,7 +55,7 @@ function HeaderLoginComponent() {
         </div>
 
         {/* Step 2: Shared Action Icons (Cart/Wishlist) */}
-        <ActionIcons cartCount={cartItemCount} isMounted={isMounted} />
+        <ActionIcons cartCount={cartItemCount} wishListItemCount={wishListItemCount} isMounted={isMounted} />
       </div>
     </div>
   );
@@ -141,9 +153,7 @@ const DropdownItem = ({ href, icon, label }) => (
 );
 
 
- function ActionIcons({ cartCount, isMounted }) {
-  // Wishlist count can be connected to Redux later, hardcoding for now as per your snippet
-  const wishListItemCount = 0; 
+ function ActionIcons({ cartCount, wishListItemCount, isMounted }) {
 
   return (
     <div className='flex items-center md:space-x-0'>

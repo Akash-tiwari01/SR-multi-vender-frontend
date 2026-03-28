@@ -1,10 +1,9 @@
-import { cookies } from 'next/headers';
+import { getAuthTokenAction } from '@/lib/authActions';
 
 export const OrderService = {
   async getAllOrders() {
     try {
-      const cookieStore = await cookies();
-      const token = cookieStore.get('token')?.value; 
+      const token = await getAuthTokenAction();
       
       if (!token || token === 'undefined') {
         console.error("OrderService: Token missing or undefined. User might not be logged in.");
